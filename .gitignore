@@ -3,6 +3,7 @@
 /local.properties
 /.idea/caches
 /.idea/deploymentTargetSelector.xml
+/.idea/gradle.xml
 /.idea/libraries
 /.idea/modules.xml
 /.idea/workspace.xml
