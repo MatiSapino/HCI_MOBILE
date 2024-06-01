@@ -15,7 +15,7 @@ private val devices = listOf(
 @Composable
 fun DeviceRow(modifier: Modifier = Modifier) {
     LazyRow(
-        horizontalArrangement = Arrangement.spacedBy(20.dp),
+        horizontalArrangement = Arrangement.spacedBy(18.dp),
         modifier = modifier
     ) {
         items(items = devices) { item ->
