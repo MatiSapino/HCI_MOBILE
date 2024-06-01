@@ -1,5 +1,5 @@
 <resources>
     <string name="app_name">MobileApp</string>
-    <string name="hello">Hola</string>
-    <string name="name">Mati</string>
+    <string name="light">Light</string>
+    <string name="ac">Ac</string>
 </resources>
