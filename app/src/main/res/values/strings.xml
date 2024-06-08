@@ -2,4 +2,8 @@
     <string name="app_name">MobileApp</string>
     <string name="light">Light</string>
     <string name="ac">Ac</string>
+    <string name="home">Home</string>
+    <string name="favorites">Favorites</string>
+    <string name="shopping">Shopping</string>
+    <string name="profile">Profile</string>
 </resources>
