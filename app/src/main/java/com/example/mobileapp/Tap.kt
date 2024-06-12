@@ -3,6 +3,8 @@ package com.example.mobileapp
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
@@ -12,7 +14,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 
 @Composable
-fun TapCard() {
+fun TapCard(onBack: () -> Unit) {
     val tapState = remember { mutableStateOf("closed") }
     val quantity = remember { mutableFloatStateOf(0f) }
     val unit = remember { mutableStateOf("L") }
@@ -32,6 +34,9 @@ fun TapCard() {
             verticalArrangement = Arrangement.Center,
             modifier = Modifier.padding(16.dp)
         ) {
+            IconButton(onClick = onBack) {
+                Icon(imageVector = Icons.AutoMirrored.Filled.ArrowBack, contentDescription = "Back")
+            }
             Text(text = "Tap - Name")
             HorizontalDivider()
 
@@ -126,5 +131,5 @@ fun TapCard() {
 @Preview(showBackground = true, showSystemUi = true)
 @Composable
 fun TapCardPreview() {
-    TapCard()
+    TapCard(onBack = {})
 }

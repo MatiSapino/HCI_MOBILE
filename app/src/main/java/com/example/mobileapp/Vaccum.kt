@@ -3,6 +3,8 @@ package com.example.mobileapp
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
@@ -12,7 +14,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 
 @Composable
-fun VacuumCard() {
+fun VacuumCard(onBack: () -> Unit) {
     val vacuumState = remember { mutableStateOf("inactive") }
     val vacuumMode = remember { mutableStateOf("vacuum") }
     val selectedRoom = remember { mutableStateOf<String?>(null) }
@@ -33,6 +35,9 @@ fun VacuumCard() {
             verticalArrangement = Arrangement.Center,
             modifier = Modifier.padding(16.dp)
         ) {
+            IconButton(onClick = onBack) {
+                Icon(imageVector = Icons.AutoMirrored.Filled.ArrowBack, contentDescription = "Back")
+            }
             Text(text = "Vacuum - Name")
             HorizontalDivider()
 
@@ -156,5 +161,5 @@ fun VacuumCard() {
 @Preview(showBackground = true, showSystemUi = true)
 @Composable
 fun VacuumCardPreview() {
-    VacuumCard()
+    VacuumCard(onBack = {})
 }
