@@ -90,12 +90,14 @@ fun ColorPickerDialog(
 }
 
 @Composable
-fun LightCard(onBack: () -> Unit) {
+fun LightCard(onBack: () -> Unit, onDelete: (Device) -> Unit) {
     val lightState = remember { mutableStateOf("off") }
     val lightColor = remember { mutableStateOf(Color.Black) }
     val brightness = remember { mutableFloatStateOf(50f) }
     val showColorPicker = remember { mutableStateOf(false) }
     val showDetails = remember { mutableStateOf(false) }
+
+    val device = Device("Main Hall light", "Light")
 
     Card(
         modifier = Modifier
@@ -154,7 +156,7 @@ fun LightCard(onBack: () -> Unit) {
             if (showDetails.value) {
                 HorizontalDivider()
                 Button(
-                    onClick = { /* Delete Light Logic */ },
+                    onClick = { onDelete(device) },
                     colors = ButtonDefaults.buttonColors(containerColor = Color.Red),
                     modifier = Modifier.padding(vertical = 16.dp)
                 ) {
@@ -184,5 +186,5 @@ fun LightCard(onBack: () -> Unit) {
 @Preview(showBackground = true)
 @Composable
 fun LightCardPreview() {
-    LightCard(onBack = {})
+    LightCard(onBack = {}, onDelete = {})
 }

@@ -36,7 +36,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 
 @Composable
-fun ACCard(onBack: () -> Unit) {
+fun ACCard(onBack: () -> Unit, onDelete: (Device) -> Unit) {
     val acState = remember { mutableStateOf("off") }
     val acTemperature = remember { mutableFloatStateOf(25f) }
     val acMode = remember { mutableStateOf("Cool") }
@@ -49,6 +49,8 @@ fun ACCard(onBack: () -> Unit) {
     val verticalSwingsOptions = listOf("auto", "22", "45", "67", "90")
     val horizontalSwingsOptions = listOf("auto", "-90", "-45", "0", "45", "90")
     val modesAc = listOf("Fan", "Cool", "Heat")
+
+    val device = Device("Living room AC", "AC")
 
     Card(
         modifier = Modifier
@@ -171,7 +173,7 @@ fun ACCard(onBack: () -> Unit) {
 
                 HorizontalDivider()
                 Button(
-                    onClick = { /* Delete Device Logic */ },
+                    onClick = { onDelete(device) },
                     colors = ButtonDefaults.buttonColors(containerColor = Color.Red),
                     modifier = Modifier.padding(vertical = 16.dp)
                 ) {
@@ -193,5 +195,5 @@ fun ACCard(onBack: () -> Unit) {
 @Preview(showBackground = true, showSystemUi = true)
 @Composable
 fun ACCardPreview() {
-    ACCard(onBack = {})
+    ACCard(onBack = {}, onDelete = {})
 }

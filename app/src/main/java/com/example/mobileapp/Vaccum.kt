@@ -14,7 +14,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 
 @Composable
-fun VacuumCard(onBack: () -> Unit) {
+fun VacuumCard(onBack: () -> Unit, onDelete: (Device) -> Unit) {
     val vacuumState = remember { mutableStateOf("inactive") }
     val vacuumMode = remember { mutableStateOf("vacuum") }
     val selectedRoom = remember { mutableStateOf<String?>(null) }
@@ -22,6 +22,8 @@ fun VacuumCard(onBack: () -> Unit) {
 
     val modesVacuum = listOf("vacuum", "mop")
     val roomsVacuum = listOf("Living Room", "Kitchen", "Bedroom", "Bathroom", "Garage", "Garden")
+
+    val device = Device("Vacuum cleaner", "Vacuum")
 
     Card(
         modifier = Modifier
@@ -138,7 +140,7 @@ fun VacuumCard(onBack: () -> Unit) {
 
                 // Delete Device Button
                 Button(
-                    onClick = { /* Implement delete logic */ },
+                    onClick = { onDelete(device) },
                     colors = ButtonDefaults.buttonColors(containerColor = Color.Red),
                     modifier = Modifier.padding(vertical = 16.dp)
                 ) {
@@ -161,5 +163,5 @@ fun VacuumCard(onBack: () -> Unit) {
 @Preview(showBackground = true, showSystemUi = true)
 @Composable
 fun VacuumCardPreview() {
-    VacuumCard(onBack = {})
+    VacuumCard(onBack = {}, onDelete = {})
 }

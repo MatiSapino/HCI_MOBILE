@@ -14,13 +14,15 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 
 @Composable
-fun TapCard(onBack: () -> Unit) {
+fun TapCard(onBack: () -> Unit, onDelete: (Device) -> Unit) {
     val tapState = remember { mutableStateOf("closed") }
     val quantity = remember { mutableFloatStateOf(0f) }
     val unit = remember { mutableStateOf("L") }
     val showDetails = remember { mutableStateOf(false) }
 
     val units = listOf("Ml", "Cl", "Dl", "L")
+
+    val device = Device("Tap", "Tap")
 
     Card(
         modifier = Modifier
@@ -108,7 +110,7 @@ fun TapCard(onBack: () -> Unit) {
             if (showDetails.value) {
                 HorizontalDivider()
                 Button(
-                    onClick = { /* Implement delete logic */ },
+                    onClick = { onDelete(device) },
                     colors = ButtonDefaults.buttonColors(containerColor = Color.Red),
                     modifier = Modifier.padding(vertical = 16.dp)
                 ) {
@@ -131,5 +133,5 @@ fun TapCard(onBack: () -> Unit) {
 @Preview(showBackground = true, showSystemUi = true)
 @Composable
 fun TapCardPreview() {
-    TapCard(onBack = {})
+    TapCard(onBack = {}, onDelete = {})
 }

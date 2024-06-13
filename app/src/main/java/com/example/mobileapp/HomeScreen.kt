@@ -48,12 +48,11 @@ class DeviceViewModel : ViewModel() {
     fun addDevice(device: Device) {
         devices = devices + device
     }
+
+    fun deleteDevice(device: Device) {
+        devices = devices.filter { it != device }
+    }
 }
-
-
-
-
-
 
 
 @Composable
@@ -143,16 +142,40 @@ fun MainScreen() {
         }
 
         composable(Screen.LightCard.route) {
-            LightCard(onBack = { navController.navigate(Screen.HomeScreen.route) })
+            LightCard(
+                onBack = { navController.navigate(Screen.HomeScreen.route) },
+                onDelete = { device ->
+                    deviceViewModel.deleteDevice(device)
+                    navController.navigate(Screen.HomeScreen.route)
+                }
+            )
         }
         composable(Screen.ACCard.route) {
-            ACCard(onBack = { navController.navigate(Screen.HomeScreen.route) })
+            ACCard(
+                onBack = { navController.navigate(Screen.HomeScreen.route) },
+                onDelete = { device ->
+                    deviceViewModel.deleteDevice(device)
+                    navController.navigate(Screen.HomeScreen.route)
+                }
+            )
         }
         composable(Screen.VacuumCard.route) {
-            VacuumCard(onBack = { navController.navigate(Screen.HomeScreen.route) })
+            VacuumCard(
+                onBack = { navController.navigate(Screen.HomeScreen.route) },
+                onDelete = { device ->
+                    deviceViewModel.deleteDevice(device)
+                    navController.navigate(Screen.HomeScreen.route)
+                }
+            )
         }
         composable(Screen.TapCard.route) {
-            TapCard(onBack = { navController.navigate(Screen.HomeScreen.route) })
+            TapCard(
+                onBack = { navController.navigate(Screen.HomeScreen.route) },
+                onDelete = { device ->
+                    deviceViewModel.deleteDevice(device)
+                    navController.navigate(Screen.HomeScreen.route)
+                }
+            )
         }
 
         composable(Screen.NewRoutineScreen.route) {
