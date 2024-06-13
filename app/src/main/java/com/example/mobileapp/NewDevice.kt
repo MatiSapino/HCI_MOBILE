@@ -26,11 +26,10 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 
 @Composable
-fun NewDeviceScreen(onDeviceAdded: () -> Unit, onCancel: () -> Unit) {
+fun NewDeviceScreen(onDeviceAdded: (Device) -> Unit, onCancel: () -> Unit) {
     var deviceName by remember { mutableStateOf("") }
     var selectedType by remember { mutableStateOf<String?>(null) }
     val deviceTypes = listOf("Light", "AC", "Vacuum", "Tap")
@@ -42,7 +41,7 @@ fun NewDeviceScreen(onDeviceAdded: () -> Unit, onCancel: () -> Unit) {
             .padding(16.dp),
         verticalArrangement = Arrangement.spacedBy(16.dp)
     ) {
-        IconButton(onClick = onCancel, modifier = Modifier.align(Alignment.Start)) {
+        IconButton(onClick = onCancel) {
             Icon(imageVector = Icons.AutoMirrored.Filled.ArrowBack, contentDescription = "Back")
         }
         TextField(
@@ -70,11 +69,9 @@ fun NewDeviceScreen(onDeviceAdded: () -> Unit, onCancel: () -> Unit) {
         Button(
             onClick = {
                 if (deviceName.isNotEmpty() && selectedType != null) {
-                    // Here goes the code to update the Api
-                    // Example: api.addDevice(Device(deviceName, selectedType))
+                    onDeviceAdded(Device(deviceName, selectedType!!))
                     deviceName = ""
                     selectedType = null
-                    onDeviceAdded()
                 }
             },
             modifier = Modifier.align(Alignment.CenterHorizontally)
@@ -84,8 +81,3 @@ fun NewDeviceScreen(onDeviceAdded: () -> Unit, onCancel: () -> Unit) {
     }
 }
 
-@Preview(showBackground = true, showSystemUi = true)
-@Composable
-fun NewDeviceScreenPreview() {
-    NewDeviceScreen(onDeviceAdded = {}, onCancel = {})
-}

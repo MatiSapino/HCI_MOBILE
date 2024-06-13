@@ -19,6 +19,8 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
@@ -34,6 +36,20 @@ sealed class Screen(val route: String) {
     data object TapCard : Screen("tap_card")
     data object NewRoutineScreen : Screen("new_routine_screen")
     data object NewDeviceScreen : Screen("new_device_screen")
+}
+
+class DeviceViewModel : ViewModel() {
+    var devices by mutableStateOf(listOf(
+        Device("Main Hall light", "Light"),
+        Device("Vacuum cleaner", "Vacuum"),
+        Device("Living room AC", "AC"),
+        Device("Tap", "Tap")
+    ))
+        private set
+
+    fun addDevice(device: Device) {
+        devices = devices + device
+    }
 }
 
 @Composable
@@ -211,6 +227,7 @@ fun HomeScreen(
 fun MainScreen() {
     val navController = rememberNavController()
     var selectedDeviceType by remember { mutableStateOf<String?>(null) }
+    val deviceViewModel: DeviceViewModel = viewModel()
     var routines by remember {
         mutableStateOf(
             listOf(
@@ -223,12 +240,7 @@ fun MainScreen() {
     NavHost(navController = navController, startDestination = Screen.HomeScreen.route) {
         composable(Screen.HomeScreen.route) {
             HomeScreen(
-                devices = listOf(
-                    Device("Main Hall light", "Light"),
-                    Device("Vacuum cleaner", "Vacuum"),
-                    Device("Living room AC", "AC"),
-                    Device("Tap", "Tap")
-                ),
+                devices = deviceViewModel.devices,
                 routines = routines,
                 onDeviceTypeSelected = { type -> selectedDeviceType = type },
                 selectedDeviceType = selectedDeviceType,
@@ -270,7 +282,10 @@ fun MainScreen() {
         }
         composable(Screen.NewDeviceScreen.route) {
             NewDeviceScreen(
-                onDeviceAdded = { navController.navigate(Screen.HomeScreen.route) },
+                onDeviceAdded = { addedDevice ->
+                    deviceViewModel.addDevice(addedDevice)
+                    navController.navigate(Screen.HomeScreen.route)
+                },
                 onCancel = { navController.navigate(Screen.HomeScreen.route) }
             )
         }
