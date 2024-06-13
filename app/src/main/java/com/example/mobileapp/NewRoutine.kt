@@ -205,6 +205,11 @@ fun NewRoutineScreen(
     onRoutineSaved: () -> Unit, // Callback to manage the action of saving the routine
     onCancel: () -> Unit // Callback to handle cancel action
 ) {
+    val filteredDevices = if (selectedType != null) {
+        devices.filter { it.type == selectedType }
+    } else {
+        devices
+    }
 
     Column(modifier = Modifier
         .fillMaxSize()
@@ -216,7 +221,7 @@ fun NewRoutineScreen(
         RoutineNameInput(name = routineName, onNameChange = onNameChange)
         IconSelection(selectedIcon = selectedIcon, onIconSelected = onIconSelected)
         DeviceTypeSelection(deviceTypes = deviceTypes, selectedType = selectedType, onTypeSelected = onTypeSelected)
-        DeviceSelection(devices = devices, selectedDevice = selectedDevice, onDeviceSelected = onDeviceSelected)
+        DeviceSelection(devices = filteredDevices, selectedDevice = selectedDevice, onDeviceSelected = onDeviceSelected)
         AutomationSelection(
             device = selectedDevice,
             automations = automations,
@@ -240,6 +245,8 @@ fun NewRoutineScreenState(onRoutineSaved: () -> Unit, onCancel: () -> Unit) {
     var selectedDevice by remember { mutableStateOf<Device?>(null) }
     var selectedAutomations by remember { mutableStateOf<List<String>>(emptyList()) }
 
+    val filteredDevices = deviceViewModel.devices.filter { it.type == selectedType }
+
     NewRoutineScreen(
         routineName = routineName,
         onNameChange = { routineName = it },
@@ -247,11 +254,21 @@ fun NewRoutineScreenState(onRoutineSaved: () -> Unit, onCancel: () -> Unit) {
         onIconSelected = { selectedIcon = it },
         deviceTypes = listOf("Light", "AC", "Vacuum", "Tap"),
         selectedType = selectedType,
-        onTypeSelected = { selectedType = it },
-        devices = deviceViewModel.devices.filter { it.type == selectedType },
+        onTypeSelected = {
+            selectedType = it
+            selectedDevice = null  // Reset selected device when type changes
+            selectedAutomations = emptyList() // Reset automations when type changes
+        },
+        devices = filteredDevices,
         selectedDevice = selectedDevice,
         onDeviceSelected = { selectedDevice = it },
-        automations = listOf("Set Color", "Set Brightness"),
+        automations = when (selectedType) {
+            "Light" -> listOf("Set Color", "Set Brightness")
+            "AC" -> listOf("Set Temperature", "Set Mode")
+            "Vacuum" -> listOf("Start Cleaning", "Stop Cleaning")
+            "Tap" -> listOf("Open Tap", "Close Tap")
+            else -> emptyList()
+        },
         selectedAutomations = selectedAutomations,
         onAutomationSelected = { automation ->
             selectedAutomations = if (selectedAutomations.contains(automation)) {
