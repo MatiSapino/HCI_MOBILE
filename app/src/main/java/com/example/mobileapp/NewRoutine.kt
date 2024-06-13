@@ -36,6 +36,8 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.lifecycle.viewmodel.compose.viewModel
+import java.util.UUID
 
 private val selectedColor = Color.Gray
 private val unselectedColor = Color.Transparent
@@ -203,6 +205,7 @@ fun NewRoutineScreen(
     onRoutineSaved: () -> Unit, // Callback to manage the action of saving the routine
     onCancel: () -> Unit // Callback to handle cancel action
 ) {
+
     Column(modifier = Modifier
         .fillMaxSize()
         .background(Color.White)
@@ -230,6 +233,7 @@ fun NewRoutineScreen(
 
 @Composable
 fun NewRoutineScreenState(onRoutineSaved: () -> Unit, onCancel: () -> Unit) {
+    val deviceViewModel: DeviceViewModel = viewModel()
     var routineName by remember { mutableStateOf("") }
     var selectedIcon by remember { mutableStateOf<Int?>(null) }
     var selectedType by remember { mutableStateOf<String?>(null) }
@@ -244,7 +248,7 @@ fun NewRoutineScreenState(onRoutineSaved: () -> Unit, onCancel: () -> Unit) {
         deviceTypes = listOf("Light", "AC", "Vacuum", "Tap"),
         selectedType = selectedType,
         onTypeSelected = { selectedType = it },
-        devices = listOf(Device("Device 1", "Light"), Device("Device 2", "AC")),
+        devices = deviceViewModel.devices.filter { it.type == selectedType },
         selectedDevice = selectedDevice,
         onDeviceSelected = { selectedDevice = it },
         automations = listOf("Set Color", "Set Brightness"),
@@ -258,8 +262,13 @@ fun NewRoutineScreenState(onRoutineSaved: () -> Unit, onCancel: () -> Unit) {
         },
         onAcceptAutomation = {},
         onSaveRoutine = {
-            // Logic to save routine
-            // Call to the Api
+            val newRoutine = Routine(
+                id = UUID.randomUUID().toString(),
+                name = routineName,
+                icon = selectedIcon ?: 0,
+                automations = selectedAutomations
+            )
+            deviceViewModel.addRoutine(newRoutine)
         },
         onRoutineSaved = {
             routineName = ""

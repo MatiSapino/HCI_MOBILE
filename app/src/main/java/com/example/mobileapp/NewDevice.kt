@@ -27,9 +27,12 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
+import androidx.lifecycle.viewmodel.compose.viewModel
+import java.util.UUID
 
 @Composable
 fun NewDeviceScreen(onDeviceAdded: (Device) -> Unit, onCancel: () -> Unit) {
+    val deviceViewModel: DeviceViewModel = viewModel()
     var deviceName by remember { mutableStateOf("") }
     var selectedType by remember { mutableStateOf<String?>(null) }
     val deviceTypes = listOf("Light", "AC", "Vacuum", "Tap")
@@ -41,7 +44,7 @@ fun NewDeviceScreen(onDeviceAdded: (Device) -> Unit, onCancel: () -> Unit) {
             .padding(16.dp),
         verticalArrangement = Arrangement.spacedBy(16.dp)
     ) {
-        IconButton(onClick = onCancel) {
+        IconButton(onClick = onCancel, modifier = Modifier.align(Alignment.Start)) {
             Icon(imageVector = Icons.AutoMirrored.Filled.ArrowBack, contentDescription = "Back")
         }
         TextField(
@@ -69,9 +72,16 @@ fun NewDeviceScreen(onDeviceAdded: (Device) -> Unit, onCancel: () -> Unit) {
         Button(
             onClick = {
                 if (deviceName.isNotEmpty() && selectedType != null) {
-                    onDeviceAdded(Device(deviceName, selectedType!!))
+                    val newDevice = Device(
+                        id = UUID.randomUUID().toString(),
+                        name = deviceName,
+                        type = selectedType!!,
+                        state = mutableMapOf("status" to false, "color" to "White", "brightness" to 100) // Example initial state
+                    )
+                    deviceViewModel.addDevice(newDevice)
                     deviceName = ""
                     selectedType = null
+                    onDeviceAdded(newDevice)
                 }
             },
             modifier = Modifier.align(Alignment.CenterHorizontally)

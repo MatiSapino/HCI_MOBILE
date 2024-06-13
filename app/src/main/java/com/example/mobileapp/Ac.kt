@@ -32,14 +32,20 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 
 @Composable
-fun ACCard(onBack: () -> Unit, onDelete: (Device) -> Unit) {
+fun ACCard(
+    device: Device,
+    onBack: () -> Unit,
+    onDelete: (Device) -> Unit,
+    onUpdateDevice: (Device) -> Unit
+) {
     val acState = remember { mutableStateOf("off") }
-    val acTemperature = remember { mutableFloatStateOf(25f) }
-    val acMode = remember { mutableStateOf("Cool") }
+
+    var temperature by remember { mutableFloatStateOf(device.state["temperature"] as Float) }
+    var mode by remember { mutableStateOf(device.state["Cool"] as String) }
+
     val acSpeed = remember { mutableIntStateOf(2) }
     val acVertical = remember { mutableIntStateOf(2) }
     val acHorizontal = remember { mutableIntStateOf(2) }
@@ -49,8 +55,6 @@ fun ACCard(onBack: () -> Unit, onDelete: (Device) -> Unit) {
     val verticalSwingsOptions = listOf("auto", "22", "45", "67", "90")
     val horizontalSwingsOptions = listOf("auto", "-90", "-45", "0", "45", "90")
     val modesAc = listOf("Fan", "Cool", "Heat")
-
-    val device = Device("Living room AC", "AC")
 
     Card(
         modifier = Modifier
@@ -64,10 +68,10 @@ fun ACCard(onBack: () -> Unit, onDelete: (Device) -> Unit) {
             verticalArrangement = Arrangement.Center,
             modifier = Modifier.padding(16.dp)
         ) {
-            IconButton(onClick = onBack) {
+            IconButton(onClick = onBack, modifier = Modifier.align(Alignment.Start)) {
                 Icon(imageVector = Icons.AutoMirrored.Filled.ArrowBack, contentDescription = "Back")
             }
-            Text(text = "AC - Name")
+            Text(text = "AC - ${device.name}")
             HorizontalDivider()
 
             Row(
@@ -90,10 +94,14 @@ fun ACCard(onBack: () -> Unit, onDelete: (Device) -> Unit) {
                 horizontalAlignment = Alignment.CenterHorizontally,
                 modifier = Modifier.padding(vertical = 16.dp)
             ) {
-                Text(text = "Temperature: ${acTemperature.floatValue.toInt()}°C")
+                Text(text = "Temperature: ${temperature.toInt()}°C")
                 Slider(
-                    value = acTemperature.floatValue,
-                    onValueChange = { acTemperature.floatValue = it },
+                    value = temperature,
+                    onValueChange = { newTemperature ->
+                        temperature = newTemperature
+                        val updatedDevice = device.copy(state = device.state.apply { put("temperature", temperature) })
+                        onUpdateDevice(updatedDevice)
+                    },
                     valueRange = 18f..38f
                 )
             }
@@ -106,7 +114,7 @@ fun ACCard(onBack: () -> Unit, onDelete: (Device) -> Unit) {
                 var expanded by remember { mutableStateOf(false) }
                 Box(modifier = Modifier.fillMaxWidth()) {
                     Text(
-                        text = "Mode: ${acMode.value}",
+                        text = "Mode: $mode",
                         modifier = Modifier
                             .clickable { expanded = true }
                             .padding(16.dp)
@@ -115,11 +123,13 @@ fun ACCard(onBack: () -> Unit, onDelete: (Device) -> Unit) {
                         expanded = expanded,
                         onDismissRequest = { expanded = false }
                     ) {
-                        modesAc.forEach { mode ->
+                        modesAc.forEach { modeAc ->
                             DropdownMenuItem(
                                 text = { Text(text = mode) },
                                 onClick = {
-                                    acMode.value = mode
+                                    mode = modeAc
+                                    device.state["mode"] = mode
+                                    onUpdateDevice(device)
                                     expanded = false
                                 }
                             )
@@ -190,10 +200,4 @@ fun ACCard(onBack: () -> Unit, onDelete: (Device) -> Unit) {
             }
         }
     }
-}
-
-@Preview(showBackground = true, showSystemUi = true)
-@Composable
-fun ACCardPreview() {
-    ACCard(onBack = {}, onDelete = {})
 }

@@ -30,14 +30,13 @@ import androidx.compose.material3.Switch
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableFloatStateOf
+import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.Dialog
 
@@ -90,14 +89,19 @@ fun ColorPickerDialog(
 }
 
 @Composable
-fun LightCard(onBack: () -> Unit, onDelete: (Device) -> Unit) {
+fun LightCard(
+    device: Device,
+    onBack: () -> Unit,
+    onDelete: (Device) -> Unit,
+    onUpdateDevice: (Device) -> Unit
+) {
     val lightState = remember { mutableStateOf("off") }
-    val lightColor = remember { mutableStateOf(Color.Black) }
-    val brightness = remember { mutableFloatStateOf(50f) }
+
+    var color by remember { mutableStateOf(device.state["color"] as Color) }
+    var brightness by remember { mutableIntStateOf(device.state["brightness"] as Int) }
+
     val showColorPicker = remember { mutableStateOf(false) }
     val showDetails = remember { mutableStateOf(false) }
-
-    val device = Device("Main Hall light", "Light")
 
     Card(
         modifier = Modifier
@@ -111,10 +115,10 @@ fun LightCard(onBack: () -> Unit, onDelete: (Device) -> Unit) {
             verticalArrangement = Arrangement.Center,
             modifier = Modifier.padding(16.dp)
         ) {
-            IconButton(onClick = onBack) {
+            IconButton(onClick = onBack, modifier = Modifier.align(Alignment.Start)) {
                 Icon(imageVector = Icons.AutoMirrored.Filled.ArrowBack, contentDescription = "Back")
             }
-            Text(text = "Light - Name")
+            Text(text = "Light - ${device.name}")
             HorizontalDivider()
 
             Row(
@@ -135,7 +139,7 @@ fun LightCard(onBack: () -> Unit, onDelete: (Device) -> Unit) {
             Box(
                 modifier = Modifier
                     .size(100.dp)
-                    .background(lightColor.value)
+                    .background(Color.Black)
                     .clickable {
                         showColorPicker.value = true
                     }
@@ -145,10 +149,14 @@ fun LightCard(onBack: () -> Unit, onDelete: (Device) -> Unit) {
                 horizontalAlignment = Alignment.CenterHorizontally,
                 modifier = Modifier.padding(vertical = 16.dp)
             ) {
-                Text(text = "Brightness: ${brightness.floatValue.toInt()}%")
+                Text(text = "Brightness: ${brightness}%")
                 Slider(
-                    value = brightness.floatValue,
-                    onValueChange = { brightness.floatValue = it },
+                    value = brightness.toFloat(),
+                    onValueChange = { newBrightness ->
+                        brightness = newBrightness.toInt()
+                        val updatedDevice = device.copy(state = device.state.apply { put("brightness", brightness) })
+                        onUpdateDevice(updatedDevice)
+                    },
                     valueRange = 0f..100f
                 )
             }
@@ -156,7 +164,9 @@ fun LightCard(onBack: () -> Unit, onDelete: (Device) -> Unit) {
             if (showDetails.value) {
                 HorizontalDivider()
                 Button(
-                    onClick = { onDelete(device) },
+                    onClick = {
+                        onDelete(device)
+                        onBack() },
                     colors = ButtonDefaults.buttonColors(containerColor = Color.Red),
                     modifier = Modifier.padding(vertical = 16.dp)
                 ) {
@@ -176,15 +186,13 @@ fun LightCard(onBack: () -> Unit, onDelete: (Device) -> Unit) {
 
     if (showColorPicker.value) {
         ColorPickerDialog(
-            selectedColor = lightColor.value,
-            onColorSelected = { lightColor.value = it },
+            selectedColor = color,
+            onColorSelected = { selectedColor ->
+                color = selectedColor
+                val updatedDevice = device.copy(state = device.state.apply { put("color", selectedColor) })
+                onUpdateDevice(updatedDevice)
+            },
             onDismissRequest = { showColorPicker.value = false }
         )
     }
-}
-
-@Preview(showBackground = true)
-@Composable
-fun LightCardPreview() {
-    LightCard(onBack = {}, onDelete = {})
 }

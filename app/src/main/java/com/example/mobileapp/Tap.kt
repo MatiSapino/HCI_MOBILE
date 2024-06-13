@@ -1,28 +1,52 @@
 package com.example.mobileapp
 
 import androidx.compose.foundation.clickable
-import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.wrapContentHeight
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
-import androidx.compose.material3.*
-import androidx.compose.runtime.*
+import androidx.compose.material3.Button
+import androidx.compose.material3.ButtonDefaults
+import androidx.compose.material3.Card
+import androidx.compose.material3.DropdownMenu
+import androidx.compose.material3.DropdownMenuItem
+import androidx.compose.material3.HorizontalDivider
+import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
+import androidx.compose.material3.Slider
+import androidx.compose.material3.Switch
+import androidx.compose.material3.Text
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableFloatStateOf
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 
 @Composable
-fun TapCard(onBack: () -> Unit, onDelete: (Device) -> Unit) {
+fun TapCard(
+    device: Device,
+    onBack: () -> Unit,
+    onDelete: (Device) -> Unit,
+    onUpdateDevice: (Device) -> Unit
+) {
     val tapState = remember { mutableStateOf("closed") }
-    val quantity = remember { mutableFloatStateOf(0f) }
-    val unit = remember { mutableStateOf("L") }
+    var quantity by remember { mutableFloatStateOf(device.state["0"] as Float) }
+    var unit by remember { mutableStateOf(device.state["L"] as String) }
+
     val showDetails = remember { mutableStateOf(false) }
 
     val units = listOf("Ml", "Cl", "Dl", "L")
-
-    val device = Device("Tap", "Tap")
 
     Card(
         modifier = Modifier
@@ -36,10 +60,10 @@ fun TapCard(onBack: () -> Unit, onDelete: (Device) -> Unit) {
             verticalArrangement = Arrangement.Center,
             modifier = Modifier.padding(16.dp)
         ) {
-            IconButton(onClick = onBack) {
+            IconButton(onClick = onBack, modifier = Modifier.align(Alignment.Start)) {
                 Icon(imageVector = Icons.AutoMirrored.Filled.ArrowBack, contentDescription = "Back")
             }
-            Text(text = "Tap - Name")
+            Text(text = "Tap - ${device.name}")
             HorizontalDivider()
 
             Row(
@@ -62,16 +86,16 @@ fun TapCard(onBack: () -> Unit, onDelete: (Device) -> Unit) {
                 horizontalAlignment = Alignment.CenterHorizontally,
                 modifier = Modifier.padding(vertical = 16.dp)
             ) {
-                Text(text = "Quantity: ${quantity.floatValue.toInt()} ${unit.value}")
+                Text(text = "Quantity: ${quantity.toInt()} $unit")
                 Slider(
-                    value = quantity.floatValue,
-                    onValueChange = { quantity.floatValue = it },
+                    value = quantity,
+                    onValueChange = { quantity = it; device.state["quantity"] = it; onUpdateDevice(device) },
                     valueRange = 0f..100f
                 )
                 var expanded by remember { mutableStateOf(false) }
                 Box(modifier = Modifier.fillMaxWidth()) {
                     Text(
-                        text = "Unit: ${unit.value}",
+                        text = "Unit: $unit",
                         modifier = Modifier
                             .clickable { expanded = true }
                             .padding(16.dp)
@@ -84,7 +108,9 @@ fun TapCard(onBack: () -> Unit, onDelete: (Device) -> Unit) {
                             DropdownMenuItem(
                                 text = { Text(text = u) },
                                 onClick = {
-                                    unit.value = u
+                                    unit = u
+                                    device.state["unit"] = u
+                                    onUpdateDevice(device)
                                     expanded = false
                                 }
                             )
@@ -128,10 +154,4 @@ fun TapCard(onBack: () -> Unit, onDelete: (Device) -> Unit) {
             }
         }
     }
-}
-
-@Preview(showBackground = true, showSystemUi = true)
-@Composable
-fun TapCardPreview() {
-    TapCard(onBack = {}, onDelete = {})
 }

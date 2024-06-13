@@ -14,7 +14,11 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 
 @Composable
-fun DeviceSection(devices: List<Device>, onDeviceSelected: (Device) -> Unit, onAddDevice: () -> Unit) {
+fun DeviceSection(
+    devices: List<Device>,
+    onDeviceSelected: (Device) -> Unit,
+    onAddDevice: () -> Unit
+) {
     Column {
         Row(
             modifier = Modifier

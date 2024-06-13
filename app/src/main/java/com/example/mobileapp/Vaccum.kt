@@ -1,29 +1,51 @@
 package com.example.mobileapp
 
 import androidx.compose.foundation.clickable
-import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.wrapContentHeight
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
-import androidx.compose.material3.*
-import androidx.compose.runtime.*
+import androidx.compose.material3.Button
+import androidx.compose.material3.ButtonDefaults
+import androidx.compose.material3.Card
+import androidx.compose.material3.DropdownMenu
+import androidx.compose.material3.DropdownMenuItem
+import androidx.compose.material3.HorizontalDivider
+import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
+import androidx.compose.material3.Switch
+import androidx.compose.material3.Text
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 
 @Composable
-fun VacuumCard(onBack: () -> Unit, onDelete: (Device) -> Unit) {
-    val vacuumState = remember { mutableStateOf("inactive") }
-    val vacuumMode = remember { mutableStateOf("vacuum") }
+fun VacuumCard(
+    device: Device,
+    onBack: () -> Unit,
+    onDelete: (Device) -> Unit,
+    onUpdateDevice: (Device) -> Unit
+) {
+    var status by remember { mutableStateOf(device.state["inactive"] as String) }
+    var mode by remember { mutableStateOf(device.state["vacuum"] as String) }
+
     val selectedRoom = remember { mutableStateOf<String?>(null) }
     val showDetails = remember { mutableStateOf(false) }
 
     val modesVacuum = listOf("vacuum", "mop")
     val roomsVacuum = listOf("Living Room", "Kitchen", "Bedroom", "Bathroom", "Garage", "Garden")
-
-    val device = Device("Vacuum cleaner", "Vacuum")
 
     Card(
         modifier = Modifier
@@ -37,10 +59,10 @@ fun VacuumCard(onBack: () -> Unit, onDelete: (Device) -> Unit) {
             verticalArrangement = Arrangement.Center,
             modifier = Modifier.padding(16.dp)
         ) {
-            IconButton(onClick = onBack) {
+            IconButton(onClick = onBack, modifier = Modifier.align(Alignment.Start)) {
                 Icon(imageVector = Icons.AutoMirrored.Filled.ArrowBack, contentDescription = "Back")
             }
-            Text(text = "Vacuum - Name")
+            Text(text = "Vacuum - ${device.name}")
             HorizontalDivider()
 
             Row(
@@ -50,12 +72,14 @@ fun VacuumCard(onBack: () -> Unit, onDelete: (Device) -> Unit) {
                 horizontalArrangement = Arrangement.SpaceBetween
             ) {
                 Switch(
-                    checked = vacuumState.value == "active",
-                    onCheckedChange = {
-                        vacuumState.value = if (it) "active" else "inactive"
+                    checked = status == "active",
+                    onCheckedChange = { newStatus ->
+                        status = if (newStatus) "active" else "inactive"
+                        val updatedDevice = device.copy(state = device.state.apply { put("status", status) })
+                        onUpdateDevice(updatedDevice)
                     }
                 )
-                Text(text = vacuumState.value)
+                Text(text = status)
             }
 
             // Mode Selector
@@ -66,7 +90,7 @@ fun VacuumCard(onBack: () -> Unit, onDelete: (Device) -> Unit) {
                 var expanded by remember { mutableStateOf(false) }
                 Box(modifier = Modifier.fillMaxWidth()) {
                     Text(
-                        text = "Mode: ${vacuumMode.value}",
+                        text = "Mode: $mode",
                         modifier = Modifier
                             .clickable { expanded = true }
                             .padding(16.dp)
@@ -75,11 +99,13 @@ fun VacuumCard(onBack: () -> Unit, onDelete: (Device) -> Unit) {
                         expanded = expanded,
                         onDismissRequest = { expanded = false }
                     ) {
-                        modesVacuum.forEach { mode ->
+                        modesVacuum.forEach { modeVacuum ->
                             DropdownMenuItem(
                                 text = { Text(text = mode) },
                                 onClick = {
-                                    vacuumMode.value = mode
+                                    mode = modeVacuum
+                                    device.state["mode"] = mode
+                                    onUpdateDevice(device)
                                     expanded = false
                                 }
                             )
@@ -123,10 +149,10 @@ fun VacuumCard(onBack: () -> Unit, onDelete: (Device) -> Unit) {
                 Button(
                     onClick = {
                         // Implement logic to return to base
-                        if (vacuumState.value == "inactive") {
+                        if (status == "inactive") {
                             // Show alert logic
                         } else {
-                            vacuumState.value = "inactive"
+                            status = "inactive"
                             selectedRoom.value = null
                             // Show alert logic
                         }
@@ -158,10 +184,4 @@ fun VacuumCard(onBack: () -> Unit, onDelete: (Device) -> Unit) {
             }
         }
     }
-}
-
-@Preview(showBackground = true, showSystemUi = true)
-@Composable
-fun VacuumCardPreview() {
-    VacuumCard(onBack = {}, onDelete = {})
 }
