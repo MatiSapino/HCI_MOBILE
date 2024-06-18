@@ -1,4 +1,4 @@
-package com.example.mobileapp
+package com.example.mobileapp.ui.devices
 
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.lazy.LazyRow
@@ -6,6 +6,8 @@ import androidx.compose.foundation.lazy.items
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
+import com.example.mobileapp.DrawableStringPair
+import com.example.mobileapp.R
 
 private val devices = listOf(
     DrawableStringPair(R.drawable.ic_launcher_background, R.string.light),

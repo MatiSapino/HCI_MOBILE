@@ -1,4 +1,4 @@
-package com.example.mobileapp
+package com.example.mobileapp.ui.devices
 
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
@@ -19,10 +19,13 @@ import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
+import androidx.compose.material3.Slider
 import androidx.compose.material3.Switch
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableFloatStateOf
+import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
@@ -32,20 +35,26 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 
 @Composable
-fun VacuumCard(
+fun ACCard(
     device: Device,
     onBack: () -> Unit,
     onDelete: (Device) -> Unit,
     onUpdateDevice: (Device) -> Unit
 ) {
-    var status by remember { mutableStateOf(device.state["inactive"] as String) }
-    var mode by remember { mutableStateOf(device.state["vacuum"] as String) }
+    val acState = remember { mutableStateOf("off") }
 
-    val selectedRoom = remember { mutableStateOf<String?>(null) }
+    var temperature by remember { mutableFloatStateOf(device.state["temperature"] as Float) }
+    var mode by remember { mutableStateOf(device.state["Cool"] as String) }
+
+    val acSpeed = remember { mutableIntStateOf(2) }
+    val acVertical = remember { mutableIntStateOf(2) }
+    val acHorizontal = remember { mutableIntStateOf(2) }
     val showDetails = remember { mutableStateOf(false) }
 
-    val modesVacuum = listOf("vacuum", "mop")
-    val roomsVacuum = listOf("Living Room", "Kitchen", "Bedroom", "Bathroom", "Garage", "Garden")
+    val velocityOptions = listOf("auto", "25", "50", "75", "100")
+    val verticalSwingsOptions = listOf("auto", "22", "45", "67", "90")
+    val horizontalSwingsOptions = listOf("auto", "-90", "-45", "0", "45", "90")
+    val modesAc = listOf("Fan", "Cool", "Heat")
 
     Card(
         modifier = Modifier
@@ -62,7 +71,7 @@ fun VacuumCard(
             IconButton(onClick = onBack, modifier = Modifier.align(Alignment.Start)) {
                 Icon(imageVector = Icons.AutoMirrored.Filled.ArrowBack, contentDescription = "Back")
             }
-            Text(text = "Vacuum - ${device.name}")
+            Text(text = "AC - ${device.name}")
             HorizontalDivider()
 
             Row(
@@ -72,14 +81,29 @@ fun VacuumCard(
                 horizontalArrangement = Arrangement.SpaceBetween
             ) {
                 Switch(
-                    checked = status == "active",
-                    onCheckedChange = { newStatus ->
-                        status = if (newStatus) "active" else "inactive"
-                        val updatedDevice = device.copy(state = device.state.apply { put("status", status) })
-                        onUpdateDevice(updatedDevice)
+                    checked = acState.value == "on",
+                    onCheckedChange = {
+                        acState.value = if (it) "on" else "off"
                     }
                 )
-                Text(text = status)
+                Text(text = acState.value)
+            }
+
+            // Temperature Slider
+            Column(
+                horizontalAlignment = Alignment.CenterHorizontally,
+                modifier = Modifier.padding(vertical = 16.dp)
+            ) {
+                Text(text = "Temperature: ${temperature.toInt()}°C")
+                Slider(
+                    value = temperature,
+                    onValueChange = { newTemperature ->
+                        temperature = newTemperature
+                        val updatedDevice = device.copy(state = device.state.apply { put("temperature", temperature) })
+                        onUpdateDevice(updatedDevice)
+                    },
+                    valueRange = 18f..38f
+                )
             }
 
             // Mode Selector
@@ -99,11 +123,11 @@ fun VacuumCard(
                         expanded = expanded,
                         onDismissRequest = { expanded = false }
                     ) {
-                        modesVacuum.forEach { modeVacuum ->
+                        modesAc.forEach { modeAc ->
                             DropdownMenuItem(
                                 text = { Text(text = mode) },
                                 onClick = {
-                                    mode = modeVacuum
+                                    mode = modeAc
                                     device.state["mode"] = mode
                                     onUpdateDevice(device)
                                     expanded = false
@@ -114,57 +138,50 @@ fun VacuumCard(
                 }
             }
 
-            // Room Selector
-            Column(
-                horizontalAlignment = Alignment.CenterHorizontally,
-                modifier = Modifier.padding(vertical = 16.dp)
-            ) {
-                var expanded by remember { mutableStateOf(false) }
-                Box(modifier = Modifier.fillMaxWidth()) {
-                    Text(
-                        text = "Room: ${selectedRoom.value ?: "Select Room"}",
-                        modifier = Modifier
-                            .clickable { expanded = true }
-                            .padding(16.dp)
-                    )
-                    DropdownMenu(
-                        expanded = expanded,
-                        onDismissRequest = { expanded = false }
-                    ) {
-                        roomsVacuum.forEach { room ->
-                            DropdownMenuItem(
-                                text = { Text(text = room) },
-                                onClick = {
-                                    selectedRoom.value = room
-                                    expanded = false
-                                }
-                            )
-                        }
-                    }
-                }
-            }
-
             if (showDetails.value) {
-                // Back to Base Button
-                Button(
-                    onClick = {
-                        // Implement logic to return to base
-                        if (status == "inactive") {
-                            // Show alert logic
-                        } else {
-                            status = "inactive"
-                            selectedRoom.value = null
-                            // Show alert logic
-                        }
-                    },
+                // Fan Speed Slider
+                Column(
+                    horizontalAlignment = Alignment.CenterHorizontally,
                     modifier = Modifier.padding(vertical = 16.dp)
                 ) {
-                    Text(text = "Back to Base")
+                    Text(text = "Fan Speed: ${velocityOptions[acSpeed.intValue]}")
+                    Slider(
+                        value = acSpeed.intValue.toFloat(),
+                        onValueChange = { acSpeed.intValue = it.toInt() },
+                        valueRange = 0f..4f,
+                        steps = 4
+                    )
+                }
+
+                // Vertical Swing Slider
+                Column(
+                    horizontalAlignment = Alignment.CenterHorizontally,
+                    modifier = Modifier.padding(vertical = 16.dp)
+                ) {
+                    Text(text = "Vertical Swing: ${verticalSwingsOptions[acVertical.intValue]}")
+                    Slider(
+                        value = acVertical.intValue.toFloat(),
+                        onValueChange = { acVertical.intValue = it.toInt() },
+                        valueRange = 0f..4f,
+                        steps = 4
+                    )
+                }
+
+                // Horizontal Swing Slider
+                Column(
+                    horizontalAlignment = Alignment.CenterHorizontally,
+                    modifier = Modifier.padding(vertical = 16.dp)
+                ) {
+                    Text(text = "Horizontal Swing: ${horizontalSwingsOptions[acHorizontal.intValue]}")
+                    Slider(
+                        value = acHorizontal.intValue.toFloat(),
+                        onValueChange = { acHorizontal.intValue = it.toInt() },
+                        valueRange = 0f..5f,
+                        steps = 5
+                    )
                 }
 
                 HorizontalDivider()
-
-                // Delete Device Button
                 Button(
                     onClick = { onDelete(device) },
                     colors = ButtonDefaults.buttonColors(containerColor = Color.Red),
@@ -175,7 +192,6 @@ fun VacuumCard(
             }
 
             HorizontalDivider()
-
             Button(
                 onClick = { showDetails.value = !showDetails.value },
                 modifier = Modifier.padding(vertical = 16.dp)

@@ -1,4 +1,4 @@
-package com.example.mobileapp
+package com.example.mobileapp.ui.devices
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border

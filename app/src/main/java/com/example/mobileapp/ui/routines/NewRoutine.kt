@@ -1,4 +1,4 @@
-package com.example.mobileapp
+package com.example.mobileapp.ui.routines
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
@@ -37,6 +37,9 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
+import com.example.mobileapp.ui.devices.Device
+import com.example.mobileapp.ui.devices.DeviceViewModel
+import com.example.mobileapp.ui.devices.Routine
 import java.util.UUID
 
 private val selectedColor = Color.Gray

@@ -10,6 +10,7 @@ import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
+import com.example.mobileapp.ui.devices.DeviceRow
 import com.example.mobileapp.ui.theme.MobileAppTheme
 
 class MainActivity : ComponentActivity() {

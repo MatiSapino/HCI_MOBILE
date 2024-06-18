@@ -1,4 +1,4 @@
-package com.example.mobileapp
+package com.example.mobileapp.ui.devices
 
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf

@@ -21,6 +21,18 @@ import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
+import com.example.mobileapp.ui.devices.ACCard
+import com.example.mobileapp.ui.devices.Device
+import com.example.mobileapp.ui.devices.DeviceSection
+import com.example.mobileapp.ui.devices.DeviceTypeSection
+import com.example.mobileapp.ui.devices.DeviceViewModel
+import com.example.mobileapp.ui.devices.LightCard
+import com.example.mobileapp.ui.devices.NewDeviceScreen
+import com.example.mobileapp.ui.devices.Routine
+import com.example.mobileapp.ui.devices.TapCard
+import com.example.mobileapp.ui.devices.VacuumCard
+import com.example.mobileapp.ui.routines.NewRoutineScreenState
+import com.example.mobileapp.ui.routines.RoutineSection
 
 sealed class Screen(val route: String) {
     data object HomeScreen : Screen("home_screen")

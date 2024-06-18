@@ -1,4 +1,4 @@
-package com.example.mobileapp
+package com.example.mobileapp.ui.devices
 
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*

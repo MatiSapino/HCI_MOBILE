@@ -1,4 +1,4 @@
-package com.example.mobileapp
+package com.example.mobileapp.ui.devices
 
 import androidx.annotation.DrawableRes
 import androidx.annotation.StringRes
