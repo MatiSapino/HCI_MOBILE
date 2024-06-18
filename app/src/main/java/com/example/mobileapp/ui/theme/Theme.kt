@@ -55,3 +55,34 @@ fun MobileAppTheme(
         content = content
     )
 }
+
+@Composable
+fun AppTheme(content: @Composable () -> Unit) {
+    val colors = if (isSystemInDarkTheme()) {
+        darkColorScheme()
+    } else {
+        lightColorScheme()
+    }
+
+    MaterialTheme(
+        colorScheme = colors,
+        typography = Typography,
+        content = content
+    )
+}
+
+@Composable
+fun darkColorScheme() = MaterialTheme.colorScheme.copy(
+    background = Black,
+    surface = Black,
+    primary = White,
+    onPrimary = Black
+)
+
+@Composable
+fun lightColorScheme() = MaterialTheme.colorScheme.copy(
+    background = White,
+    surface = White,
+    primary = Black,
+    onPrimary = White
+)
