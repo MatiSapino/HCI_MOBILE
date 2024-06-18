@@ -14,7 +14,7 @@ class Vacuum(
     val mode: String,
     val batteryLevel: Int,
     val location: Any?
-) : Device(id, name, DeviceType.VACUUM) {
+) : Device(id, name, DeviceType.VACUUM, null) {
 
     override fun asRemoteModel(): RemoteDevice<RemoteVacuumState> {
         val state = RemoteVacuumState()

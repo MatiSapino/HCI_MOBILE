@@ -12,7 +12,7 @@ class Door(
     name: String,
     val status: Status,
     val lock: String,
-) : Device(id, name, DeviceType.DOOR) {
+) : Device(id, name, DeviceType.DOOR, null) {
 
     override fun asRemoteModel(): RemoteDevice<RemoteDoorState> {
         val state = RemoteDoorState()

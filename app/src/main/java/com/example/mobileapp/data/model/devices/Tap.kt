@@ -11,7 +11,7 @@ class Tap(
     id: String?,
     name: String,
     val status: Status,
-) : Device(id, name, DeviceType.TAP) {
+) : Device(id, name, DeviceType.TAP, null) {
 
     override fun asRemoteModel(): RemoteDevice<RemoteTapState> {
         val state = RemoteTapState()
