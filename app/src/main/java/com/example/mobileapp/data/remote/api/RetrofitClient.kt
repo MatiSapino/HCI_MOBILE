@@ -1,5 +1,9 @@
 package com.example.mobileapp.data.remote.api
 
+import com.example.mobileapp.data.remote.api.adapters.DateTypeAdapter
+import com.example.mobileapp.data.remote.api.adapters.DeviceTypeAdapter
+import com.example.mobileapp.data.remote.api.services.DeviceService
+import com.example.mobileapp.data.remote.api.services.RoutineService
 import com.example.mobileapp.data.remote.model.RemoteDevice
 import com.google.gson.GsonBuilder
 import okhttp3.OkHttpClient
@@ -29,8 +33,8 @@ private val retrofit = Retrofit.Builder()
     .build()
 
 object RetrofitClient {
-    val roomService: RoomService by lazy {
-        retrofit.create(RoomService::class.java)
+    val routineService: RoutineService by lazy {
+        retrofit.create(routineService::class.java)
     }
 
     val deviceService : DeviceService by lazy {

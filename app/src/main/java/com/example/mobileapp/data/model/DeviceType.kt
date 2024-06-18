@@ -1,5 +1,9 @@
 package com.example.mobileapp.data.model
 
 enum class DeviceType {
-    LAMP
+    LAMP,
+    AC,
+    TAP,
+    DOOR,
+    VACUUM
 }

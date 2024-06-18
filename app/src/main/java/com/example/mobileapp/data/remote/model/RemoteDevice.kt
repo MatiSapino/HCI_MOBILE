@@ -15,9 +15,6 @@ abstract class RemoteDevice<T> where T : Any {
     @Expose(serialize = false)
     lateinit var type: RemoteDeviceType
 
-    @SerializedName("room")
-    var room: RemoteRoom? = null
-
     @Expose(serialize = false)
     lateinit var state: T
         private set
