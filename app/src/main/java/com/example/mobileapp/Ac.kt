@@ -1,5 +1,6 @@
 package com.example.mobileapp
 
+import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
@@ -221,7 +222,7 @@ fun ACCard(
                         value = acHorizontal.intValue.toFloat(),
                         onValueChange = { acHorizontal.intValue = it.toInt() },
                         valueRange = 0f..5f,
-                        steps = 4,
+                        steps = 5,
                         colors = SliderDefaults.colors(
                             thumbColor = Color(0xFF87CEEB),
                             activeTrackColor = Color(0xFF87CEEB)
@@ -236,6 +237,7 @@ fun ACCard(
                         contentColor = Color.White
                     ),
                     shape = RoundedCornerShape(8.dp),
+                    border = BorderStroke(1.dp, Color.Black),
                     modifier = Modifier
                         .align(Alignment.CenterHorizontally)
                         .padding(vertical = 16.dp)

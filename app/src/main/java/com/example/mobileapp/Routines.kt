@@ -26,25 +26,32 @@ fun RoutineSection(
     onAddRoutine: () -> Unit,
     onDeleteRoutine: (Routine) -> Unit
 ) {
-    Row(
-        modifier = Modifier
-            .fillMaxWidth()
-            .padding(16.dp),
-        horizontalArrangement = Arrangement.SpaceBetween,
-        verticalAlignment = Alignment.CenterVertically
-    ) {
-        Text(text = "Routines", fontSize = 20.sp)
-        IconButton(onClick = onAddRoutine) {
-            Icon(imageVector = Icons.Default.Add, contentDescription = "Add Routine")
+    Column {
+        Row(
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(vertical = 8.dp),
+            horizontalArrangement = Arrangement.SpaceBetween,
+            verticalAlignment = Alignment.CenterVertically
+        ) {
+            Row(
+                verticalAlignment = Alignment.CenterVertically
+            ) {
+                Text(text = "Routines", fontSize = 20.sp)
+
+                IconButton(onClick = onAddRoutine) {
+                    Icon(imageVector = Icons.Default.Add, contentDescription = "Add Routine")
+                }
+            }
         }
-    }
-    LazyRow(
-        modifier = Modifier.fillMaxWidth(),
-        contentPadding = PaddingValues(16.dp),
-        horizontalArrangement = Arrangement.spacedBy(16.dp)
-    ) {
-        items(routines) { routine ->
-            RoutineCard(routine = routine, onClick = { onRoutineSelected(routine) }, onDeleteRoutine = onDeleteRoutine)
+        LazyRow(
+            modifier = Modifier.fillMaxWidth(),
+            contentPadding = PaddingValues(16.dp),
+            horizontalArrangement = Arrangement.spacedBy(16.dp)
+        ) {
+            items(routines) { routine ->
+                RoutineCard(routine = routine, onClick = { onRoutineSelected(routine) }, onDeleteRoutine = onDeleteRoutine)
+            }
         }
     }
 }

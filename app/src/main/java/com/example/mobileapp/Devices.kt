@@ -51,7 +51,7 @@ fun DeviceSection(
                 verticalAlignment = Alignment.CenterVertically
             ) {
                 Text(text = "Devices", fontSize = 20.sp)
-                Spacer(modifier = Modifier.width(4.dp))
+                Spacer(modifier = Modifier.width(7.dp))
                 IconButton(onClick = onAddDevice) {
                     Icon(imageVector = Icons.Default.Add, contentDescription = "Add Device")
                 }
