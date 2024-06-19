@@ -6,4 +6,14 @@
     <string name="favorites">Favorites</string>
     <string name="shopping">Shopping</string>
     <string name="profile">Profile</string>
+
+    <string name="Home">Home</string>
+    <string name="Configuration">Configuration</string>
+    <string name="NewDevice">NewDevice</string>
+    <string name="NewRoutine">NewRoutine</string>
+    <string name="Light">Light</string>
+    <string name="Tap">Tap</string>
+    <string name="Vacuum">Vacuum</string>
+    <string name="Ac">Ac</string>
+    <string name="Door">Door</string>
 </resources>
