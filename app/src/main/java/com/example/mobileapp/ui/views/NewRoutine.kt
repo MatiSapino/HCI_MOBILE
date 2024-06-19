@@ -1,33 +1,35 @@
 package com.example.mobileapp.ui.views
 
+import androidx.compose.foundation.BorderStroke
+import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
+import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
-
-import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.lazy.items
-import androidx.compose.material3.Text
-import androidx.compose.ui.unit.dp
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.aspectRatio
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.lazy.LazyRow
+import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
-import androidx.compose.material.icons.filled.Build
-import androidx.compose.material.icons.filled.Home
-import androidx.compose.material.icons.filled.Phone
-import androidx.compose.material.icons.filled.ShoppingCart
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
+import androidx.compose.material3.Card
+import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.Checkbox
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
-import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Text
 import androidx.compose.material3.TextField
+import androidx.compose.material3.TextFieldDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -35,9 +37,15 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.shadow
+import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
+import com.example.mobileapp.R
 import com.example.mobileapp.ui.components.Device
 import com.example.mobileapp.ui.components.DeviceViewModel
 import com.example.mobileapp.ui.components.Routine
@@ -52,6 +60,11 @@ fun RoutineNameInput(name: String, onNameChange: (String) -> Unit) {
         value = name,
         onValueChange = onNameChange,
         label = { Text("Routine Name") },
+        colors = TextFieldDefaults.colors(
+            cursorColor = Color.Black,
+            focusedIndicatorColor = Color(0xFF87CEEB),
+            focusedLabelColor = Color.Black
+        ),
         modifier = Modifier
             .fillMaxWidth()
             .padding(16.dp)
@@ -61,47 +74,102 @@ fun RoutineNameInput(name: String, onNameChange: (String) -> Unit) {
 @Composable
 fun IconSelection(selectedIcon: Int?, onIconSelected: (Int) -> Unit) {
     val icons = listOf(
-        Icons.Default.Home,
-        Icons.Default.ShoppingCart,
-        Icons.Default.Phone,
-        Icons.Default.Build
+        R.drawable.day,
+        R.drawable.home,
+        R.drawable.work,
+        R.drawable.night,
     )
-    LazyRow(
+    Row(
         modifier = Modifier
             .fillMaxWidth()
             .padding(16.dp),
         horizontalArrangement = Arrangement.spacedBy(16.dp)
     ) {
-        items(icons.size) { index ->
-            Icon(
-                imageVector = icons[index],
-                contentDescription = null,
+        icons.forEachIndexed { index, icon ->
+            Card(
+                shape = RoundedCornerShape(10.dp),
+                colors = CardDefaults.cardColors(
+                    containerColor = if (selectedIcon == index) Color.Gray else Color.White
+                ),
                 modifier = Modifier
-                    .size(64.dp)
+                    .weight(1f)
+                    .aspectRatio(1f)
+                    .padding(8.dp)
+                    .border(1.dp, Color.Black, RoundedCornerShape(8.dp))
+                    .shadow(10.dp, RoundedCornerShape(8.dp))
                     .clickable { onIconSelected(index) }
-                    .background(if (selectedIcon == index) selectedColor else unselectedColor)
-            )
+            ) {
+                Column(
+                    horizontalAlignment = Alignment.CenterHorizontally,
+                    verticalArrangement = Arrangement.Center,
+                    modifier = Modifier
+                        .fillMaxSize()
+                        .padding(8.dp)
+                ) {
+                    Image(
+                        painter = painterResource(id = icon),
+                        contentDescription = null,
+                        modifier = Modifier
+                            .size(24.dp)
+                            .clickable { onIconSelected(index) }
+                            .background(if (selectedIcon == index) selectedColor else unselectedColor),
+                    )
+                }
+            }
         }
     }
 }
 
 @Composable
 fun DeviceTypeSelection(deviceTypes: List<String>, selectedType: String?, onTypeSelected: (String) -> Unit) {
-    LazyRow(
+    val icons = listOf(
+        R.drawable.lightbulb,
+        R.drawable.ac,
+        R.drawable.vacuum,
+        R.drawable.tap,
+    )
+
+    Row(
         modifier = Modifier
             .fillMaxWidth()
-            .padding(16.dp),
-        horizontalArrangement = Arrangement.spacedBy(16.dp)
+            .padding(horizontal = 16.dp, vertical = 8.dp),
+        horizontalArrangement = Arrangement.SpaceEvenly
     ) {
-        items(deviceTypes.size) { index ->
-            val type = deviceTypes[index]
-            Button(
-                onClick = { onTypeSelected(type) },
-                colors = ButtonDefaults.buttonColors(
-                    containerColor = if (type == selectedType) selectedColor else MaterialTheme.colorScheme.primary
-                )
+        deviceTypes.forEachIndexed { index, type ->
+            val icon = icons[index]
+            Card(
+                shape = RoundedCornerShape(10.dp),
+                colors = CardDefaults.cardColors(
+                    containerColor = if (selectedType == type) Color.Gray else Color.White
+                ),
+                modifier = Modifier
+                    .weight(1f)
+                    .aspectRatio(1f)
+                    .padding(8.dp)
+                    .border(1.dp, Color.Black, RoundedCornerShape(8.dp))
+                    .shadow(10.dp, RoundedCornerShape(8.dp))
+                    .clickable { onTypeSelected(type) }
             ) {
-                Text(text = type)
+                Column(
+                    horizontalAlignment = Alignment.CenterHorizontally,
+                    verticalArrangement = Arrangement.Center,
+                    modifier = Modifier
+                        .fillMaxSize()
+                        .padding(8.dp)
+                ) {
+                    Image(
+                        painter = painterResource(id = icon),
+                        contentDescription = type,
+                        modifier = Modifier.size(24.dp),
+                    )
+                    Spacer(modifier = Modifier.height(8.dp))
+                    Text(
+                        text = type,
+                        fontSize = 12.sp,
+                        color = Color.Black,
+                        modifier = Modifier.padding(top = 4.dp)
+                    )
+                }
             }
         }
     }
@@ -116,14 +184,29 @@ fun DeviceSelection(devices: List<Device>, selectedDevice: Device?, onDeviceSele
         verticalArrangement = Arrangement.spacedBy(8.dp)
     ) {
         items(devices) { device ->
-            Text(
-                text = device.name,
+            Card(
+                shape = RoundedCornerShape(10.dp),
+                colors = CardDefaults.cardColors(
+                    containerColor = if (selectedDevice == device) Color.Gray else Color.White
+                ),
                 modifier = Modifier
                     .fillMaxWidth()
+                    .padding(8.dp)
+                    .border(1.dp, Color.Black, RoundedCornerShape(8.dp))
+                    .shadow(10.dp, RoundedCornerShape(8.dp))
                     .clickable { onDeviceSelected(device) }
-                    .background(if (selectedDevice == device) selectedColor else unselectedColor)
-                    .padding(16.dp)
-            )
+            ) {
+                Row(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(16.dp)
+                ) {
+                    Text(
+                        text = device.name,
+                        color = Color.Black
+                    )
+                }
+            }
         }
     }
 }
@@ -155,9 +238,24 @@ fun AutomationSelection(
                     Text(text = automation)
                 }
             }
-            Button(onClick = onAcceptAutomation, modifier = Modifier
-                .align(Alignment.End)
-                .padding(top = 8.dp)) {
+            Button(
+                onClick = onAcceptAutomation,
+                colors = ButtonDefaults.elevatedButtonColors(
+                    containerColor = Color.White,
+                    contentColor = Color.Black
+                ),
+                shape = RoundedCornerShape(8.dp),
+                elevation = ButtonDefaults.buttonElevation(
+                    defaultElevation = 8.dp,
+                    pressedElevation = 16.dp
+                ),
+                border = BorderStroke(1.dp, Color.Black),
+                modifier = Modifier
+                    .align(Alignment.End)
+                    .padding(top = 8.dp)
+                    .shadow(10.dp, RoundedCornerShape(4.dp))
+                    .size(width = 100.dp, height = 48.dp)
+            ) {
                 Text("Accept Automation")
             }
         }
@@ -167,23 +265,42 @@ fun AutomationSelection(
 @Composable
 fun SelectedActions(icon: Int?, actions: List<String>, onSaveRoutine: () -> Unit) {
     val icons = listOf(
-        Icons.Default.Home,
-        Icons.Default.ShoppingCart,
-        Icons.Default.Phone,
-        Icons.Default.Build
+        R.drawable.day,
+        R.drawable.home,
+        R.drawable.work,
+        R.drawable.night,
     )
     Column(modifier = Modifier
         .fillMaxWidth()
         .padding(16.dp)) {
         icon?.let {
-            Icon(imageVector = icons[it], contentDescription = null, modifier = Modifier.size(64.dp))
+            Image(
+                painter = painterResource(id = icons[it]),
+                contentDescription = null,
+                modifier = Modifier.size(64.dp)
+            )
         }
         actions.forEach { action ->
             Text(text = action, modifier = Modifier.padding(vertical = 4.dp))
         }
-        Button(onClick = onSaveRoutine, modifier = Modifier
-            .align(Alignment.CenterHorizontally)
-            .padding(top = 16.dp)) {
+        Button(
+            onClick = onSaveRoutine,
+            colors = ButtonDefaults.elevatedButtonColors(
+                containerColor = Color.White,
+                contentColor = Color.Black
+            ),
+            shape = RoundedCornerShape(8.dp),
+            elevation = ButtonDefaults.buttonElevation(
+                defaultElevation = 8.dp,
+                pressedElevation = 16.dp
+            ),
+            border = BorderStroke(1.dp, Color.Black),
+            modifier = Modifier
+                .align(Alignment.CenterHorizontally)
+                .padding(top = 16.dp)
+                .shadow(10.dp, RoundedCornerShape(4.dp))
+                .size(width = 200.dp, height = 48.dp)
+        ) {
             Text("Save Routine")
         }
     }
@@ -217,7 +334,11 @@ fun NewRoutineScreen(
 
     Column(modifier = Modifier
         .fillMaxSize()
-        .background(Color.White)
+        .background(
+            Brush.verticalGradient(
+                colors = listOf(Color.White, Color(0xFF87CEEB))
+            )
+        )
         .padding(16.dp)) {
         IconButton(onClick = onCancel, modifier = Modifier.align(Alignment.Start)) {
             Icon(imageVector = Icons.AutoMirrored.Filled.ArrowBack, contentDescription = "Back")

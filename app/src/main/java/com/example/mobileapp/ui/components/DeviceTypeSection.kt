@@ -1,17 +1,31 @@
 package com.example.mobileapp.ui.components
 
+import androidx.compose.foundation.Image
+import androidx.compose.foundation.border
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.aspectRatio
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
-import androidx.compose.material3.Button
-import androidx.compose.material3.ButtonDefaults
-import androidx.compose.material3.MaterialTheme
+import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material3.Card
+import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
+import com.example.mobileapp.R
 
 @Composable
 fun DeviceTypeSection(
@@ -19,20 +33,60 @@ fun DeviceTypeSection(
     selectedType: String?,
     onDeviceTypeSelected: (String?) -> Unit
 ) {
+    val icons = listOf(
+        R.drawable.lightbulb,
+        R.drawable.ac,
+        R.drawable.vacuum,
+        R.drawable.tap,
+    )
+    Text(
+        text = "Types of Devices",
+        fontSize = 20.sp,
+        color = Color.Black,
+        modifier = Modifier.padding(bottom = 2.dp)
+    )
+
     Row(
         modifier = Modifier
             .fillMaxWidth()
-            .padding(16.dp),
+            .padding(horizontal = 16.dp, vertical = 8.dp),
         horizontalArrangement = Arrangement.SpaceEvenly
     ) {
-        deviceTypes.forEach { type ->
-            Button(
-                onClick = { onDeviceTypeSelected(if (selectedType == type) null else type) },
-                colors = ButtonDefaults.buttonColors(
-                    containerColor = if (selectedType == type) Color.Gray else MaterialTheme.colorScheme.primary
-                )
+        deviceTypes.forEachIndexed { index, type ->
+            val icon = icons[index]
+            Card(
+                shape = RoundedCornerShape(10.dp),
+                colors = CardDefaults.cardColors(
+                    containerColor = if (selectedType == type) Color.Gray else Color.White
+                ),
+                modifier = Modifier
+                    .weight(1f)
+                    .aspectRatio(1f)
+                    .padding(8.dp)
+                    .border(1.dp, Color.Black, RoundedCornerShape(8.dp))
+                    .shadow(10.dp, RoundedCornerShape(8.dp))
+                    .clickable { onDeviceTypeSelected(if (selectedType == type) null else type) }
             ) {
-                Text(text = type)
+                Column(
+                    horizontalAlignment = Alignment.CenterHorizontally,
+                    verticalArrangement = Arrangement.Center,
+                    modifier = Modifier
+                        .fillMaxSize()
+                        .padding(8.dp)
+                ) {
+                    Image(
+                        painter = painterResource(id = icon),
+                        contentDescription = type,
+                        modifier = Modifier.size(24.dp),
+                    )
+                    Spacer(modifier = Modifier.height(8.dp))
+                    Text(
+                        text = type,
+                        fontSize = 12.sp,
+                        color = Color.Black,
+                        modifier = Modifier.padding(top = 4.dp)
+                    )
+                }
             }
         }
     }

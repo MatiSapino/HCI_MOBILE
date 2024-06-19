@@ -1,5 +1,6 @@
 package com.example.mobileapp.ui.devices
 
+import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
@@ -8,6 +9,7 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
@@ -22,11 +24,13 @@ import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Card
-import androidx.compose.material3.HorizontalDivider
+import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.Slider
+import androidx.compose.material3.SliderDefaults
 import androidx.compose.material3.Switch
+import androidx.compose.material3.SwitchDefaults
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
@@ -36,8 +40,12 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.shadow
+import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import androidx.compose.ui.window.Dialog
 import com.example.mobileapp.ui.components.Device
 
@@ -54,7 +62,8 @@ fun ColorPickerDialog(
     Dialog(onDismissRequest = onDismissRequest) {
         Card(
             shape = RoundedCornerShape(16.dp),
-            modifier = Modifier.padding(16.dp)
+            modifier = Modifier
+                .padding(16.dp)
         ) {
             Column(
                 horizontalAlignment = Alignment.CenterHorizontally,
@@ -102,85 +111,108 @@ fun LightCard(
     var brightness by remember { mutableIntStateOf(device.state["brightness"] as Int) }
 
     val showColorPicker = remember { mutableStateOf(false) }
-    val showDetails = remember { mutableStateOf(false) }
 
-    Card(
+    Column(
         modifier = Modifier
-            .padding(16.dp)
-            .fillMaxWidth()
-            .wrapContentHeight(),
-        shape = RoundedCornerShape(16.dp)
-    ) {
-        Column (
-            horizontalAlignment = Alignment.CenterHorizontally,
-            verticalArrangement = Arrangement.Center,
-            modifier = Modifier.padding(16.dp)
-        ) {
-            IconButton(onClick = onBack, modifier = Modifier.align(Alignment.Start)) {
-                Icon(imageVector = Icons.AutoMirrored.Filled.ArrowBack, contentDescription = "Back")
-            }
-            Text(text = "Light - ${device.name}")
-            HorizontalDivider()
-
-            Row(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(16.dp),
-                horizontalArrangement = Arrangement.SpaceBetween
-            ) {
-                Switch(
-                    checked = lightState.value == "on",
-                    onCheckedChange = {
-                        lightState.value = if (it) "on" else "off"
-                    }
+            .background(
+                Brush.verticalGradient(
+                    colors = listOf(Color.White, Color(0xFF87CEEB))
                 )
-                Text(text = lightState.value)
-            }
-
-            Box(
-                modifier = Modifier
-                    .size(100.dp)
-                    .background(Color.Black)
-                    .clickable {
-                        showColorPicker.value = true
-                    }
             )
+            .fillMaxSize()
+    ) {
+        IconButton(onClick = onBack, modifier = Modifier.align(Alignment.Start)) {
+            Icon(imageVector = Icons.AutoMirrored.Filled.ArrowBack, contentDescription = "Back")
+        }
 
-            Column(
+        Card(
+            shape = RoundedCornerShape(16.dp),
+            colors = CardDefaults.cardColors(
+                containerColor = Color.White
+            ),
+            modifier = Modifier
+                .padding(16.dp)
+                .fillMaxWidth()
+                .wrapContentHeight()
+                .shadow(10.dp, RoundedCornerShape(16.dp))
+                .border(1.dp, Color.Black, RoundedCornerShape(16.dp))
+        ) {
+            Column (
                 horizontalAlignment = Alignment.CenterHorizontally,
-                modifier = Modifier.padding(vertical = 16.dp)
+                verticalArrangement = Arrangement.Center,
+                modifier = Modifier.padding(16.dp)
             ) {
-                Text(text = "Brightness: ${brightness}%")
-                Slider(
-                    value = brightness.toFloat(),
-                    onValueChange = { newBrightness ->
-                        brightness = newBrightness.toInt()
-                        val updatedDevice = device.copy(state = device.state.apply { put("brightness", brightness) })
-                        onUpdateDevice(updatedDevice)
-                    },
-                    valueRange = 0f..100f
-                )
-            }
+                Text(text = "Light - ${device.name}", fontSize = 20.sp, color = Color.Black)
 
-            if (showDetails.value) {
-                HorizontalDivider()
+                Row(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(10.dp),
+                    horizontalArrangement = Arrangement.SpaceBetween,
+                    verticalAlignment = Alignment.CenterVertically
+                ) {
+                    Switch(
+                        checked = lightState.value == "on",
+                        onCheckedChange = {
+                            lightState.value = if (it) "on" else "off"
+                        },
+                        colors = SwitchDefaults.colors(
+                            checkedThumbColor = Color(0xFF87CEEB),
+                            checkedTrackColor = Color.Gray,
+                            uncheckedThumbColor = Color.Gray,
+                            uncheckedTrackColor = Color.White
+                        )
+                    )
+                    Text(text = lightState.value, color = Color.Black, fontSize = 16.sp)
+                }
+
+                Box(
+                    modifier = Modifier
+                        .size(100.dp)
+                        .background(color)
+                        .border(1.dp, Color.Black)
+                        .clickable {
+                            showColorPicker.value = true
+                        }
+                )
+
+                Column(
+                    horizontalAlignment = Alignment.CenterHorizontally,
+                    modifier = Modifier.padding(vertical = 16.dp)
+                ) {
+                    Text(text = "Brightness: ${brightness}%", color = Color.Black, modifier = Modifier.padding(top = 8.dp))
+                    Slider(
+                        value = brightness.toFloat(),
+                        onValueChange = { newBrightness ->
+                            brightness = newBrightness.toInt()
+                            val updatedDevice = device.copy(state = device.state.apply { put("brightness", brightness) })
+                            onUpdateDevice(updatedDevice)
+                        },
+                        valueRange = 0f..100f,
+                        colors = SliderDefaults.colors(
+                            thumbColor = Color(0xFF87CEEB),
+                            activeTrackColor = Color(0xFF87CEEB)
+                        )
+                    )
+                }
+
                 Button(
                     onClick = {
                         onDelete(device)
-                        onBack() },
-                    colors = ButtonDefaults.buttonColors(containerColor = Color.Red),
-                    modifier = Modifier.padding(vertical = 16.dp)
+                        onBack()
+                    },
+                    colors = ButtonDefaults.elevatedButtonColors(
+                        containerColor = Color.Red,
+                        contentColor = Color.White
+                    ),
+                    shape = RoundedCornerShape(8.dp),
+                    border = BorderStroke(1.dp, Color.Black),
+                    modifier = Modifier
+                        .align(Alignment.CenterHorizontally)
+                        .padding(vertical = 16.dp)
                 ) {
                     Text(text = "Delete Light")
                 }
-            }
-
-            HorizontalDivider()
-            Button(
-                onClick = { showDetails.value = !showDetails.value },
-                modifier = Modifier.padding(vertical = 16.dp)
-            ) {
-                Text(text = if (!showDetails.value) "More" else "Close")
             }
         }
     }
@@ -196,4 +228,20 @@ fun LightCard(
             onDismissRequest = { showColorPicker.value = false }
         )
     }
+}
+
+@Preview(showBackground = true, showSystemUi = true)
+@Composable
+fun LightCardPreview() {
+    LightCard(
+        device = Device(
+            id = "1",
+            name = "Living Room Light",
+            type = "Light",
+            state = mutableMapOf("status" to false, "color" to Color.White, "brightness" to 100)
+        ),
+        onBack = {},
+        onDelete = {},
+        onUpdateDevice = {}
+    )
 }
