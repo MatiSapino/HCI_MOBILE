@@ -12,7 +12,11 @@ class DeviceRepository(
         remoteDataSource.devices
             .map { it.map { jt -> jt.asModel() } }
 
-    // val currentDevice = devices.map { it.firstOrNull { jt -> jt is Lamp } }
+    var currentDeviceId: String = "";
+
+    fun setCurrentDevice(selectedDeviceId: String){
+        currentDeviceId = selectedDeviceId
+    }
 
     suspend fun getDevice(deviceId: String): Device {
         return remoteDataSource.getDevice(deviceId).asModel()
@@ -22,9 +26,6 @@ class DeviceRepository(
         return remoteDataSource.addDevice(device.asRemoteModel()).asModel()
     }
 
-    suspend fun modifyDevice(device: Device): Boolean {
-        return remoteDataSource.modifyDevice(device.asRemoteModel())
-    }
 
     suspend fun deleteDevice(deviceId: String): Boolean {
         return remoteDataSource.deleteDevice(deviceId)
