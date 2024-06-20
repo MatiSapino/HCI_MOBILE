@@ -1,5 +1,6 @@
 package com.example.mobileapp.data.remote.model.remote_devices
 
+import com.example.mobileapp.data.model.Status
 import com.example.mobileapp.data.model.devices.Door
 import com.example.mobileapp.data.remote.model.RemoteDevice
 import com.example.mobileapp.data.remote.model.RemoteStatus
@@ -11,8 +12,8 @@ class RemoteDoor : RemoteDevice<RemoteDoorState>() {
         return Door(
             id = id,
             name = name,
-            status = RemoteStatus.asModel(state.status),
-            lock = state.lock
+            status = Status.stringToStatus(state.status),
+            lock = Status.stringToStatus(state.lock)
         )
     }
 }

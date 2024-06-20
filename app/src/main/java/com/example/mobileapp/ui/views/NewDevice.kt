@@ -44,16 +44,17 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.example.mobileapp.R
-import com.example.mobileapp.ui.components.Device
-import com.example.mobileapp.ui.components.DeviceViewModel
+import com.example.mobileapp.data.model.Device
+import com.example.mobileapp.data.model.DeviceType
+import com.example.mobileapp.ui.view_models.DevicesViewModel
 import java.util.UUID
 
 @Composable
 fun NewDeviceScreen(onDeviceAdded: (Device) -> Unit, onCancel: () -> Unit) {
-    val deviceViewModel: DeviceViewModel = viewModel()
+    val deviceViewModel: DevicesViewModel = viewModel()
     var deviceName by remember { mutableStateOf("") }
-    var selectedType by remember { mutableStateOf<String?>(null) }
-    val deviceTypes = listOf("Light", "AC", "Vacuum", "Tap")
+    var selectedType by remember { mutableStateOf<DeviceType?>(null) }
+    val deviceTypes = DeviceType.entries
     val icons = listOf(
         R.drawable.lightbulb,
         R.drawable.ac,
@@ -130,29 +131,29 @@ fun NewDeviceScreen(onDeviceAdded: (Device) -> Unit, onCancel: () -> Unit) {
                         )
                         Image(
                             painter = painterResource(id = icon),
-                            contentDescription = type,
+                            contentDescription = type.toString(),
                             modifier = Modifier.size(24.dp),
                         )
                         Spacer(modifier = Modifier.width(16.dp))
-                        Text(text = type, modifier = Modifier.padding(start = 8.dp))
+                        Text(text = type.toString(), modifier = Modifier.padding(start = 8.dp))
                     }
                 }
             }
         }
         Button(
             onClick = {
-                if (deviceName.isNotEmpty() && selectedType != null) {
-                    val newDevice = Device(
-                        id = UUID.randomUUID().toString(),
-                        name = deviceName,
-                        type = selectedType!!,
-                        state = mutableMapOf("status" to false, "color" to "White", "brightness" to 100) // Example initial state
-                    )
-                    deviceViewModel.addDevice(newDevice)
-                    deviceName = ""
-                    selectedType = null
-                    onDeviceAdded(newDevice)
-                }
+//                if (deviceName.isNotEmpty() && selectedType != null) {
+//                    val newDevice = Device(
+//                        id = '1',
+//                        name = deviceName,
+//                        type = selectedType!!,
+//                        meta = null
+//                    )
+//                    deviceViewModel.addDevice(newDevice)
+//                    deviceName = ""
+//                    selectedType = null
+//                    onDeviceAdded(newDevice)
+//                }
             },
             colors = ButtonDefaults.elevatedButtonColors(
                 containerColor = Color.White,

@@ -45,13 +45,9 @@ class TapViewModel(
         }
     )
 
-    fun changeUnit(unit: Unit){
-        uiState.value.currentDevice?.setUnit(unit)
-    }
 
-
-    fun dispense(quantity: Int) = runOnViewModelScope(
-        { repository.executeDeviceAction(uiState.value.currentDevice?.id!!, Tap.DISPENSE, arrayOf(quantity, uiState.value.currentDevice?.unit.toString())) },
+    fun dispense(quantity: Int, unit: Unit) = runOnViewModelScope(
+        { repository.executeDeviceAction(uiState.value.currentDevice?.id!!, Tap.DISPENSE, arrayOf(quantity, unit.toString())) },
         { state, _ -> state }
     )
 

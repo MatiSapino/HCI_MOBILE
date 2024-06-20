@@ -49,12 +49,12 @@ import com.example.mobileapp.data.model.Unit
 @Composable
 fun TapCard(
     vm: TapViewModel,
-    onBack: () -> Unit
+    onBack: () -> kotlin.Unit
 ) {
     var tap by remember { mutableStateOf(vm.uiState.value.currentDevice) }
     var tapState by remember { mutableStateOf(vm.uiState.value.currentDevice?.status) }
     var quantity by remember { mutableFloatStateOf(0.toFloat()) }
-    var unit by remember { mutableStateOf(vm.uiState.value.currentDevice?.unit) }
+    var unit by remember { mutableStateOf(Unit.L) }
 
     val units = Unit.entries
 
@@ -155,7 +155,6 @@ fun TapCard(
                                     text = { Text(text = u.toString(), color = Color.Black) },
                                     onClick = {
                                         unit = u
-                                        vm.changeUnit(u)
                                         expanded = false
                                     }
                                 )
@@ -166,7 +165,7 @@ fun TapCard(
 
                 Button(
                     onClick = {
-                        vm.dispense(quantity.toInt())
+                        vm.dispense(quantity.toInt(), unit)
                               // alert("Dispensed {quantity.toInt()} {unit.toString()} ")
                     },
                     colors = ButtonDefaults.elevatedButtonColors(

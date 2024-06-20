@@ -14,10 +14,12 @@ class Door(
     var lock: Status,
 ) : Device(id, name, DeviceType.DOOR, null) {
 
+    @JvmName("setStatusInternal")
     fun setStatus(newStatus: Status) {
         status = newStatus
     }
 
+    @JvmName("setLockInternal")
     fun setLock(newLock: Status) {
         lock = newLock
     }

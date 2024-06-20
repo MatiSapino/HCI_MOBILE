@@ -46,9 +46,10 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.example.mobileapp.R
-import com.example.mobileapp.ui.components.Device
-import com.example.mobileapp.ui.components.DeviceViewModel
-import com.example.mobileapp.ui.components.Routine
+import com.example.mobileapp.data.model.Device
+import com.example.mobileapp.data.model.DeviceType
+import com.example.mobileapp.data.model.Routine
+import com.example.mobileapp.ui.view_models.DevicesViewModel
 import java.util.UUID
 
 private val selectedColor = Color.Gray
@@ -121,7 +122,7 @@ fun IconSelection(selectedIcon: Int?, onIconSelected: (Int) -> Unit) {
 }
 
 @Composable
-fun DeviceTypeSelection(deviceTypes: List<String>, selectedType: String?, onTypeSelected: (String) -> Unit) {
+fun DeviceTypeSelection(deviceTypes: List<DeviceType>, selectedType: DeviceType?, onTypeSelected: (DeviceType) -> Unit) {
     val icons = listOf(
         R.drawable.lightbulb,
         R.drawable.ac,
@@ -159,12 +160,12 @@ fun DeviceTypeSelection(deviceTypes: List<String>, selectedType: String?, onType
                 ) {
                     Image(
                         painter = painterResource(id = icon),
-                        contentDescription = type,
+                        contentDescription = type.toString(),
                         modifier = Modifier.size(24.dp),
                     )
                     Spacer(modifier = Modifier.height(8.dp))
                     Text(
-                        text = type,
+                        text = type.toString(),
                         fontSize = 12.sp,
                         color = Color.Black,
                         modifier = Modifier.padding(top = 4.dp)
@@ -312,9 +313,8 @@ fun NewRoutineScreen(
     onNameChange: (String) -> Unit,
     selectedIcon: Int?,
     onIconSelected: (Int) -> Unit,
-    deviceTypes: List<String>,
-    selectedType: String?,
-    onTypeSelected: (String) -> Unit,
+    selectedType: DeviceType?,
+    onTypeSelected: (DeviceType) -> Unit,
     devices: List<Device>,
     selectedDevice: Device?,
     onDeviceSelected: (Device) -> Unit,
@@ -331,6 +331,8 @@ fun NewRoutineScreen(
     } else {
         devices
     }
+
+    val deviceTypes = DeviceType.entries
 
     Column(modifier = Modifier
         .fillMaxSize()
@@ -363,21 +365,22 @@ fun NewRoutineScreen(
 
 @Composable
 fun NewRoutineScreenState(onRoutineSaved: () -> Unit, onCancel: () -> Unit) {
-    val deviceViewModel: DeviceViewModel = viewModel()
+    val deviceViewModel: DevicesViewModel = viewModel()
     var routineName by remember { mutableStateOf("") }
     var selectedIcon by remember { mutableStateOf<Int?>(null) }
-    var selectedType by remember { mutableStateOf<String?>(null) }
+    var selectedType by remember { mutableStateOf<DeviceType?>(null) }
     var selectedDevice by remember { mutableStateOf<Device?>(null) }
     var selectedAutomations by remember { mutableStateOf<List<String>>(emptyList()) }
+    var devices by remember { mutableStateOf(deviceViewModel.uiState.value.devices) }
 
-    val filteredDevices = deviceViewModel.devices.filter { it.type == selectedType }
+    val filteredDevices = if (selectedType != null) devices.filter { it.type == selectedType } else devices
+
 
     NewRoutineScreen(
         routineName = routineName,
         onNameChange = { routineName = it },
         selectedIcon = selectedIcon,
         onIconSelected = { selectedIcon = it },
-        deviceTypes = listOf("Light", "AC", "Vacuum", "Tap"),
         selectedType = selectedType,
         onTypeSelected = {
             selectedType = it
@@ -388,10 +391,11 @@ fun NewRoutineScreenState(onRoutineSaved: () -> Unit, onCancel: () -> Unit) {
         selectedDevice = selectedDevice,
         onDeviceSelected = { selectedDevice = it },
         automations = when (selectedType) {
-            "Light" -> listOf("Set Color", "Set Brightness")
-            "AC" -> listOf("Set Temperature", "Set Mode")
-            "Vacuum" -> listOf("Start Cleaning", "Stop Cleaning")
-            "Tap" -> listOf("Open Tap", "Close Tap")
+            DeviceType.LAMP -> listOf("Turn On","Turn Off","Set Color", "Set Brightness")
+            DeviceType.AC -> listOf("Turn On","Turn Off","Set Temperature", "Set Mode", "Set Speed", "Set Vertical Swing", "Set Horizontal Swing")
+            DeviceType.VACUUM -> listOf("Start Cleaning", "Stop Cleaning", "Dock", "Set Mode")
+            DeviceType.TAP -> listOf("Open Tap", "Close Tap", "Dispense")
+            DeviceType.DOOR -> listOf("Open Door", "Close Door", "Lock Door", "Unlock Door'")
             else -> emptyList()
         },
         selectedAutomations = selectedAutomations,
@@ -404,13 +408,13 @@ fun NewRoutineScreenState(onRoutineSaved: () -> Unit, onCancel: () -> Unit) {
         },
         onAcceptAutomation = {},
         onSaveRoutine = {
-            val newRoutine = Routine(
-                id = UUID.randomUUID().toString(),
-                name = routineName,
-                icon = selectedIcon ?: 0,
-                automations = selectedAutomations
-            )
-            deviceViewModel.addRoutine(newRoutine)
+//            val newRoutine = Routine(
+//                id = UUID.randomUUID().toString(),
+//                name = routineName,
+//                icon = selectedIcon ?: 0,
+//                automations = selectedAutomations
+//            )
+//            deviceViewModel.addRoutine(newRoutine)
         },
         onRoutineSaved = {
             routineName = ""

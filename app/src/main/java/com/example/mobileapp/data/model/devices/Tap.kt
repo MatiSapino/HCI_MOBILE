@@ -12,17 +12,13 @@ class Tap(
     id: String?,
     name: String,
     var status: Status,
-    var unit: Unit
-
 ) : Device(id, name, DeviceType.TAP, null) {
 
+    @JvmName("setStatusInternal")
     fun setStatus(newStatus: Status) {
         status = newStatus
     }
 
-    fun setUnit(newUnit: Unit) {
-        unit = newUnit
-    }
 
     override fun asRemoteModel(): RemoteDevice<RemoteTapState> {
         val state = RemoteTapState()

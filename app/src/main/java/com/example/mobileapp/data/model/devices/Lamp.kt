@@ -15,14 +15,17 @@ class Lamp(
     var brightness: Int
 ) : Device(id, name, DeviceType.LAMP, null) {
 
+    @JvmName("setStatusInternal")
     fun setStatus(newStatus: Status) {
         status = newStatus
     }
 
+    @JvmName("setColorInternal")
     fun setColor(newColor: String) {
         color = newColor
     }
 
+    @JvmName("setBrightnessInternal")
     fun setBrightness(newBrightness: Int) {
         brightness = newBrightness
     }

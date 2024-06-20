@@ -18,26 +18,31 @@ class Ac(
     var fanSpeed: String,
 ) : Device(id, name, DeviceType.AC, null) {
 
+    @JvmName("setStatusInternal")
     fun setStatus(newStatus: Status) {
         status = newStatus
     }
 
+    @JvmName("setTemperatureInternal")
     fun setTemperature(newTemperature: Int) {
         temperature = newTemperature
     }
 
+    @JvmName("setModeInternal")
     fun setMode(newMode: String) {
         mode = newMode
     }
 
+    @JvmName("setVSwingInternal")
     fun setVerticalSwing(newVerticalSwing: String) {
         verticalSwing = newVerticalSwing
     }
-
+    @JvmName("setHSwingInternal")
     fun setHorizontalSwing(newHorizontalSwing: String) {
         horizontalSwing = newHorizontalSwing
     }
 
+    @JvmName("setSpeedInternal")
     fun setFanSpeed(newFanSpeed: String) {
         fanSpeed = newFanSpeed
     }

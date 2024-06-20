@@ -16,18 +16,22 @@ class Vacuum(
     var location: Any?
 ) : Device(id, name, DeviceType.VACUUM, null) {
 
+    @JvmName("setStatusInternal")
     fun setStatus(newStatus: Status) {
         status = newStatus
     }
 
+    @JvmName("setModeInternal")
     fun setMode(newMode: String) {
         mode = newMode
     }
 
+    @JvmName("setBatteryInternal")
     fun setBatteryLevel(newBatteryLevel: Int) {
         batteryLevel = newBatteryLevel
     }
 
+    @JvmName("setLocationInternal")
     fun setLocation(newLocation: Any?) {
         location = newLocation
     }

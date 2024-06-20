@@ -17,4 +17,20 @@ enum class Status {
             Status.UNLOCKED -> "unlocked"
         }
     }
+
+    companion object {
+        fun stringToStatus(string: String): Status {
+            return when (string) {
+                "on" -> Status.ON
+                "off" -> Status.OFF
+                "open" -> Status.OPENED
+                "close" -> Status.CLOSED
+                "active" -> Status.ACTIVE
+                "inactive" -> Status.INACTIVE
+                "locked" -> Status.LOCKED
+                "unlocked" -> Status.UNLOCKED
+                else -> throw IllegalArgumentException("Unknown status: $string")
+            }
+        }
+    }
 }
