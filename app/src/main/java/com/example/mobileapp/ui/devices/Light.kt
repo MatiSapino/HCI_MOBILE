@@ -43,10 +43,12 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.toArgb
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.compose.ui.window.Dialog
+import com.example.mobileapp.data.model.Status
 import com.example.mobileapp.ui.view_models.devices.LampViewModel
 
 
@@ -103,12 +105,46 @@ fun LightCard(
     vm: LampViewModel,
     onBack: () -> Unit,
 ) {
-    val lightState = remember { mutableStateOf("off") }
-
-    var color by remember { mutableStateOf(device.state["color"] as Color) }
-    var brightness by remember { mutableIntStateOf(device.state["brightness"] as Int) }
+    var light by remember { mutableStateOf(vm.uiState.value.currentDevice) }
+    var lightState by remember { mutableStateOf(vm.uiState.value.currentDevice?.status) }
+    var color by remember { mutableStateOf(vm.uiState.value.currentDevice?.color) }
+    var brightness by remember { mutableIntStateOf(vm.uiState.value.currentDevice?.brightness!!) }
 
     val showColorPicker = remember { mutableStateOf(false) }
+
+    fun colorToHex(color: Color): String {
+        val argb = color.toArgb()
+        return String.format("#%08X", argb)
+    }
+
+    fun startsWith(str: String, prefix: String): Boolean {
+        if (prefix.length > str.length) return false
+        for (i in prefix.indices) {
+            if (str[i] != prefix[i]) return false
+        }
+        return true
+    }
+
+    fun substring(str: String, beginIndex: Int, endIndex: Int): String {
+        if (beginIndex !in 0..endIndex || endIndex !in 0..str.length) throw IndexOutOfBoundsException("beginIndex: $beginIndex, endIndex: $endIndex, length: $str.length")
+        val length = endIndex - beginIndex
+        if (length == 0) return ""
+        val result = CharArray(length)
+        for (i in 0 until length) {
+            result[i] = str[beginIndex + i]
+        }
+        return String(result)
+    }
+
+    fun hexToColor(hex: String): Color{
+        val hexa = if (startsWith(hex, "#")) substring(hex, 0,1) else hex
+            val value = hexa.toULong(16)
+            return Color(value)
+    }
+
+
+
+
 
     Column(
         modifier = Modifier
@@ -119,7 +155,7 @@ fun LightCard(
             )
             .fillMaxSize()
     ) {
-        IconButton(onClick = onBack, modifier = Modifier.align(Alignment.Start)) {
+        IconButton(onClick = {onBack()}, modifier = Modifier.align(Alignment.Start)) {
             Icon(imageVector = Icons.AutoMirrored.Filled.ArrowBack, contentDescription = "Back")
         }
 
@@ -140,7 +176,7 @@ fun LightCard(
                 verticalArrangement = Arrangement.Center,
                 modifier = Modifier.padding(16.dp)
             ) {
-                Text(text = "Light - ${device.name}", fontSize = 20.sp, color = Color.Black)
+                Text(text = "Light - ${light?.name}", fontSize = 20.sp, color = Color.Black)
 
                 Row(
                     modifier = Modifier
@@ -150,9 +186,11 @@ fun LightCard(
                     verticalAlignment = Alignment.CenterVertically
                 ) {
                     Switch(
-                        checked = lightState.value == "on",
-                        onCheckedChange = {
-                            lightState.value = if (it) "on" else "off"
+                        checked = lightState == Status.ON,
+                        onCheckedChange = { newStatus ->
+                            lightState = if (newStatus) Status.ON else Status.OFF
+                            if (lightState == Status.ON) vm.turnOn()
+                            if (lightState == Status.OFF) vm.turnOff()
                         },
                         colors = SwitchDefaults.colors(
                             checkedThumbColor = Color(0xFF87CEEB),
@@ -161,13 +199,13 @@ fun LightCard(
                             uncheckedTrackColor = Color.White
                         )
                     )
-                    Text(text = lightState.value, color = Color.Black, fontSize = 16.sp)
+                    Text(text = lightState.toString(), color = Color.Black, fontSize = 16.sp)
                 }
 
                 Box(
                     modifier = Modifier
                         .size(100.dp)
-                        .background(color)
+                        .background(hexToColor(color!!))
                         .border(1.dp, Color.Black)
                         .clickable {
                             showColorPicker.value = true
@@ -183,8 +221,7 @@ fun LightCard(
                         value = brightness.toFloat(),
                         onValueChange = { newBrightness ->
                             brightness = newBrightness.toInt()
-                            val updatedDevice = device.copy(state = device.state.apply { put("brightness", brightness) })
-                            onUpdateDevice(updatedDevice)
+                            vm.setBrightness(brightness)
                         },
                         valueRange = 0f..100f,
                         colors = SliderDefaults.colors(
@@ -196,7 +233,7 @@ fun LightCard(
 
                 Button(
                     onClick = {
-                        onDelete(device)
+                        vm.deleteDevice(light?.id)
                         onBack()
                     },
                     colors = ButtonDefaults.elevatedButtonColors(
@@ -217,11 +254,10 @@ fun LightCard(
 
     if (showColorPicker.value) {
         ColorPickerDialog(
-            selectedColor = color,
+            selectedColor = hexToColor(color!!),
             onColorSelected = { selectedColor ->
-                color = selectedColor
-                val updatedDevice = device.copy(state = device.state.apply { put("color", selectedColor) })
-                onUpdateDevice(updatedDevice)
+                color = colorToHex(selectedColor)
+                vm.setColor(color!!)
             },
             onDismissRequest = { showColorPicker.value = false }
         )

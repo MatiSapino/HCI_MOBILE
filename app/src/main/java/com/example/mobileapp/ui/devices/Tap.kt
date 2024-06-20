@@ -42,18 +42,21 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.example.mobileapp.data.model.Status
 import com.example.mobileapp.ui.view_models.devices.TapViewModel
+import com.example.mobileapp.data.model.Unit
 
 @Composable
 fun TapCard(
     vm: TapViewModel,
     onBack: () -> Unit
 ) {
-    val tapState = remember { mutableStateOf("closed") }
-    var quantity by remember { mutableFloatStateOf(device.state["quantity"] as? Float ?: 0f) }
-    var unit by remember { mutableStateOf(device.state["unit"] as? String ?: "L") }
+    var tap by remember { mutableStateOf(vm.uiState.value.currentDevice) }
+    var tapState by remember { mutableStateOf(vm.uiState.value.currentDevice?.status) }
+    var quantity by remember { mutableFloatStateOf(0.toFloat()) }
+    var unit by remember { mutableStateOf(vm.uiState.value.currentDevice?.unit) }
 
-    val units = listOf("Ml", "Cl", "Dl", "L")
+    val units = Unit.entries
 
     Column(
         modifier = Modifier
@@ -64,7 +67,7 @@ fun TapCard(
             )
             .fillMaxSize()
     ) {
-        IconButton(onClick = onBack, modifier = Modifier.align(Alignment.Start)) {
+        IconButton(onClick =  {onBack()} , modifier = Modifier.align(Alignment.Start)) {
             Icon(imageVector = Icons.AutoMirrored.Filled.ArrowBack, contentDescription = "Back")
         }
 
@@ -85,7 +88,7 @@ fun TapCard(
                 verticalArrangement = Arrangement.Center,
                 modifier = Modifier.padding(16.dp)
             ) {
-                Text(text = "Tap - ${device.name}", fontSize = 20.sp, color = Color.Black)
+                Text(text = "Tap - ${tap?.name}", fontSize = 20.sp, color = Color.Black)
 
                 Row(
                     modifier = Modifier
@@ -95,9 +98,11 @@ fun TapCard(
                     verticalAlignment = Alignment.CenterVertically
                 ) {
                     Switch(
-                        checked = tapState.value == "opened",
-                        onCheckedChange = {
-                            tapState.value = if (it) "opened" else "closed"
+                        checked = tapState == Status.OPENED,
+                        onCheckedChange = { newStatus ->
+                            tapState = if (newStatus) Status.OPENED else Status.CLOSED
+                            if (tapState == Status.OPENED) vm.open()
+                            if (tapState == Status.CLOSED) vm.close()
                         },
                         colors = SwitchDefaults.colors(
                             checkedThumbColor = Color(0xFF87CEEB),
@@ -106,7 +111,7 @@ fun TapCard(
                             uncheckedTrackColor = Color.White
                         )
                     )
-                    Text(text = tapState.value, color = Color.Black, fontSize = 16.sp)
+                    Text(text = tapState.toString(), color = Color.Black, fontSize = 16.sp)
                 }
 
                 // Quantity Slider
@@ -120,8 +125,6 @@ fun TapCard(
                         value = quantity,
                         onValueChange = { newQuantity ->
                             quantity = newQuantity
-                            val updatedDevice = device.copy(state = device.state.apply { put("quantity", newQuantity) })
-                            onUpdateDevice(updatedDevice)
                         },
                         valueRange = 0f..100f,
                         colors = SliderDefaults.colors(
@@ -149,11 +152,10 @@ fun TapCard(
                         ) {
                             units.forEach { u ->
                                 DropdownMenuItem(
-                                    text = { Text(text = u, color = Color.Black) },
+                                    text = { Text(text = u.toString(), color = Color.Black) },
                                     onClick = {
                                         unit = u
-                                        device.state["unit"] = u
-                                        onUpdateDevice(device)
+                                        vm.changeUnit(u)
                                         expanded = false
                                     }
                                 )
@@ -164,12 +166,8 @@ fun TapCard(
 
                 Button(
                     onClick = {
-                        // Implement dispense logic
-                        if (tapState.value == "closed") {
-                            // Show alert logic
-                        } else {
-                            // Show dispense alert logic
-                        }
+                        vm.dispense(quantity.toInt())
+                              // alert("Dispensed {quantity.toInt()} {unit.toString()} ")
                     },
                     colors = ButtonDefaults.elevatedButtonColors(
                         containerColor = Color(0xFF87CEEB),
@@ -186,7 +184,7 @@ fun TapCard(
 
                 Button(
                     onClick = {
-                        onDelete(device)
+                        vm.deleteDevice(tap?.id)
                         onBack()
                     },
                     colors = ButtonDefaults.elevatedButtonColors(

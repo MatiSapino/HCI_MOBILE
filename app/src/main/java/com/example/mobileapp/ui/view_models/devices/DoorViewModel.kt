@@ -31,7 +31,7 @@ class DoorViewModel(
     fun open() = runOnViewModelScope(
         { repository.executeDeviceAction(uiState.value.currentDevice?.id!!, Door.OPEN) },
         { state, _ ->
-            uiState.value.currentDevice?.setStatus(Status.OPEN)
+            uiState.value.currentDevice?.setStatus(Status.OPENED)
             state.copy(currentDevice =  uiState.value.currentDevice)
         }
     )
@@ -39,7 +39,7 @@ class DoorViewModel(
     fun close() = runOnViewModelScope(
         { repository.executeDeviceAction(uiState.value.currentDevice?.id!!, Door.CLOSE) },
         { state, _ ->
-            uiState.value.currentDevice?.setStatus(Status.CLOSE)
+            uiState.value.currentDevice?.setStatus(Status.CLOSED)
             state.copy(currentDevice =  uiState.value.currentDevice)
         }
     )
@@ -58,6 +58,11 @@ class DoorViewModel(
             uiState.value.currentDevice?.setLock(Status.UNLOCKED)
             state.copy(currentDevice =  uiState.value.currentDevice)
         }
+    )
+
+    fun deleteDevice(deviceId: String?) = runOnViewModelScope(
+        { repository.deleteDevice(deviceId) },
+        { state, _ -> state.copy(currentDevice = null) }
     )
 
     private fun <R> runOnViewModelScope(

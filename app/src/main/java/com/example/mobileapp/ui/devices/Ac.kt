@@ -42,6 +42,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.example.mobileapp.data.model.Status
 import com.example.mobileapp.ui.view_models.devices.AcViewModel
 
 @Composable
@@ -50,19 +51,23 @@ fun ACCard(
     onBack: () -> Unit,
 ) {
 
-    val acState = remember { mutableStateOf("off") }
-
-    var temperature by remember { mutableFloatStateOf((device.state["temperature"] as? Float) ?: 25f) }
-    var mode by remember { mutableStateOf((device.state["mode"] as? String) ?: "Cool") }
-
-    val acSpeed = remember { mutableIntStateOf(2) }
-    val acVertical = remember { mutableIntStateOf(2) }
-    val acHorizontal = remember { mutableIntStateOf(2) }
+    var ac by remember { mutableStateOf(vm.uiState.value.currentDevice) }
+    var acState by remember { mutableStateOf(vm.uiState.value.currentDevice?.status) }
+    var verticalSwing by remember { mutableStateOf(vm.uiState.value.currentDevice?.verticalSwing) }
+    var horizontalSwing by remember { mutableStateOf(vm.uiState.value.currentDevice?.horizontalSwing) }
+    var fanSpeed by remember { mutableStateOf(vm.uiState.value.currentDevice?.fanSpeed) }
+    var temperature by remember { mutableFloatStateOf(vm.uiState.value.currentDevice?.temperature!!.toFloat()) }
+    var mode by remember { mutableStateOf(vm.uiState.value.currentDevice?.mode) }
 
     val velocityOptions = listOf("auto", "25", "50", "75", "100")
     val verticalSwingsOptions = listOf("auto", "22", "45", "67", "90")
     val horizontalSwingsOptions = listOf("auto", "-90", "-45", "0", "45", "90")
-    val modesAc = listOf("Fan", "Cool", "Heat")
+    val modesAc = listOf("fan", "cool", "heat")
+
+    val acSpeed = remember { mutableIntStateOf(velocityOptions.indexOf(fanSpeed)) }
+    val acVertical = remember { mutableIntStateOf(verticalSwingsOptions.indexOf(verticalSwing)) }
+    val acHorizontal = remember { mutableIntStateOf(horizontalSwingsOptions.indexOf(horizontalSwing)) }
+
 
     Column(
         modifier = Modifier
@@ -73,7 +78,7 @@ fun ACCard(
             )
             .padding(10.dp)
     ) {
-        IconButton(onClick = onBack, modifier = Modifier.align(Alignment.Start)) {
+        IconButton(onClick = {onBack()}, modifier = Modifier.align(Alignment.Start)) {
             Icon(imageVector = Icons.AutoMirrored.Filled.ArrowBack, contentDescription = "Back")
         }
 
@@ -94,7 +99,7 @@ fun ACCard(
                 verticalArrangement = Arrangement.Center,
                 modifier = Modifier.padding(16.dp)
             ) {
-                Text(text = "AC - ${device.name}", fontSize = 20.sp, color = Color.Black)
+                Text(text = "AC - ${ac?.name}", fontSize = 20.sp, color = Color.Black)
 
                 Row(
                     modifier = Modifier
@@ -104,9 +109,11 @@ fun ACCard(
                     verticalAlignment = Alignment.CenterVertically
                 ) {
                     Switch(
-                        checked = acState.value == "on",
-                        onCheckedChange = {
-                            acState.value = if (it) "on" else "off"
+                        checked = acState == Status.ON,
+                        onCheckedChange = { newStatus ->
+                            acState = if (newStatus) Status.ON else Status.OFF
+                            if (acState == Status.ON) vm.turnOn()
+                            if (acState == Status.OFF) vm.turnOff()
                         },
                         colors = SwitchDefaults.colors(
                             checkedThumbColor = Color(0xFF87CEEB),
@@ -115,7 +122,7 @@ fun ACCard(
                             uncheckedTrackColor = Color.White
                         )
                     )
-                    Text(text = acState.value, color = Color.Black, fontSize = 16.sp)
+                    Text(text = acState.toString(), color = Color.Black, fontSize = 16.sp)
                 }
 
                 // Temperature Slider
@@ -128,8 +135,7 @@ fun ACCard(
                         value = temperature,
                         onValueChange = { newTemperature ->
                             temperature = newTemperature
-                            val updatedDevice = device.copy(state = device.state.apply { put("temperature", temperature) })
-                            onUpdateDevice(updatedDevice)
+                            vm.setTemperature(temperature.toInt())
                         },
                         valueRange = 18f..38f,
                         colors = SliderDefaults.colors(
@@ -167,8 +173,7 @@ fun ACCard(
                                     text = { Text(text = modeAc, color = Color.Black) },
                                     onClick = {
                                         mode = modeAc
-                                        device.state["mode"] = mode
-                                        onUpdateDevice(device)
+                                        vm.setMode(modeAc)
                                         expanded = false
                                     }
                                 )
@@ -185,7 +190,10 @@ fun ACCard(
                     Text(text = "Fan Speed: ${velocityOptions[acSpeed.intValue]}", color = Color.Black)
                     Slider(
                         value = acSpeed.intValue.toFloat(),
-                        onValueChange = { acSpeed.intValue = it.toInt() },
+                        onValueChange = {
+                            acSpeed.intValue = it.toInt()
+                            vm.setFanSpeed(velocityOptions[acSpeed.intValue])
+                                        },
                         valueRange = 0f..4f,
                         steps = 3,
                         colors = SliderDefaults.colors(
@@ -203,7 +211,11 @@ fun ACCard(
                     Text(text = "Vertical Swing: ${verticalSwingsOptions[acVertical.intValue]}", color = Color.Black)
                     Slider(
                         value = acVertical.intValue.toFloat(),
-                        onValueChange = { acVertical.intValue = it.toInt() },
+                        onValueChange = {
+                            acVertical.intValue = it.toInt()
+                            vm.setVerticalSwing(verticalSwingsOptions[acVertical.intValue])
+
+                                        },
                         valueRange = 0f..4f,
                         steps = 3,
                         colors = SliderDefaults.colors(
@@ -220,7 +232,10 @@ fun ACCard(
                     Text(text = "Horizontal Swing: ${horizontalSwingsOptions[acHorizontal.intValue]}", color = Color.Black)
                     Slider(
                         value = acHorizontal.intValue.toFloat(),
-                        onValueChange = { acHorizontal.intValue = it.toInt() },
+                        onValueChange = {
+                            acHorizontal.intValue = it.toInt()
+                            vm.setHorizontalSwing(horizontalSwingsOptions[acHorizontal.intValue])
+                                        },
                         valueRange = 0f..5f,
                         steps = 5,
                         colors = SliderDefaults.colors(
@@ -231,7 +246,10 @@ fun ACCard(
                 }
 
                 Button(
-                    onClick = { onDelete(device) },
+                    onClick = {
+                        vm.deleteDevice(ac?.id)
+                        onBack()
+                              },
                     colors = ButtonDefaults.elevatedButtonColors(
                         containerColor = Color.Red,
                         contentColor = Color.White

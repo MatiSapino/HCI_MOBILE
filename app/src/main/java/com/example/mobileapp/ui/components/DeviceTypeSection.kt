@@ -26,12 +26,14 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.mobileapp.R
+import com.example.mobileapp.data.model.DeviceType
+import kotlin.enums.EnumEntries
 
 @Composable
 fun DeviceTypeSection(
-    deviceTypes: List<String>,
-    selectedType: String?,
-    onDeviceTypeSelected: (String?) -> Unit
+    deviceTypes: EnumEntries<DeviceType>,
+    selectedType: DeviceType?,
+    onDeviceTypeSelected: (DeviceType?) -> Unit
 ) {
     val icons = listOf(
         R.drawable.lightbulb,
@@ -76,12 +78,12 @@ fun DeviceTypeSection(
                 ) {
                     Image(
                         painter = painterResource(id = icon),
-                        contentDescription = type,
+                        contentDescription = type.toString(),
                         modifier = Modifier.size(24.dp),
                     )
                     Spacer(modifier = Modifier.height(8.dp))
                     Text(
-                        text = type,
+                        text = type.toString(),
                         fontSize = 12.sp,
                         color = Color.Black,
                         modifier = Modifier.padding(top = 4.dp)

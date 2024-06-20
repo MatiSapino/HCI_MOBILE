@@ -1,5 +1,8 @@
 package com.example.mobileapp.ui.devices
 
+import androidx.compose.foundation.BorderStroke
+import androidx.compose.foundation.background
+import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -14,13 +17,15 @@ import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Card
+import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.DropdownMenu
 import androidx.compose.material3.DropdownMenuItem
-import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.Slider
+import androidx.compose.material3.SliderDefaults
 import androidx.compose.material3.Switch
+import androidx.compose.material3.SwitchDefaults
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
@@ -31,8 +36,14 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.shadow
+import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
+import com.example.mobileapp.data.model.Status
+import com.example.mobileapp.ui.view_models.devices.AcViewModel
 import com.example.mobileapp.ui.view_models.devices.DoorViewModel
 
 @Composable
@@ -40,163 +51,126 @@ fun DoorCard(
     vm: DoorViewModel,
     onBack: () -> Unit,
 ) {
-    val acState = remember { mutableStateOf("off") }
+    var door by remember { mutableStateOf(vm.uiState.value.currentDevice) }
+    var doorState by remember { mutableStateOf(vm.uiState.value.currentDevice?.status) }
+    var lock by remember { mutableStateOf(vm.uiState.value.currentDevice?.lock) }
 
-    var temperature by remember { mutableFloatStateOf(device.state["temperature"] as Float) }
-    var mode by remember { mutableStateOf(device.state["Cool"] as String) }
 
-    val acSpeed = remember { mutableIntStateOf(2) }
-    val acVertical = remember { mutableIntStateOf(2) }
-    val acHorizontal = remember { mutableIntStateOf(2) }
-    val showDetails = remember { mutableStateOf(false) }
-
-    val velocityOptions = listOf("auto", "25", "50", "75", "100")
-    val verticalSwingsOptions = listOf("auto", "22", "45", "67", "90")
-    val horizontalSwingsOptions = listOf("auto", "-90", "-45", "0", "45", "90")
-    val modesAc = listOf("Fan", "Cool", "Heat")
-
-    Card(
+    Column(
         modifier = Modifier
-            .padding(16.dp)
-            .fillMaxWidth()
-            .wrapContentHeight(),
-        shape = RoundedCornerShape(16.dp)
+            .background(
+                Brush.verticalGradient(
+                    colors = listOf(Color.White, Color(0xFF87CEEB))
+                )
+            )
+            .padding(10.dp)
     ) {
-        Column(
-            horizontalAlignment = Alignment.CenterHorizontally,
-            verticalArrangement = Arrangement.Center,
-            modifier = Modifier.padding(16.dp)
+        IconButton(onClick = {onBack()}, modifier = Modifier.align(Alignment.Start)) {
+            Icon(imageVector = Icons.AutoMirrored.Filled.ArrowBack, contentDescription = "Back")
+        }
+
+        Card(
+            shape = RoundedCornerShape(16.dp),
+            colors = CardDefaults.cardColors(
+                containerColor = Color.White
+            ),
+            modifier = Modifier
+                .padding(16.dp)
+                .fillMaxWidth()
+                .wrapContentHeight()
+                .shadow(10.dp, RoundedCornerShape(16.dp))
+                .border(1.dp, Color.Black, RoundedCornerShape(16.dp))
         ) {
-            IconButton(onClick = onBack, modifier = Modifier.align(Alignment.Start)) {
-                Icon(imageVector = Icons.AutoMirrored.Filled.ArrowBack, contentDescription = "Back")
-            }
-            Text(text = "AC - ${device.name}")
-            HorizontalDivider()
-
-            Row(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(16.dp),
-                horizontalArrangement = Arrangement.SpaceBetween
-            ) {
-                Switch(
-                    checked = acState.value == "on",
-                    onCheckedChange = {
-                        acState.value = if (it) "on" else "off"
-                    }
-                )
-                Text(text = acState.value)
-            }
-
-            // Temperature Slider
             Column(
                 horizontalAlignment = Alignment.CenterHorizontally,
-                modifier = Modifier.padding(vertical = 16.dp)
+                verticalArrangement = Arrangement.Center,
+                modifier = Modifier.padding(16.dp)
             ) {
-                Text(text = "Temperature: ${temperature.toInt()}°C")
-                Slider(
-                    value = temperature,
-                    onValueChange = { newTemperature ->
-                        temperature = newTemperature
-                        val updatedDevice = device.copy(state = device.state.apply { put("temperature", temperature) })
-                        onUpdateDevice(updatedDevice)
-                    },
-                    valueRange = 18f..38f
-                )
-            }
+                Text(text = "Door - ${door?.name}", fontSize = 20.sp, color = Color.Black)
 
-            // Mode Selector
-            Column(
-                horizontalAlignment = Alignment.CenterHorizontally,
-                modifier = Modifier.padding(vertical = 16.dp)
-            ) {
-                var expanded by remember { mutableStateOf(false) }
-                Box(modifier = Modifier.fillMaxWidth()) {
-                    Text(
-                        text = "Mode: $mode",
-                        modifier = Modifier
-                            .clickable { expanded = true }
-                            .padding(16.dp)
-                    )
-                    DropdownMenu(
-                        expanded = expanded,
-                        onDismissRequest = { expanded = false }
-                    ) {
-                        modesAc.forEach { modeAc ->
-                            DropdownMenuItem(
-                                text = { Text(text = mode) },
-                                onClick = {
-                                    mode = modeAc
-                                    device.state["mode"] = mode
-                                    onUpdateDevice(device)
-                                    expanded = false
-                                }
-                            )
-                        }
-                    }
-                }
-            }
-
-            if (showDetails.value) {
-                // Fan Speed Slider
-                Column(
-                    horizontalAlignment = Alignment.CenterHorizontally,
-                    modifier = Modifier.padding(vertical = 16.dp)
+                Row(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(10.dp),
+                    horizontalArrangement = Arrangement.SpaceBetween,
+                    verticalAlignment = Alignment.CenterVertically
                 ) {
-                    Text(text = "Fan Speed: ${velocityOptions[acSpeed.intValue]}")
-                    Slider(
-                        value = acSpeed.intValue.toFloat(),
-                        onValueChange = { acSpeed.intValue = it.toInt() },
-                        valueRange = 0f..4f,
-                        steps = 4
+                    Switch(
+                        checked = doorState == Status.OPENED,
+                        onCheckedChange = { newStatus ->
+                            doorState = if (newStatus) Status.OPENED else Status.CLOSED
+                            if (doorState == Status.OPENED) vm.open()
+                            if (doorState == Status.CLOSED) vm.close()
+                        },
+                        colors = SwitchDefaults.colors(
+                            checkedThumbColor = Color(0xFF87CEEB),
+                            checkedTrackColor = Color.Gray,
+                            uncheckedThumbColor = Color.Gray,
+                            uncheckedTrackColor = Color.White
+                        )
                     )
+                    Text(text = doorState.toString(), color = Color.Black, fontSize = 16.sp)
                 }
 
-                // Vertical Swing Slider
-                Column(
-                    horizontalAlignment = Alignment.CenterHorizontally,
-                    modifier = Modifier.padding(vertical = 16.dp)
+                Row(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(10.dp),
+                    horizontalArrangement = Arrangement.SpaceBetween,
+                    verticalAlignment = Alignment.CenterVertically
                 ) {
-                    Text(text = "Vertical Swing: ${verticalSwingsOptions[acVertical.intValue]}")
-                    Slider(
-                        value = acVertical.intValue.toFloat(),
-                        onValueChange = { acVertical.intValue = it.toInt() },
-                        valueRange = 0f..4f,
-                        steps = 4
+                    Switch(
+                        checked = lock == Status.LOCKED,
+                        onCheckedChange = { newStatus ->
+                            doorState = if (newStatus) Status.LOCKED else Status.UNLOCKED
+                            if (doorState == Status.LOCKED) vm.lock()
+                            if (doorState == Status.UNLOCKED) vm.unlock()
+                        },
+                        colors = SwitchDefaults.colors(
+                            checkedThumbColor = Color(0xFF87CEEB),
+                            checkedTrackColor = Color.Gray,
+                            uncheckedThumbColor = Color.Gray,
+                            uncheckedTrackColor = Color.White
+                        )
                     )
+                    Text(text = doorState.toString(), color = Color.Black, fontSize = 16.sp)
                 }
 
-                // Horizontal Swing Slider
-                Column(
-                    horizontalAlignment = Alignment.CenterHorizontally,
-                    modifier = Modifier.padding(vertical = 16.dp)
-                ) {
-                    Text(text = "Horizontal Swing: ${horizontalSwingsOptions[acHorizontal.intValue]}")
-                    Slider(
-                        value = acHorizontal.intValue.toFloat(),
-                        onValueChange = { acHorizontal.intValue = it.toInt() },
-                        valueRange = 0f..5f,
-                        steps = 5
-                    )
-                }
 
-                HorizontalDivider()
                 Button(
-                    onClick = { onDelete(device) },
-                    colors = ButtonDefaults.buttonColors(containerColor = Color.Red),
-                    modifier = Modifier.padding(vertical = 16.dp)
+                    onClick = {
+                        vm.deleteDevice(door?.id)
+                        onBack()
+                    },
+                    colors = ButtonDefaults.elevatedButtonColors(
+                        containerColor = Color.Red,
+                        contentColor = Color.White
+                    ),
+                    shape = RoundedCornerShape(8.dp),
+                    border = BorderStroke(1.dp, Color.Black),
+                    modifier = Modifier
+                        .align(Alignment.CenterHorizontally)
+                        .padding(vertical = 16.dp)
                 ) {
                     Text(text = "Delete Device")
                 }
             }
-
-            HorizontalDivider()
-            Button(
-                onClick = { showDetails.value = !showDetails.value },
-                modifier = Modifier.padding(vertical = 16.dp)
-            ) {
-                Text(text = if (!showDetails.value) "More" else "Close")
-            }
         }
     }
+}
+
+@Preview(showBackground = true, showSystemUi = true)
+@Composable
+fun PreviewDoorCard() {
+//    ACCard(
+//        device = Device(
+//            id = "1",
+//            name = "AC",
+//            type = "AC",
+//            state = mutableMapOf("temperature" to 25f, "mode" to "Cool")
+//        ),
+//        onBack = {},
+//        onDelete = {},
+//        onUpdateDevice = {}
+//    )
 }

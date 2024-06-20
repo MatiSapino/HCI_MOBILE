@@ -57,6 +57,10 @@ class VacuumViewModel(
         { state, _ -> state }
     )
 
+    fun deleteDevice(deviceId: String?) = runOnViewModelScope(
+        { repository.deleteDevice(deviceId) },
+        { state, _ -> state.copy(currentDevice = null) }
+    )
 
 
     private fun <R> runOnViewModelScope(

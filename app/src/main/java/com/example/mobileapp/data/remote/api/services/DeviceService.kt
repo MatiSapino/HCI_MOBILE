@@ -27,7 +27,7 @@ interface DeviceService {
     ): Response<RemoteResult<Boolean>>
 
     @DELETE("devices/{deviceId}")
-    suspend fun deleteDevice(@Path("deviceId") deviceId: String): Response<RemoteResult<Boolean>>
+    suspend fun deleteDevice(@Path("deviceId") deviceId: String?): Response<RemoteResult<Boolean>>
 
     @PUT("devices/{deviceId}/{action}")
     suspend fun executeDeviceAction(

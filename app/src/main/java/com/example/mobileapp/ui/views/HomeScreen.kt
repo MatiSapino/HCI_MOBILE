@@ -22,7 +22,6 @@ import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import com.example.mobileapp.data.model.Device
 import com.example.mobileapp.data.model.DeviceType
-import com.example.mobileapp.data.model.Routine
 import com.example.mobileapp.ui.components.DeviceSection
 import com.example.mobileapp.ui.components.DeviceTypeSection
 import com.example.mobileapp.ui.components.RoutineSection
@@ -49,11 +48,19 @@ fun HomeScreen(
     onAddRoutine: () -> Unit,
     onAddDevice: () -> Unit,
 ) {
-    val filteredDevices = if (selectedDeviceType == null) {
-        devices
-    } else {
-        devices.filter { it.type == selectedDeviceType }
+    var routines by remember { mutableStateOf(routinesVM.uiState.value.routines) }
+    var devices by remember { mutableStateOf(devicesVM.uiState.value.devices) }
+    var selectedDeviceType: DeviceType?
+    selectedDeviceType = null
+
+    fun filterDevices(selectedType: DeviceType?): List<Device>{
+        if (selectedType == null) {
+            return devices
+        } else {
+            return devices.filter { it.type == selectedType }
+        }
     }
+
 
     Column(
         modifier = Modifier
@@ -66,18 +73,19 @@ fun HomeScreen(
             .padding(16.dp)
     ) {
         DeviceTypeSection(
-            deviceTypes = listOf("Light", "AC", "Vacuum", "Tap"),
+            deviceTypes = DeviceType.entries,
             selectedType = selectedDeviceType,
-            onDeviceTypeSelected = onDeviceTypeSelected
+            onDeviceTypeSelected = {
+                selectedDeviceType = it
+            }
         )
 
-        DeviceSection(devices = filteredDevices, onDeviceSelected = onDeviceSelected, onAddDevice = onAddDevice)
+        DeviceSection(devices = filterDevices(selectedDeviceType), onDeviceSelected = onDeviceSelected, onAddDevice = onAddDevice)
 
         RoutineSection(
             routines = routines,
-            onRoutineSelected = onRoutineSelected,
             onAddRoutine = onAddRoutine,
-            onDeleteRoutine = onDeleteRoutine
+            onDeleteRoutine = {routine -> routinesVM.deleteRoutine(routine.id!!)}
         )
 
         Spacer(modifier = Modifier.height(16.dp))
@@ -111,8 +119,3 @@ fun MainScreen() {
     }
 }
 
-@Preview(showBackground = true, showSystemUi = true)
-@Composable
-fun MainScreenPreview() {
-    MainScreen()
-}

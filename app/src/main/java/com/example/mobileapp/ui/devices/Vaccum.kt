@@ -39,6 +39,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.example.mobileapp.data.model.Status
 import com.example.mobileapp.ui.view_models.devices.VacuumViewModel
 
 @Composable
@@ -46,10 +47,10 @@ fun VacuumCard(
     vm: VacuumViewModel,
     onBack: () -> Unit
 ) {
-    var status by remember { mutableStateOf((device.state["inactive"] as? String) ?: "inactive") }
-    var mode by remember { mutableStateOf((device.state["vacuum"] as? String) ?: "vacuum") }
-
-    val selectedRoom = remember { mutableStateOf<String?>(null) }
+    var vacuum by remember { mutableStateOf(vm.uiState.value.currentDevice) }
+    var status by remember { mutableStateOf(vm.uiState.value.currentDevice?.status) }
+    var mode by remember { mutableStateOf(vm.uiState.value.currentDevice?.mode) }
+    val selectedRoom = remember { mutableStateOf(vm.uiState.value.currentDevice?.location) }
 
     val modesVacuum = listOf("vacuum", "mop")
     val roomsVacuum = listOf("Living Room", "Kitchen", "Bedroom", "Bathroom", "Garage", "Garden")
@@ -84,7 +85,7 @@ fun VacuumCard(
                 verticalArrangement = Arrangement.Center,
                 modifier = Modifier.padding(16.dp)
             ) {
-                Text(text = "Vacuum - ${device.name}", fontSize = 20.sp, color = Color.Black)
+                Text(text = "Vacuum - ${vacuum?.name}", fontSize = 20.sp, color = Color.Black)
 
                 Row(
                     modifier = Modifier
@@ -94,11 +95,11 @@ fun VacuumCard(
                     verticalAlignment = Alignment.CenterVertically
                 ) {
                     Switch(
-                        checked = status == "active",
+                        checked = status == Status.ACTIVE,
                         onCheckedChange = { newStatus ->
-                            status = if (newStatus) "active" else "inactive"
-                            val updatedDevice = device.copy(state = device.state.apply { put("status", status) })
-                            onUpdateDevice(updatedDevice)
+                            status = if (newStatus) Status.ACTIVE else Status.INACTIVE
+                            if (status == Status.ACTIVE) vm.start()
+                            if (status == Status.INACTIVE) vm.pause()
                         },
                         colors = SwitchDefaults.colors(
                             checkedThumbColor = Color(0xFF87CEEB),
@@ -107,7 +108,7 @@ fun VacuumCard(
                             uncheckedTrackColor = Color.White
                         )
                     )
-                    Text(text = status, color = Color.Black, fontSize = 16.sp)
+                    Text(text = status.toString(), color = Color.Black, fontSize = 16.sp)
                 }
 
                 // Mode Selector
@@ -138,8 +139,7 @@ fun VacuumCard(
                                     text = { Text(text = modeVacuum, color = Color.Black) },
                                     onClick = {
                                         mode = modeVacuum
-                                        device.state["mode"] = mode
-                                        onUpdateDevice(device)
+                                        vm.setMode(modeVacuum)
                                         expanded = false
                                     }
                                 )
@@ -187,12 +187,13 @@ fun VacuumCard(
                 Button(
                     onClick = {
                         // Implement logic to return to base
-                        if (status == "inactive") {
-                            // Show alert logic
+                        if (status == Status.INACTIVE) {
+                            // alert("Error: Vacuum already inactive")
                         } else {
-                            status = "inactive"
+                            status = Status.INACTIVE
                             selectedRoom.value = null
-                            // Show alert logic
+                            vm.dock()
+                            // alert("Vacuum docked")
                         }
                     },
                     colors = ButtonDefaults.elevatedButtonColors(
@@ -210,7 +211,7 @@ fun VacuumCard(
 
                 Button(
                     onClick = {
-                        onDelete(device)
+                        vm.deleteDevice(vacuum?.id)
                         onBack()
                     },
                     colors = ButtonDefaults.elevatedButtonColors(

@@ -38,7 +38,7 @@ class DeviceRemoteDataSource(
         }
     }
 
-    suspend fun deleteDevice(deviceId: String): Boolean {
+    suspend fun deleteDevice(deviceId: String?): Boolean {
         return handleApiResponse {
             deviceService.deleteDevice(deviceId)
         }

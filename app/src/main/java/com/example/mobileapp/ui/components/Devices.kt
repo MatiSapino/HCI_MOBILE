@@ -20,6 +20,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.mobileapp.R
 import com.example.mobileapp.data.model.Device
+import com.example.mobileapp.data.model.DeviceType
 
 @Composable
 fun DeviceSection(
@@ -60,10 +61,11 @@ fun DeviceSection(
 @Composable
 fun DeviceCard(device: Device, onClick: () -> Unit) {
     val icons = mapOf(
-        "Light" to R.drawable.lightbulb,
-        "AC" to R.drawable.ac,
-        "Vacuum" to R.drawable.vacuum,
-        "Tap" to R.drawable.tap,
+        DeviceType.LAMP to R.drawable.lightbulb,
+        DeviceType.AC to R.drawable.ac,
+        DeviceType.VACUUM to R.drawable.vacuum,
+        DeviceType.TAP to R.drawable.tap,
+        DeviceType.DOOR to R.drawable.door, // change to correct icon
     )
 
     Card(

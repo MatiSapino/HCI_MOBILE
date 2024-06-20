@@ -84,6 +84,11 @@ class AcViewModel(
         }
     )
 
+    fun deleteDevice(deviceId: String?) = runOnViewModelScope(
+        { repository.deleteDevice(deviceId) },
+        { state, _ -> state.copy(currentDevice = null) }
+    )
+
     private fun <R> runOnViewModelScope(
         block: suspend () -> R,
         updateState: (AcUiState, R) -> AcUiState

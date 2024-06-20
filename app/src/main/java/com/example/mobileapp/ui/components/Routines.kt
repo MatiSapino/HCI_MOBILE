@@ -18,11 +18,11 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.example.mobileapp.data.model.Routine
 
 @Composable
 fun RoutineSection(
     routines: List<Routine>,
-    onRoutineSelected: (Routine) -> Unit,
     onAddRoutine: () -> Unit,
     onDeleteRoutine: (Routine) -> Unit
 ) {
@@ -50,7 +50,7 @@ fun RoutineSection(
             horizontalArrangement = Arrangement.spacedBy(16.dp)
         ) {
             items(routines) { routine ->
-                RoutineCard(routine = routine, onClick = { onRoutineSelected(routine) }, onDeleteRoutine = onDeleteRoutine)
+                RoutineCard(routine = routine, onClick = {  }, onDeleteRoutine = onDeleteRoutine)
             }
         }
     }
@@ -91,8 +91,12 @@ fun RoutineCard(
             }
             if (expanded) {
                 Column {
-                    routine.automations.forEach { automation ->
-                        Text(text = automation)
+                    routine.actions.forEach { automation ->
+                        Text(text = "Device Name: ${automation.device.name}")
+                        Text(text = automation.name)
+                        automation.params?.forEach {
+                            Text(text = it.toString())
+                        }
                     }
                     Button(onClick = { onDeleteRoutine(routine) }) {
                         Text(text = "Delete")
