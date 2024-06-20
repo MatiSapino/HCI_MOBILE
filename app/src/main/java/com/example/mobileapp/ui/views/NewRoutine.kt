@@ -48,9 +48,7 @@ import androidx.lifecycle.viewmodel.compose.viewModel
 import com.example.mobileapp.R
 import com.example.mobileapp.data.model.Device
 import com.example.mobileapp.data.model.DeviceType
-import com.example.mobileapp.data.model.Routine
 import com.example.mobileapp.ui.view_models.DevicesViewModel
-import java.util.UUID
 
 private val selectedColor = Color.Gray
 private val unselectedColor = Color.Transparent

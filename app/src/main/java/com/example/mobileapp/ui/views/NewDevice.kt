@@ -47,7 +47,6 @@ import com.example.mobileapp.R
 import com.example.mobileapp.data.model.Device
 import com.example.mobileapp.data.model.DeviceType
 import com.example.mobileapp.ui.view_models.DevicesViewModel
-import java.util.UUID
 
 @Composable
 fun NewDeviceScreen(onDeviceAdded: (Device) -> Unit, onCancel: () -> Unit) {

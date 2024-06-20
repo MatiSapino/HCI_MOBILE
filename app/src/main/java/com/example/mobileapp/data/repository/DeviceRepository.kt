@@ -1,6 +1,5 @@
 package com.example.mobileapp.data.repository
 
-import androidx.compose.runtime.mutableStateOf
 import com.example.mobileapp.data.model.Device
 import com.example.mobileapp.data.remote.data_sources.DeviceRemoteDataSource
 import kotlinx.coroutines.flow.Flow

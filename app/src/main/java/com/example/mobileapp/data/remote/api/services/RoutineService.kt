@@ -1,4 +1,4 @@
-package com.example.mobileapp.data.remote.api.services;
+package com.example.mobileapp.data.remote.api.services
 
 import com.example.mobileapp.data.remote.model.RemoteResult
 import com.example.mobileapp.data.remote.model.RemoteRoutine
@@ -10,7 +10,7 @@ import retrofit2.http.POST
 import retrofit2.http.PUT
 import retrofit2.http.Path
 
-public interface RoutineService {
+interface RoutineService {
     @GET("routines")
     suspend fun getRoutines(): Response<RemoteResult<List<RemoteRoutine<*>>>>
 

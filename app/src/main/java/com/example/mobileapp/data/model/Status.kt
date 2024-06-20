@@ -1,7 +1,5 @@
 package com.example.mobileapp.data.model
 
-import com.example.mobileapp.data.remote.model.RemoteStatus
-
 enum class Status {
     ON, OFF, OPENED, CLOSED, ACTIVE, INACTIVE, LOCKED, UNLOCKED;
 

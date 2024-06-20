@@ -3,7 +3,6 @@ package com.example.mobileapp.data.remote.model.remote_devices
 import com.example.mobileapp.data.model.Status
 import com.example.mobileapp.data.model.devices.Ac
 import com.example.mobileapp.data.remote.model.RemoteDevice
-import com.example.mobileapp.data.remote.model.RemoteStatus
 import com.example.mobileapp.data.remote.model.remote_device_state.RemoteAcState
 
 class RemoteAc : RemoteDevice<RemoteAcState>() {

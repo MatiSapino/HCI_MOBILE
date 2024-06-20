@@ -6,7 +6,6 @@ import com.example.mobileapp.data.model.Status
 import com.example.mobileapp.data.remote.model.RemoteDevice
 import com.example.mobileapp.data.remote.model.remote_device_state.RemoteTapState
 import com.example.mobileapp.data.remote.model.remote_devices.RemoteTap
-import com.example.mobileapp.data.model.Unit
 
 class Tap(
     id: String?,
