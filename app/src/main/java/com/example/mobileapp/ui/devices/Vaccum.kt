@@ -233,15 +233,15 @@ fun VacuumCard(
 @Preview(showBackground = true, showSystemUi = true)
 @Composable
 fun VacuumCardPreview() {
-    VacuumCard(
-        device = Device(
-            id = "1",
-            name = "Living Room Vacuum",
-            type = "Vacuum",
-            state = mutableMapOf("status" to "inactive", "vacuum" to "vacuum", "room" to "Living Room")
-        ),
-        onBack = {},
-        onDelete = {},
-        onUpdateDevice = {}
-    )
+//    VacuumCard(
+//        device = Device(
+//            id = "1",
+//            name = "Living Room Vacuum",
+//            type = "Vacuum",
+//            state = mutableMapOf("status" to "inactive", "vacuum" to "vacuum", "room" to "Living Room")
+//        ),
+//        onBack = {},
+//        onDelete = {},
+//        onUpdateDevice = {}
+//    )
 }

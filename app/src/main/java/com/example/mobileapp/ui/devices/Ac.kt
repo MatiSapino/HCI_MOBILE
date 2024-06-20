@@ -252,15 +252,15 @@ fun ACCard(
 @Preview(showBackground = true, showSystemUi = true)
 @Composable
 fun PreviewACCard() {
-    ACCard(
-        device = Device(
-            id = "1",
-            name = "AC",
-            type = "AC",
-            state = mutableMapOf("temperature" to 25f, "mode" to "Cool")
-        ),
-        onBack = {},
-        onDelete = {},
-        onUpdateDevice = {}
-    )
+//    ACCard(
+//        device = Device(
+//            id = "1",
+//            name = "AC",
+//            type = "AC",
+//            state = mutableMapOf("temperature" to 25f, "mode" to "Cool")
+//        ),
+//        onBack = {},
+//        onDelete = {},
+//        onUpdateDevice = {}
+//    )
 }

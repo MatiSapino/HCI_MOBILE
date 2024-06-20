@@ -37,7 +37,7 @@ import com.example.mobileapp.ui.view_models.devices.DoorViewModel
 
 @Composable
 fun DoorCard(
-    vm: DoorViewModel
+    vm: DoorViewModel,
     onBack: () -> Unit,
 ) {
     val acState = remember { mutableStateOf("off") }

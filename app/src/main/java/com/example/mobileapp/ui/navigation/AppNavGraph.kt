@@ -1,11 +1,13 @@
 package com.example.mobileapp.ui.navigation
 
 import androidx.compose.runtime.Composable
+import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavHostController
 import androidx.navigation.NavType
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.navArgument
+import com.example.mobileapp.data.model.devices.Vacuum
 import com.example.mobileapp.ui.devices.ACCard
 import com.example.mobileapp.ui.devices.DoorCard
 import com.example.mobileapp.ui.devices.LightCard
@@ -35,18 +37,18 @@ fun AppNavGraph(navController: NavHostController) {
             MainScreen()
         }
         composable(AppDestinations.CONFIGURATION.route) {
-            ConfigurationScreen()
+//            ConfigurationScreen()
         }
         composable(AppDestinations.NEW_DEVICE.route) {
-            NewDeviceScreen()
+//            NewDeviceScreen()
         }
         composable(AppDestinations.NEW_ROUTINE.route) {
-            NewRoutineScreen()
+//            NewRoutineScreen()
         }
 
         composable(AppDestinations.LIGHT.route, arguments = listOf(navArgument("deviceId") {type = NavType.StringType})) {
             backStackEntry ->
-            val vm = getViewModelFactory().create("Lamp",LampViewModel::class.java, null)
+            val vm: LampViewModel = viewModel()
             val deviceId = backStackEntry.arguments?.getString("deviceId")
             vm.setCurrentDevice(deviceId!!)
             LightCard(vm, { navController.navigate(AppDestinations.HOME.route)})
@@ -54,7 +56,7 @@ fun AppNavGraph(navController: NavHostController) {
 
         composable(AppDestinations.TAP.route, arguments = listOf(navArgument("deviceId") {type = NavType.StringType})) {
             backStackEntry ->
-            val vm = getViewModelFactory().create("Tap", TapViewModel::class.java, null)
+            val vm: TapViewModel = viewModel()
             val deviceId = backStackEntry.arguments?.getString("deviceId")
             vm.setCurrentDevice(deviceId!!)
             TapCard(vm, { navController.navigate(AppDestinations.HOME.route)})
@@ -62,7 +64,7 @@ fun AppNavGraph(navController: NavHostController) {
 
         composable(AppDestinations.VACUUM.route, arguments = listOf(navArgument("deviceId") {type = NavType.StringType})) {
             backStackEntry ->
-            val vm = getViewModelFactory().create("Vacuum", VacuumViewModel::class.java, null)
+            val vm: VacuumViewModel = viewModel()
             val deviceId = backStackEntry.arguments?.getString("deviceId")
             vm.setCurrentDevice(deviceId!!)
             VacuumCard(vm, { navController.navigate(AppDestinations.HOME.route)})
@@ -70,7 +72,7 @@ fun AppNavGraph(navController: NavHostController) {
 
         composable(AppDestinations.AC.route, arguments = listOf(navArgument("deviceId") {type = NavType.StringType})) {
             backStackEntry ->
-            val vm = getViewModelFactory().create("Ac", AcViewModel::class.java, null)
+            val vm: AcViewModel = viewModel()
             val deviceId = backStackEntry.arguments?.getString("deviceId")
             vm.setCurrentDevice(deviceId!!)
             ACCard(vm, { navController.navigate(AppDestinations.HOME.route)})
@@ -78,7 +80,7 @@ fun AppNavGraph(navController: NavHostController) {
 
         composable(AppDestinations.DOOR.route, arguments = listOf(navArgument("deviceId") {type = NavType.StringType})) {
             backStackEntry ->
-            val vm = getViewModelFactory().create("Door", DoorViewModel::class.java, null)
+            val vm: DoorViewModel = viewModel()
             val deviceId = backStackEntry.arguments?.getString("deviceId")
             vm.setCurrentDevice(deviceId!!)
             DoorCard(vm, { navController.navigate(AppDestinations.HOME.route)} )

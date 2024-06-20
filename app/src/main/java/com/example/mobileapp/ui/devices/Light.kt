@@ -231,15 +231,15 @@ fun LightCard(
 @Preview(showBackground = true, showSystemUi = true)
 @Composable
 fun LightCardPreview() {
-    LightCard(
-        device = Device(
-            id = "1",
-            name = "Living Room Light",
-            type = "Light",
-            state = mutableMapOf("status" to false, "color" to Color.White, "brightness" to 100)
-        ),
-        onBack = {},
-        onDelete = {},
-        onUpdateDevice = {}
-    )
+//    LightCard(
+//        device = Device(
+//            id = "1",
+//            name = "Living Room Light",
+//            type = "Light",
+//            state = mutableMapOf("status" to false, "color" to Color.White, "brightness" to 100)
+//        ),
+//        onBack = {},
+//        onDelete = {},
+//        onUpdateDevice = {}
+//    )
 }

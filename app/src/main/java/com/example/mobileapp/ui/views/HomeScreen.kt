@@ -26,6 +26,8 @@ import com.example.mobileapp.data.model.Routine
 import com.example.mobileapp.ui.components.DeviceSection
 import com.example.mobileapp.ui.components.DeviceTypeSection
 import com.example.mobileapp.ui.components.RoutineSection
+import com.example.mobileapp.ui.view_models.DevicesViewModel
+import com.example.mobileapp.ui.view_models.RoutinesViewModel
 
 sealed class Screen(val route: String) {
     data object HomeScreen : Screen("home_screen")
@@ -41,15 +43,11 @@ sealed class Screen(val route: String) {
 
 @Composable
 fun HomeScreen(
-    devices: List<Device>,
-    routines: List<Routine>,
-    onDeviceTypeSelected: (String?) -> Unit,
-    selectedDeviceType: String?,
+    devicesVM: DevicesViewModel,
+    routinesVM: RoutinesViewModel,
     onDeviceSelected: (Device) -> Unit,
-    onRoutineSelected: (Routine) -> Unit,
     onAddRoutine: () -> Unit,
     onAddDevice: () -> Unit,
-    onDeleteRoutine: (Routine) -> Unit
 ) {
     val filteredDevices = if (selectedDeviceType == null) {
         devices
@@ -89,16 +87,14 @@ fun HomeScreen(
 @Composable
 fun MainScreen() {
     val navController = rememberNavController()
-    var selectedDeviceType by remember { mutableStateOf<String?>(null) }
-    val deviceViewModel: DeviceViewModel = viewModel()
+    val devicesVM: DevicesViewModel = viewModel()
+    val routinesVM: RoutinesViewModel = viewModel()
 
     NavHost(navController = navController, startDestination = Screen.HomeScreen.route) {
         composable(Screen.HomeScreen.route) {
             HomeScreen(
-                devices = deviceViewModel.devices,
-                routines = deviceViewModel.routines,
-                onDeviceTypeSelected = { type -> selectedDeviceType = type },
-                selectedDeviceType = selectedDeviceType,
+                devicesVM = devicesVM,
+                routinesVM = routinesVM,
                 onDeviceSelected = { device ->
                     when (device.type) {
                         DeviceType.LAMP -> navController.navigate(Screen.LightCard.route + "/" +device.id)
@@ -108,12 +104,8 @@ fun MainScreen() {
                         DeviceType.DOOR -> navController.navigate(Screen.DoorCard.route + "/" +device.id)
                     }
                 },
-                onRoutineSelected = {},
                 onAddRoutine = { navController.navigate(Screen.NewRoutineScreen.route) },
                 onAddDevice = { navController.navigate(Screen.NewDeviceScreen.route) },
-                onDeleteRoutine = { routine ->
-                    deviceViewModel.deleteRoutine(routine)
-                }
             )
         }
     }

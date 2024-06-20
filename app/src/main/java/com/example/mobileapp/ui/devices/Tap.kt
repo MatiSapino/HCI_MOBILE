@@ -209,15 +209,15 @@ fun TapCard(
 @Preview(showBackground = true, showSystemUi = true)
 @Composable
 fun TapCardPreview() {
-    TapCard(
-        device = Device(
-            id = "1",
-            name = "Tap",
-            type = "Tap",
-            state = mutableMapOf("0" to 0f, "L" to "L")
-        ),
-        onBack = {},
-        onDelete = {},
-        onUpdateDevice = {}
-    )
+//    TapCard(
+//        device = Device(
+//            id = "1",
+//            name = "Tap",
+//            type = "Tap",
+//            state = mutableMapOf("0" to 0f, "L" to "L")
+//        ),
+//        onBack = {},
+//        onDelete = {},
+//        onUpdateDevice = {}
+//    )
 }
