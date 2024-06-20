@@ -33,14 +33,12 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
-import com.example.mobileapp.ui.components.Device
+import com.example.mobileapp.ui.view_models.devices.DoorViewModel
 
 @Composable
 fun DoorCard(
-    device: Device,
+    vm: DoorViewModel
     onBack: () -> Unit,
-    onDelete: (Device) -> Unit,
-    onUpdateDevice: (Device) -> Unit
 ) {
     val acState = remember { mutableStateOf("off") }
 

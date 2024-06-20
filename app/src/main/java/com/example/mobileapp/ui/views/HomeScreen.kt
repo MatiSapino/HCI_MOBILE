@@ -20,16 +20,12 @@ import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
-import com.example.mobileapp.ui.components.Device
+import com.example.mobileapp.data.model.Device
+import com.example.mobileapp.data.model.DeviceType
+import com.example.mobileapp.data.model.Routine
 import com.example.mobileapp.ui.components.DeviceSection
 import com.example.mobileapp.ui.components.DeviceTypeSection
-import com.example.mobileapp.ui.components.DeviceViewModel
-import com.example.mobileapp.ui.components.Routine
 import com.example.mobileapp.ui.components.RoutineSection
-import com.example.mobileapp.ui.devices.ACCard
-import com.example.mobileapp.ui.devices.LightCard
-import com.example.mobileapp.ui.devices.TapCard
-import com.example.mobileapp.ui.devices.VacuumCard
 
 sealed class Screen(val route: String) {
     data object HomeScreen : Screen("home_screen")
@@ -37,6 +33,7 @@ sealed class Screen(val route: String) {
     data object ACCard : Screen("ac_card")
     data object VacuumCard : Screen("vacuum_card")
     data object TapCard : Screen("tap_card")
+    data object DoorCard : Screen("door_card")
     data object NewRoutineScreen : Screen("new_routine_screen")
     data object NewDeviceScreen : Screen("new_device_screen")
 }
@@ -104,10 +101,11 @@ fun MainScreen() {
                 selectedDeviceType = selectedDeviceType,
                 onDeviceSelected = { device ->
                     when (device.type) {
-                        "Light" -> navController.navigate(Screen.LightCard.route)
-                        "AC" -> navController.navigate(Screen.ACCard.route)
-                        "Vacuum" -> navController.navigate(Screen.VacuumCard.route)
-                        "Tap" -> navController.navigate(Screen.TapCard.route)
+                        DeviceType.LAMP -> navController.navigate(Screen.LightCard.route + "/" +device.id)
+                        DeviceType.AC -> navController.navigate(Screen.ACCard.route + "/" +device.id)
+                        DeviceType.VACUUM -> navController.navigate(Screen.VacuumCard.route + "/" +device.id)
+                        DeviceType.TAP -> navController.navigate(Screen.TapCard.route + "/" +device.id)
+                        DeviceType.DOOR -> navController.navigate(Screen.DoorCard.route + "/" +device.id)
                     }
                 },
                 onRoutineSelected = {},
@@ -118,92 +116,6 @@ fun MainScreen() {
                 }
             )
         }
-
-        composable(Screen.LightCard.route) {
-            val deviceId = navController.previousBackStackEntry?.arguments?.getString("deviceId")
-            val device = deviceViewModel.devices.find { it.id == deviceId }
-            device?.let {
-                LightCard(
-                    device = it,
-                    onBack = { navController.navigate(Screen.HomeScreen.route) },
-                    onDelete = { deletedDevice ->
-                        deviceViewModel.deleteDevice(deletedDevice)
-                        navController.navigate(Screen.HomeScreen.route)
-                    },
-                    onUpdateDevice = { updatedDevice ->
-                        deviceViewModel.updateDevice(updatedDevice)
-                    }
-                )
-            }
-        }
-        composable(Screen.ACCard.route) {
-            val deviceId = navController.previousBackStackEntry?.arguments?.getString("deviceId")
-            val device = deviceViewModel.devices.find { it.id == deviceId }
-            device?.let {
-                ACCard(
-                    device = it,
-                    onBack = { navController.navigate(Screen.HomeScreen.route) },
-                    onDelete = { deletedDevice ->
-                        deviceViewModel.deleteDevice(deletedDevice)
-                        navController.navigate(Screen.HomeScreen.route)
-                    },
-                    onUpdateDevice = { updatedDevice ->
-                        deviceViewModel.updateDevice(updatedDevice)
-                    }
-                )
-            }
-        }
-        composable(Screen.VacuumCard.route) {
-            val deviceId = navController.previousBackStackEntry?.arguments?.getString("deviceId")
-            val device = deviceViewModel.devices.find { it.id == deviceId }
-            device?.let {
-                VacuumCard(
-                    device = it,
-                    onBack = { navController.navigate(Screen.HomeScreen.route) },
-                    onDelete = { deletedDevice ->
-                        deviceViewModel.deleteDevice(deletedDevice)
-                        navController.navigate(Screen.HomeScreen.route)
-                    },
-                    onUpdateDevice = { updatedDevice ->
-                        deviceViewModel.updateDevice(updatedDevice)
-                    }
-                )
-            }
-        }
-        composable(Screen.TapCard.route) {
-            val deviceId = navController.previousBackStackEntry?.arguments?.getString("deviceId")
-            val device = deviceViewModel.devices.find { it.id == deviceId }
-            device?.let {
-                TapCard(
-                    device = it,
-                    onBack = { navController.navigate(Screen.HomeScreen.route) },
-                    onDelete = { deletedDevice ->
-                        deviceViewModel.deleteDevice(deletedDevice)
-                        navController.navigate(Screen.HomeScreen.route)
-                    },
-                    onUpdateDevice = { updatedDevice ->
-                        deviceViewModel.updateDevice(updatedDevice)
-                    }
-                )
-            }
-        }
-
-        composable(Screen.NewRoutineScreen.route) {
-            NewRoutineScreenState(
-                onRoutineSaved = { navController.navigate(Screen.HomeScreen.route) },
-                onCancel = { navController.navigate(Screen.HomeScreen.route) }
-            )
-        }
-        composable(Screen.NewDeviceScreen.route) {
-            NewDeviceScreen(
-                onDeviceAdded = { addedDevice ->
-                    deviceViewModel.addDevice(addedDevice)
-                    navController.navigate(Screen.HomeScreen.route)
-                },
-                onCancel = { navController.navigate(Screen.HomeScreen.route) }
-            )
-        }
-
     }
 }
 

@@ -10,17 +10,41 @@ import com.example.mobileapp.data.remote.model.remote_device_state.RemoteAcState
 class Ac(
     id: String?,
     name: String,
-    val status: Status,
-    val temperature: Int,
-    val mode: String,
-    val verticalSwing: String,
-    val horizontalSwing: String,
-    val fanSpeed: String,
+    var status: Status,
+    var temperature: Int,
+    var mode: String,
+    var verticalSwing: String,
+    var horizontalSwing: String,
+    var fanSpeed: String,
 ) : Device(id, name, DeviceType.AC, null) {
+
+    fun setStatus(newStatus: Status) {
+        status = newStatus
+    }
+
+    fun setTemperature(newTemperature: Int) {
+        temperature = newTemperature
+    }
+
+    fun setMode(newMode: String) {
+        mode = newMode
+    }
+
+    fun setVerticalSwing(newVerticalSwing: String) {
+        verticalSwing = newVerticalSwing
+    }
+
+    fun setHorizontalSwing(newHorizontalSwing: String) {
+        horizontalSwing = newHorizontalSwing
+    }
+
+    fun setFanSpeed(newFanSpeed: String) {
+        fanSpeed = newFanSpeed
+    }
 
     override fun asRemoteModel(): RemoteDevice<RemoteAcState> {
         val state = RemoteAcState()
-        state.status = Status.asRemoteModel(status)
+        state.status = status.toString()
         state.temperature = temperature
         state.mode = mode
         state.verticalSwing = verticalSwing

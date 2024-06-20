@@ -39,14 +39,12 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import com.example.mobileapp.ui.components.Device
+import com.example.mobileapp.ui.view_models.devices.VacuumViewModel
 
 @Composable
 fun VacuumCard(
-    device: Device,
-    onBack: () -> Unit,
-    onDelete: (Device) -> Unit,
-    onUpdateDevice: (Device) -> Unit
+    vm: VacuumViewModel,
+    onBack: () -> Unit
 ) {
     var status by remember { mutableStateOf((device.state["inactive"] as? String) ?: "inactive") }
     var mode by remember { mutableStateOf((device.state["vacuum"] as? String) ?: "vacuum") }

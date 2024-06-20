@@ -42,15 +42,14 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import com.example.mobileapp.ui.components.Device
+import com.example.mobileapp.ui.view_models.devices.AcViewModel
 
 @Composable
 fun ACCard(
-    device: Device,
+    vm: AcViewModel,
     onBack: () -> Unit,
-    onDelete: (Device) -> Unit,
-    onUpdateDevice: (Device) -> Unit
 ) {
+
     val acState = remember { mutableStateOf("off") }
 
     var temperature by remember { mutableFloatStateOf((device.state["temperature"] as? Float) ?: 25f) }

@@ -3,14 +3,18 @@ package com.example.mobileapp.data.model
 import com.example.mobileapp.data.remote.model.RemoteStatus
 
 enum class Status {
-    ON, OFF;
+    ON, OFF, OPEN, CLOSE, ACTIVE, INACTIVE, LOCKED, UNLOCKED;
 
-    companion object {
-        fun asRemoteModel(value: Status): String {
-            return when (value) {
-                ON -> RemoteStatus.ON
-                else -> RemoteStatus.OFF
-            }
+    override fun toString(): String {
+        return when (this) {
+            Status.ON -> "on"
+            Status.OFF -> "off"
+            Status.OPEN -> "open"
+            Status.CLOSE -> "close"
+            Status.ACTIVE -> "active"
+            Status.INACTIVE -> "inactive"
+            Status.LOCKED -> "locked"
+            Status.UNLOCKED -> "unlocked"
         }
     }
 }

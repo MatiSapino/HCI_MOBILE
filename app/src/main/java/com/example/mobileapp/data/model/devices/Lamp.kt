@@ -10,14 +10,26 @@ import com.example.mobileapp.data.remote.model.remote_device_state.RemoteLampSta
 class Lamp(
     id: String?,
     name: String,
-    val status: Status,
-    val color: String,
-    val brightness: Int
+    var status: Status,
+    var color: String,
+    var brightness: Int
 ) : Device(id, name, DeviceType.LAMP, null) {
+
+    fun setStatus(newStatus: Status) {
+        status = newStatus
+    }
+
+    fun setColor(newColor: String) {
+        color = newColor
+    }
+
+    fun setBrightness(newBrightness: Int) {
+        brightness = newBrightness
+    }
 
     override fun asRemoteModel(): RemoteDevice<RemoteLampState> {
         val state = RemoteLampState()
-        state.status = Status.asRemoteModel(status)
+        state.status = status.toString()
         state.color = color
         state.brightness = brightness
 

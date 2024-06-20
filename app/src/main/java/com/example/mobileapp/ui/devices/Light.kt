@@ -47,7 +47,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.compose.ui.window.Dialog
-import com.example.mobileapp.ui.components.Device
+import com.example.mobileapp.ui.view_models.devices.LampViewModel
 
 
 @Composable
@@ -100,10 +100,8 @@ fun ColorPickerDialog(
 
 @Composable
 fun LightCard(
-    device: Device,
+    vm: LampViewModel,
     onBack: () -> Unit,
-    onDelete: (Device) -> Unit,
-    onUpdateDevice: (Device) -> Unit
 ) {
     val lightState = remember { mutableStateOf("off") }
 

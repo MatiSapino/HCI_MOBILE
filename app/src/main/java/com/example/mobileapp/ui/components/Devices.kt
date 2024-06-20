@@ -19,6 +19,7 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.mobileapp.R
+import com.example.mobileapp.data.model.Device
 
 @Composable
 fun DeviceSection(
@@ -88,7 +89,7 @@ fun DeviceCard(device: Device, onClick: () -> Unit) {
             val iconId = icons[device.type] ?: R.drawable.lightbulb
             Image(
                 painter = painterResource(id = iconId),
-                contentDescription = device.type,
+                contentDescription = device.type.toString(),
                 modifier = Modifier.size(24.dp),
             )
             Spacer(modifier = Modifier.height(8.dp))

@@ -10,15 +10,31 @@ import com.example.mobileapp.data.remote.model.remote_devices.RemoteVacuum
 class Vacuum(
     id: String?,
     name: String,
-    val status: Status,
-    val mode: String,
-    val batteryLevel: Int,
-    val location: Any?
+    var status: Status,
+    var mode: String,
+    var batteryLevel: Int,
+    var location: Any?
 ) : Device(id, name, DeviceType.VACUUM, null) {
+
+    fun setStatus(newStatus: Status) {
+        status = newStatus
+    }
+
+    fun setMode(newMode: String) {
+        mode = newMode
+    }
+
+    fun setBatteryLevel(newBatteryLevel: Int) {
+        batteryLevel = newBatteryLevel
+    }
+
+    fun setLocation(newLocation: Any?) {
+        location = newLocation
+    }
 
     override fun asRemoteModel(): RemoteDevice<RemoteVacuumState> {
         val state = RemoteVacuumState()
-        state.status = Status.asRemoteModel(status)
+        state.status = status.toString()
         state.mode = mode
         state.batteryLevel = batteryLevel
         state.location = location
@@ -36,6 +52,5 @@ class Vacuum(
         const val PAUSE = "pause"
         const val DOCK = "dock"
         const val SET_MODE = "setMode"
-        const val SET_LOCATION = "setLocation"
     }
 }

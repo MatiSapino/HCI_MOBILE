@@ -6,16 +6,28 @@ import com.example.mobileapp.data.model.Status
 import com.example.mobileapp.data.remote.model.RemoteDevice
 import com.example.mobileapp.data.remote.model.remote_device_state.RemoteTapState
 import com.example.mobileapp.data.remote.model.remote_devices.RemoteTap
+import com.example.mobileapp.data.model.Unit
 
 class Tap(
     id: String?,
     name: String,
-    val status: Status,
+    var status: Status,
+    var unit: Unit
+
 ) : Device(id, name, DeviceType.TAP, null) {
+
+    fun setStatus(newStatus: Status) {
+        status = newStatus
+    }
+
+    fun setUnit(newUnit: Unit) {
+        unit = newUnit
+    }
 
     override fun asRemoteModel(): RemoteDevice<RemoteTapState> {
         val state = RemoteTapState()
-        state.status = Status.asRemoteModel(status)
+        state.status = status.toString()
+
 
         val model = RemoteTap()
         model.id = id

@@ -42,14 +42,12 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import com.example.mobileapp.ui.components.Device
+import com.example.mobileapp.ui.view_models.devices.TapViewModel
 
 @Composable
 fun TapCard(
-    device: Device,
-    onBack: () -> Unit,
-    onDelete: (Device) -> Unit,
-    onUpdateDevice: (Device) -> Unit
+    vm: TapViewModel,
+    onBack: () -> Unit
 ) {
     val tapState = remember { mutableStateOf("closed") }
     var quantity by remember { mutableFloatStateOf(device.state["quantity"] as? Float ?: 0f) }

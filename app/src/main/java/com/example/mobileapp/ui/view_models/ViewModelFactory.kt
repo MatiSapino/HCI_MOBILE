@@ -1,4 +1,4 @@
-package com.example.mobileapp.ui
+package com.example.mobileapp.ui.view_models
 
 import android.os.Bundle
 import androidx.compose.runtime.Composable
@@ -11,8 +11,6 @@ import androidx.savedstate.SavedStateRegistryOwner
 import com.example.mobileapp.ApiApplication
 import com.example.mobileapp.data.repository.DeviceRepository
 import com.example.mobileapp.data.repository.RoutineRepository
-import com.example.mobileapp.ui.view_models.DevicesViewModel
-import com.example.mobileapp.ui.view_models.RoutinesViewModel
 import com.example.mobileapp.ui.view_models.devices.LampViewModel
 
 @Composable

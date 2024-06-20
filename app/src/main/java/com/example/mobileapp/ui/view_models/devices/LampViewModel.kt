@@ -4,15 +4,13 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.mobileapp.DataSourceException
 import com.example.mobileapp.data.model.Error
+import com.example.mobileapp.data.model.Status
 import com.example.mobileapp.data.model.devices.Lamp
 import com.example.mobileapp.data.repository.DeviceRepository
 import com.example.mobileapp.ui.ui_states.devices.LampUiState
 import kotlinx.coroutines.Job
-import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
-import kotlinx.coroutines.flow.catch
-import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 
@@ -23,31 +21,44 @@ class LampViewModel(
     private val _uiState = MutableStateFlow(LampUiState())
     val uiState = _uiState.asStateFlow()
 
-    init {
-        collectOnViewModelScope(
-            repository.getDevice(repository.currentDeviceId)
-        ) { state, response -> state.copy(currentDevice = response as Lamp?) }
+    fun setCurrentDevice(deviceId: String){
+        runOnViewModelScope(
+            { repository.getDevice(deviceId) },
+            { state, response -> state.copy(currentDevice = response as Lamp?) }
+        )
     }
 
     fun turnOn() = runOnViewModelScope(
         { repository.executeDeviceAction(uiState.value.currentDevice?.id!!, Lamp.TURN_ON) },
-        { state, _ -> state }
+        { state, _ ->
+            uiState.value.currentDevice?.setStatus(Status.ON)
+            state.copy(currentDevice =  uiState.value.currentDevice)
+        }
     )
 
     fun turnOff() = runOnViewModelScope(
         { repository.executeDeviceAction(uiState.value.currentDevice?.id!!, Lamp.TURN_OFF) },
-        { state, _ -> state }
+        { state, _ ->
+            uiState.value.currentDevice?.setStatus(Status.OFF)
+            state.copy(currentDevice =  uiState.value.currentDevice)
+        }
     )
 
-    private fun <T> collectOnViewModelScope(
-        flow: Flow<T>,
-        updateState: (LampUiState, T) -> LampUiState
-    ) = viewModelScope.launch {
-        flow
-            .distinctUntilChanged()
-            .catch { e -> _uiState.update { it.copy(error = handleError(e)) } }
-            .collect { response -> _uiState.update { updateState(it, response) } }
-    }
+    fun setColor(newColor: String) = runOnViewModelScope(
+        { repository.executeDeviceAction(uiState.value.currentDevice?.id!!, Lamp.SET_COLOR, arrayOf(newColor)) },
+        { state, _ ->
+            uiState.value.currentDevice?.setColor(newColor)
+            state.copy(currentDevice =  uiState.value.currentDevice)
+        }
+    )
+
+    fun setBrightness(newBrightness: Int) = runOnViewModelScope(
+        { repository.executeDeviceAction(uiState.value.currentDevice?.id!!, Lamp.SET_BRIGHTNESS, arrayOf(newBrightness)) },
+        { state, _ ->
+            uiState.value.currentDevice?.setBrightness(newBrightness)
+            state.copy(currentDevice =  uiState.value.currentDevice)
+        }
+    )
 
     private fun <R> runOnViewModelScope(
         block: suspend () -> R,

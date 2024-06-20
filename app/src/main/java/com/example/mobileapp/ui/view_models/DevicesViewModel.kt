@@ -36,8 +36,10 @@ class DevicesViewModel(
 
     fun getDevice(deviceId: String) {
         runOnViewModelScope(
-            { repository.getDevice(deviceId) },
-            { state, response -> state.copy(currentDevice = response) }
+            {
+                repository.getDevice(deviceId)
+            },
+            { state, response -> state.copy(currentDevice = response as Device?) }
         )
     }
 
