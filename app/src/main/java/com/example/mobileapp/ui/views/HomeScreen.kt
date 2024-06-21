@@ -26,6 +26,7 @@ import com.example.mobileapp.ui.components.DeviceTypeSection
 import com.example.mobileapp.ui.components.RoutineSection
 import com.example.mobileapp.ui.view_models.DevicesViewModel
 import com.example.mobileapp.ui.view_models.RoutinesViewModel
+import com.example.mobileapp.ui.view_models.getViewModelFactory
 
 sealed class Screen(val route: String) {
     data object HomeScreen : Screen("home_screen")
@@ -94,8 +95,8 @@ fun HomeScreen(
 @Composable
 fun MainScreen() {
     val navController = rememberNavController()
-    val devicesVM: DevicesViewModel = viewModel()
-    val routinesVM: RoutinesViewModel = viewModel()
+    val devicesVM: DevicesViewModel = viewModel(factory = getViewModelFactory())
+    val routinesVM: RoutinesViewModel = viewModel(factory = getViewModelFactory())
 
     NavHost(navController = navController, startDestination = Screen.HomeScreen.route) {
         composable(Screen.HomeScreen.route) {
