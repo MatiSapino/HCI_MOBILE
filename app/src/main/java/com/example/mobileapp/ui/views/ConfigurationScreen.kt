@@ -21,8 +21,8 @@ import androidx.compose.ui.unit.sp
 
 @Composable
 fun ConfigurationScreen(
-    onBack: () -> Unit,
-    onLanguageChange: (String) -> Unit
+//    onBack: () -> Unit,
+//    onLanguageChange: (String) -> Unit
 ) {
     val languages = listOf("English", "Español")
     var selectedLanguage by remember { mutableStateOf("English") }
@@ -37,9 +37,9 @@ fun ConfigurationScreen(
             .fillMaxSize()
             .padding(16.dp)
     ) {
-        IconButton(onClick = onBack, modifier = Modifier.align(Alignment.Start)) {
-            Icon(imageVector = Icons.AutoMirrored.Filled.ArrowBack, contentDescription = "Back")
-        }
+//        IconButton(onClick = onBack, modifier = Modifier.align(Alignment.Start)) {
+//            Icon(imageVector = Icons.AutoMirrored.Filled.ArrowBack, contentDescription = "Back")
+//        }
 
         Card(
             shape = RoundedCornerShape(16.dp),
@@ -74,24 +74,24 @@ fun ConfigurationScreen(
                         Row(
                             modifier = Modifier
                                 .fillMaxWidth()
-                                .padding(vertical = 8.dp)
-                                .clickable {
-                                    selectedLanguage = language
-                                    onLanguageChange(language)
-                                },
+                                .padding(vertical = 8.dp),
+//                                .clickable {
+//                                    selectedLanguage = language
+//                                    onLanguageChange(language)
+//                                },
                             verticalAlignment = Alignment.CenterVertically
                         ) {
-                            RadioButton(
-                                selected = selectedLanguage == language,
-                                onClick = {
-                                    selectedLanguage = language
-                                    onLanguageChange(language)
-                                },
-                                colors = RadioButtonDefaults.colors(
-                                    selectedColor = Color(0xFF87CEEB),
-                                    unselectedColor = Color.Gray
-                                )
-                            )
+//                            RadioButton(
+//                                selected = selectedLanguage == language,
+//                                onClick = {
+//                                    selectedLanguage = language
+//                                    onLanguageChange(language)
+//                                },
+//                                colors = RadioButtonDefaults.colors(
+//                                    selectedColor = Color(0xFF87CEEB),
+//                                    unselectedColor = Color.Gray
+//                                )
+//                            )
                             Spacer(modifier = Modifier.width(8.dp))
                             Text(text = language, fontSize = 16.sp, color = Color.Black)
                         }
@@ -106,7 +106,7 @@ fun ConfigurationScreen(
 @Composable
 fun ConfigurationScreenPreview() {
     ConfigurationScreen(
-        onBack = {},
-        onLanguageChange = {}
+//        onBack = {},
+//        onLanguageChange = {}
     )
 }

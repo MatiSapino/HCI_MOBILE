@@ -21,12 +21,14 @@ import androidx.compose.ui.unit.sp
 import com.example.mobileapp.R
 import com.example.mobileapp.data.model.Device
 import com.example.mobileapp.data.model.DeviceType
+import com.example.mobileapp.ui.ui_states.DevicesUiState
 
 @Composable
 fun DeviceSection(
-    devices: List<Device>,
-    onDeviceSelected: (Device) -> Unit,
-    onAddDevice: () -> Unit
+//    devices: List<Device>,
+//    onDeviceSelected: (Device) -> Unit,
+//    onAddDevice: () -> Unit
+    uiState: DevicesUiState
 ) {
     Column {
         Row(
@@ -41,9 +43,9 @@ fun DeviceSection(
             ) {
                 Text(text = "Devices", fontSize = 20.sp)
                 Spacer(modifier = Modifier.width(7.dp))
-                IconButton(onClick = onAddDevice) {
-                    Icon(imageVector = Icons.Default.Add, contentDescription = "Add Device")
-                }
+//                IconButton(onClick = onAddDevice) {
+//                    Icon(imageVector = Icons.Default.Add, contentDescription = "Add Device")
+//                }
             }
         }
         LazyRow(
@@ -51,15 +53,19 @@ fun DeviceSection(
             contentPadding = PaddingValues(16.dp),
             horizontalArrangement = Arrangement.spacedBy(16.dp)
         ) {
-            items(devices) { device ->
-                DeviceCard(device = device, onClick = { onDeviceSelected(device) })
+            items(uiState.devices) { device ->
+//                DeviceCard(device = device, onClick = { onDeviceSelected(device) })
+                DeviceCard(device = device)
             }
         }
     }
 }
 
 @Composable
-fun DeviceCard(device: Device, onClick: () -> Unit) {
+fun DeviceCard(
+    device: Device,
+//    onClick: () -> Unit
+) {
     val icons = mapOf(
         DeviceType.LAMP to R.drawable.lightbulb,
         DeviceType.AC to R.drawable.ac,
@@ -79,7 +85,7 @@ fun DeviceCard(device: Device, onClick: () -> Unit) {
             .padding(horizontal = 8.dp)
             .border(1.dp, Color.Black, RoundedCornerShape(8.dp))
             .shadow(10.dp, RoundedCornerShape(8.dp))
-            .clickable(onClick = onClick)
+//            .clickable(onClick = onClick)
     ) {
         Column(
             horizontalAlignment = Alignment.CenterHorizontally,

@@ -49,6 +49,7 @@ import com.example.mobileapp.R
 import com.example.mobileapp.data.model.Device
 import com.example.mobileapp.data.model.DeviceType
 import com.example.mobileapp.ui.view_models.DevicesViewModel
+import com.example.mobileapp.ui.view_models.RoutinesViewModel
 
 private val selectedColor = Color.Gray
 private val unselectedColor = Color.Transparent
@@ -324,13 +325,24 @@ fun NewRoutineScreen(
     onRoutineSaved: () -> Unit, // Callback to manage the action of saving the routine
     onCancel: () -> Unit // Callback to handle cancel action
 ) {
-    val filteredDevices = if (selectedType != null) {
-        devices.filter { it.type == selectedType }
-    } else {
-        devices
+    var selectedDeviceType: DeviceType?
+    selectedDeviceType = null
+
+    fun filterDevices(selectedType: DeviceType?): List<Device>{
+        if (selectedType == null) {
+            return devices
+        } else {
+            return devices.filter { it.type == selectedType }
+        }
     }
 
     val deviceTypes = DeviceType.entries
+
+//    var devicesVM: DevicesViewModel
+//    var routinesVM: RoutinesViewModel
+//
+//    var routines by remember { mutableStateOf(routinesVM.uiState.value.routines) }
+//    var devices by remember { mutableStateOf(devicesVM.uiState.value.devices) }
 
     Column(modifier = Modifier
         .fillMaxSize()
@@ -346,7 +358,7 @@ fun NewRoutineScreen(
         RoutineNameInput(name = routineName, onNameChange = onNameChange)
         IconSelection(selectedIcon = selectedIcon, onIconSelected = onIconSelected)
         DeviceTypeSelection(deviceTypes = deviceTypes, selectedType = selectedType, onTypeSelected = onTypeSelected)
-        DeviceSelection(devices = filteredDevices, selectedDevice = selectedDevice, onDeviceSelected = onDeviceSelected)
+        DeviceSelection(devices = filterDevices(selectedDeviceType), selectedDevice = selectedDevice, onDeviceSelected = onDeviceSelected)
         AutomationSelection(
             device = selectedDevice,
             automations = automations,
