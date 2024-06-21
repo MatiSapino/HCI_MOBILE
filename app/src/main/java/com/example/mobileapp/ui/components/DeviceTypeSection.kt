@@ -40,6 +40,7 @@ fun DeviceTypeSection(
         R.drawable.ac,
         R.drawable.vacuum,
         R.drawable.tap,
+        R.drawable.tap,
     )
     Text(
         text = "Types of Devices",
