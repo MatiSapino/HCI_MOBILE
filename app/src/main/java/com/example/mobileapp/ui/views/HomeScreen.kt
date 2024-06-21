@@ -21,6 +21,7 @@ import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import com.example.mobileapp.data.model.Device
 import com.example.mobileapp.data.model.DeviceType
+import com.example.mobileapp.data.model.Routine
 import com.example.mobileapp.ui.components.DeviceSection
 import com.example.mobileapp.ui.components.DeviceTypeSection
 import com.example.mobileapp.ui.components.RoutineSection
@@ -48,10 +49,9 @@ fun HomeScreen(
     onAddRoutine: () -> Unit,
     onAddDevice: () -> Unit,
 ) {
-    var routines by remember { mutableStateOf(routinesVM.uiState.value.routines) }
-    var devices by remember { mutableStateOf(devicesVM.uiState.value.devices) }
-    var selectedDeviceType: DeviceType?
-    selectedDeviceType = null
+    var routines: List<Routine> by remember { mutableStateOf(routinesVM.uiState.value.routines) }
+    var devices: List<Device> by remember { mutableStateOf(devicesVM.uiState.value.devices) }
+    var selectedDeviceType: DeviceType? = null
 
     fun filterDevices(selectedType: DeviceType?): List<Device>{
         if (selectedType == null) {
