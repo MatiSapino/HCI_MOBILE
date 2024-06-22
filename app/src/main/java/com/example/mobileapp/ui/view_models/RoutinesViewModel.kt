@@ -4,6 +4,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.mobileapp.DataSourceException
 import com.example.mobileapp.data.model.Error
+import com.example.mobileapp.data.model.Routine
 import com.example.mobileapp.data.repository.RoutineRepository
 import com.example.mobileapp.ui.ui_states.RoutinesUiState
 import kotlinx.coroutines.Job
@@ -38,6 +39,15 @@ class RoutinesViewModel (
                 { state, response -> state}
             )
         }
+
+    fun addRoutine(routineId: String) {
+        runOnViewModelScope(
+            {
+                repository.getRoutine(routineId)
+            },
+            { state, response -> state.copy() }
+        )
+    }
 
         fun deleteRoutine(routineId: String) = viewModelScope.launch {
             runOnViewModelScope(

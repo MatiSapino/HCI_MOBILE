@@ -48,7 +48,10 @@ import androidx.lifecycle.viewmodel.compose.viewModel
 import com.example.mobileapp.R
 import com.example.mobileapp.data.model.Device
 import com.example.mobileapp.data.model.DeviceType
+import com.example.mobileapp.data.model.Routine
 import com.example.mobileapp.ui.view_models.DevicesViewModel
+import com.example.mobileapp.ui.view_models.RoutinesViewModel
+import com.example.mobileapp.ui.view_models.getViewModelFactory
 
 private val selectedColor = Color.Gray
 private val unselectedColor = Color.Transparent
@@ -373,6 +376,7 @@ fun NewRoutineScreenState(onRoutineSaved: () -> Unit, onCancel: () -> Unit) {
 
     val filteredDevices = if (selectedType != null) devices.filter { it.type == selectedType } else devices
 
+    val routineViewModel: RoutinesViewModel = viewModel(factory = getViewModelFactory())
 
     NewRoutineScreen(
         routineName = routineName,
@@ -406,13 +410,13 @@ fun NewRoutineScreenState(onRoutineSaved: () -> Unit, onCancel: () -> Unit) {
         },
         onAcceptAutomation = {},
         onSaveRoutine = {
-//            val newRoutine = Routine(
-//                id = UUID.randomUUID().toString(),
-//                name = routineName,
-//                icon = selectedIcon ?: 0,
-//                automations = selectedAutomations
-//            )
-//            deviceViewModel.addRoutine(newRoutine)
+            val newRoutine = Routine(
+                id = null,
+                name = routineName,
+                actions = null,
+                meta = null
+            )
+            routineViewModel.addRoutine(routineId = "a")
         },
         onRoutineSaved = {
             routineName = ""
@@ -431,10 +435,4 @@ fun NewRoutineScreenState(onRoutineSaved: () -> Unit, onCancel: () -> Unit) {
             onCancel() // Go back to home screen
         }
     )
-}
-
-@Preview(showBackground = true, showSystemUi = true)
-@Composable
-fun NewRoutineScreenPreview() {
-    NewRoutineScreenState(onRoutineSaved = {}, onCancel = {})
 }
