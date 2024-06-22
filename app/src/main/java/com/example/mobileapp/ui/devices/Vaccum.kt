@@ -27,7 +27,10 @@ import androidx.compose.material3.Switch
 import androidx.compose.material3.SwitchDefaults
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableFloatStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
@@ -47,10 +50,18 @@ fun VacuumCard(
     vm: VacuumViewModel,
     onBack: () -> Unit
 ) {
-    var vacuum by remember { mutableStateOf(vm.uiState.value.currentDevice) }
-    var status by remember { mutableStateOf(vm.uiState.value.currentDevice?.status) }
-    var mode by remember { mutableStateOf(vm.uiState.value.currentDevice?.mode) }
-    val selectedRoom = remember { mutableStateOf(vm.uiState.value.currentDevice?.location) }
+    val uiVacuumState by vm.uiState.collectAsState()
+
+    var vacuumState by remember { mutableStateOf<Status?>(null) }
+    var mode by remember { mutableStateOf<String?>("") }
+    var selectedRoom by remember { mutableStateOf<String?>("") }
+
+    // Update states when uiDoorState.currentDevice becomes available
+    LaunchedEffect(uiVacuumState.currentDevice) {
+        uiVacuumState.currentDevice?.let { device ->
+            vacuumState = device.status
+        }
+    }
 
     val modesVacuum = listOf("vacuum", "mop")
     val roomsVacuum = listOf("Living Room", "Kitchen", "Bedroom", "Bathroom", "Garage", "Garden")
@@ -85,7 +96,7 @@ fun VacuumCard(
                 verticalArrangement = Arrangement.Center,
                 modifier = Modifier.padding(16.dp)
             ) {
-                Text(text = "Vacuum - ${vacuum?.name}", fontSize = 20.sp, color = Color.Black)
+                Text(text = "Vacuum - ${uiVacuumState.currentDevice?.name}", fontSize = 20.sp, color = Color.Black)
 
                 Row(
                     modifier = Modifier
@@ -95,11 +106,11 @@ fun VacuumCard(
                     verticalAlignment = Alignment.CenterVertically
                 ) {
                     Switch(
-                        checked = status == Status.ACTIVE,
-                        onCheckedChange = { newStatus ->
-                            status = if (newStatus) Status.ACTIVE else Status.INACTIVE
-                            if (status == Status.ACTIVE) vm.start()
-                            if (status == Status.INACTIVE) vm.pause()
+                        checked = vacuumState == Status.ACTIVE,
+                        onCheckedChange = { newvacuumState ->
+                            vacuumState = if (newvacuumState) Status.ACTIVE else Status.INACTIVE
+                            if (vacuumState == Status.ACTIVE) vm.start()
+                            if (vacuumState == Status.INACTIVE) vm.pause()
                         },
                         colors = SwitchDefaults.colors(
                             checkedThumbColor = Color(0xFF87CEEB),
@@ -108,7 +119,7 @@ fun VacuumCard(
                             uncheckedTrackColor = Color.White
                         )
                     )
-                    Text(text = status.toString(), color = Color.Black, fontSize = 16.sp)
+                    Text(text = vacuumState.toString(), color = Color.Black, fontSize = 16.sp)
                 }
 
                 // Mode Selector
@@ -161,7 +172,7 @@ fun VacuumCard(
                             .padding(8.dp)
                     ) {
                         Text(
-                            text = "Room: ${selectedRoom.value ?: "Select Room"}",
+                            text = "Room: ${selectedRoom ?: "Select Room"}",
                             modifier = Modifier
                                 .clickable { expanded = true }
                                 .padding(16.dp),
@@ -175,7 +186,7 @@ fun VacuumCard(
                                 DropdownMenuItem(
                                     text = { Text(text = room, color = Color.Black) },
                                     onClick = {
-                                        selectedRoom.value = room
+                                        selectedRoom = room
                                         expanded = false
                                     }
                                 )
@@ -187,11 +198,11 @@ fun VacuumCard(
                 Button(
                     onClick = {
                         // Implement logic to return to base
-                        if (status == Status.INACTIVE) {
+                        if (vacuumState == Status.INACTIVE) {
                             // alert("Error: Vacuum already inactive")
                         } else {
-                            status = Status.INACTIVE
-                            selectedRoom.value = null
+                            vacuumState = Status.INACTIVE
+                            selectedRoom = null
                             vm.dock()
                             // alert("Vacuum docked")
                         }
@@ -211,7 +222,7 @@ fun VacuumCard(
 
                 Button(
                     onClick = {
-                        vm.deleteDevice(vacuum?.id)
+                        vm.deleteDevice(uiVacuumState.currentDevice?.id)
                         onBack()
                     },
                     colors = ButtonDefaults.elevatedButtonColors(
@@ -239,7 +250,7 @@ fun VacuumCardPreview() {
 //            id = "1",
 //            name = "Living Room Vacuum",
 //            type = "Vacuum",
-//            state = mutableMapOf("status" to "inactive", "vacuum" to "vacuum", "room" to "Living Room")
+//            state = mutableMapOf("vacuumState" to "inactive", "vacuum" to "vacuum", "room" to "Living Room")
 //        ),
 //        onBack = {},
 //        onDelete = {},

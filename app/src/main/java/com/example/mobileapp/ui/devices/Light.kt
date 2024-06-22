@@ -1,5 +1,6 @@
 package com.example.mobileapp.ui.devices
 
+import android.util.Log
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
@@ -33,6 +34,7 @@ import androidx.compose.material3.Switch
 import androidx.compose.material3.SwitchDefaults
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableIntStateOf
@@ -108,10 +110,18 @@ fun LightCard(
 ) {
     val uiLampState by vm.uiState.collectAsState()
 
-    var light by remember { mutableStateOf(uiLampState.currentDevice) }
-    var lightState by remember { mutableStateOf(uiLampState.currentDevice?.status) }
-    var color by remember { mutableStateOf(uiLampState.currentDevice?.color) }
-    var brightness by remember { mutableStateOf(uiLampState.currentDevice?.brightness) }
+    var lightState by remember { mutableStateOf<Status?>(null) }
+    var color by remember { mutableStateOf<String?>("#FFFFFF") }
+    var brightness by remember { mutableStateOf<Int?>(0) }
+
+    // Update states when uiLampState.currentDevice becomes available
+    LaunchedEffect(uiLampState.currentDevice) {
+        uiLampState.currentDevice?.let { device ->
+            brightness = device.brightness
+            color = device.color
+            lightState = device.status
+        }
+    }
 
     val showColorPicker = remember { mutableStateOf(false) }
 
@@ -120,33 +130,33 @@ fun LightCard(
         return String.format("#%08X", argb)
     }
 
-    fun startsWith(str: String, prefix: String): Boolean {
-        if (prefix.length > str.length) return false
-        for (i in prefix.indices) {
-            if (str[i] != prefix[i]) return false
+    fun hexToColor(hex: String?): Color {
+        if (hex.isNullOrEmpty()) {
+            Log.e("ColorConversion", "Provided hex string is null or empty")
+            return Color(0xFFFFFFFF) // Default to white if empty or null
         }
-        return true
-    }
 
-    fun substring(str: String, beginIndex: Int, endIndex: Int): String {
-        if (beginIndex !in 0..endIndex || endIndex !in 0..str.length) throw IndexOutOfBoundsException("beginIndex: $beginIndex, endIndex: $endIndex, length: $str.length")
-        val length = endIndex - beginIndex
-        if (length == 0) return ""
-        val result = CharArray(length)
-        for (i in 0 until length) {
-            result[i] = str[beginIndex + i]
+        val hexCleaned = if (hex.startsWith("#")) hex.substring(1) else hex
+
+        // Ensure the cleaned hex string has valid length (6 for RGB or 8 for ARGB)
+        if (hexCleaned.length != 6 && hexCleaned.length != 8) {
+            Log.e("ColorConversion", "Invalid hex string length: $hexCleaned")
+            return Color(0xFFFFFFFF) // Default to white for invalid length
         }
-        return String(result)
+
+        return try {
+            // If length is 6 (RGB), add full opacity (FF) at the beginning
+            val argbHex = if (hexCleaned.length == 6) "FF$hexCleaned" else hexCleaned
+            val value = argbHex.toULong(16)
+            Color(value)
+        } catch (e: NumberFormatException) {
+            Log.e("ColorConversion", "NumberFormatException for hex: $hexCleaned", e)
+            Color(0xFFFFFFFF) // Default to white if conversion fails
+        } catch (e: Exception) {
+            Log.e("ColorConversion", "Exception for hex: $hexCleaned", e)
+            Color(0xFFFFFFFF) // Default to white if conversion fails
+        }
     }
-
-    fun hexToColor(hex: String): Color{
-        val hexa = if (startsWith(hex, "#")) substring(hex, 0,1) else hex
-            val value = hexa.toULong(16)
-            return Color(value)
-    }
-
-
-
 
 
     Column(
@@ -158,7 +168,7 @@ fun LightCard(
             )
             .fillMaxSize()
     ) {
-        IconButton(onClick = {onBack()}, modifier = Modifier.align(Alignment.Start)) {
+        IconButton(onClick = { onBack() }, modifier = Modifier.align(Alignment.Start)) {
             Icon(imageVector = Icons.AutoMirrored.Filled.ArrowBack, contentDescription = "Back")
         }
 
@@ -174,12 +184,12 @@ fun LightCard(
                 .shadow(10.dp, RoundedCornerShape(16.dp))
                 .border(1.dp, Color.Black, RoundedCornerShape(16.dp))
         ) {
-            Column (
+            Column(
                 horizontalAlignment = Alignment.CenterHorizontally,
                 verticalArrangement = Arrangement.Center,
                 modifier = Modifier.padding(16.dp)
             ) {
-                Text(text = "Light - ${light?.name}", fontSize = 20.sp, color = Color.Black)
+                Text(text = "Light - ${uiLampState.currentDevice?.name}", fontSize = 20.sp, color = Color.Black)
 
                 Row(
                     modifier = Modifier
@@ -204,16 +214,17 @@ fun LightCard(
                     )
                     Text(text = lightState.toString(), color = Color.Black, fontSize = 16.sp)
                 }
-
-                Box(
-                    modifier = Modifier
-                        .size(100.dp)
-                        .background(hexToColor(color!!))
-                        .border(1.dp, Color.Black)
-                        .clickable {
-                            showColorPicker.value = true
-                        }
-                )
+                uiLampState.currentDevice?.let {
+                    Box(
+                        modifier = Modifier
+                            .size(100.dp)
+                            .background(hexToColor(it.color))
+                            .border(1.dp, Color.Black)
+                            .clickable {
+                                showColorPicker.value = true
+                            }
+                    )
+                }
 
                 Column(
                     horizontalAlignment = Alignment.CenterHorizontally,
@@ -221,7 +232,7 @@ fun LightCard(
                 ) {
                     Text(text = "Brightness: ${brightness}%", color = Color.Black, modifier = Modifier.padding(top = 8.dp))
                     Slider(
-                        value = brightness?.toFloat()!!,
+                        value = brightness?.toFloat() ?: 0f,
                         onValueChange = { newBrightness ->
                             brightness = newBrightness.toInt()
                             vm.setBrightness(brightness!!)
@@ -236,7 +247,7 @@ fun LightCard(
 
                 Button(
                     onClick = {
-                        vm.deleteDevice(light?.id)
+                        vm.deleteDevice(uiLampState.currentDevice?.id)
                         onBack()
                     },
                     colors = ButtonDefaults.elevatedButtonColors(
@@ -256,13 +267,16 @@ fun LightCard(
     }
 
     if (showColorPicker.value) {
-        ColorPickerDialog(
-            selectedColor = hexToColor(color!!),
-            onColorSelected = { selectedColor ->
-                color = colorToHex(selectedColor)
-                vm.setColor(color!!)
-            },
-            onDismissRequest = { showColorPicker.value = false }
-        )
+        uiLampState.currentDevice?.let {
+            ColorPickerDialog(
+                selectedColor = hexToColor(it.color),
+                onColorSelected = { selectedColor ->
+                    color = colorToHex(selectedColor)
+                    vm.setColor(color!!)
+                },
+                onDismissRequest = { showColorPicker.value = false }
+            )
+        }
     }
 }
+

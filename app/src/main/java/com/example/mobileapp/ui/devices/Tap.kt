@@ -29,6 +29,8 @@ import androidx.compose.material3.Switch
 import androidx.compose.material3.SwitchDefaults
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableFloatStateOf
 import androidx.compose.runtime.mutableStateOf
@@ -51,10 +53,18 @@ fun TapCard(
     vm: TapViewModel,
     onBack: () -> kotlin.Unit
 ) {
-    var tap by remember { mutableStateOf(vm.uiState.value.currentDevice) }
-    var tapState by remember { mutableStateOf(vm.uiState.value.currentDevice?.status) }
+    val uiTapState by vm.uiState.collectAsState()
+
+    var tapState by remember { mutableStateOf<Status?>(null) }
     var quantity by remember { mutableFloatStateOf(0.toFloat()) }
     var unit by remember { mutableStateOf(Unit.L) }
+
+    // Update states when uiDoorState.currentDevice becomes available
+    LaunchedEffect(uiTapState.currentDevice) {
+        uiTapState.currentDevice?.let { device ->
+            tapState = device.status
+        }
+    }
 
     val units = Unit.entries
 
@@ -88,7 +98,7 @@ fun TapCard(
                 verticalArrangement = Arrangement.Center,
                 modifier = Modifier.padding(16.dp)
             ) {
-                Text(text = "Tap - ${tap?.name}", fontSize = 20.sp, color = Color.Black)
+                Text(text = "Tap - ${uiTapState.currentDevice?.name}", fontSize = 20.sp, color = Color.Black)
 
                 Row(
                     modifier = Modifier
@@ -183,7 +193,7 @@ fun TapCard(
 
                 Button(
                     onClick = {
-                        vm.deleteDevice(tap?.id)
+                        vm.deleteDevice(uiTapState.currentDevice?.id)
                         onBack()
                     },
                     colors = ButtonDefaults.elevatedButtonColors(

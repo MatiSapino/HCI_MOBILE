@@ -22,6 +22,8 @@ import androidx.compose.material3.Switch
 import androidx.compose.material3.SwitchDefaults
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -42,10 +44,17 @@ fun DoorCard(
     vm: DoorViewModel,
     onBack: () -> Unit,
 ) {
-    var door by remember { mutableStateOf(vm.uiState.value.currentDevice) }
-    var doorState by remember { mutableStateOf(vm.uiState.value.currentDevice?.status) }
-    var lock by remember { mutableStateOf(vm.uiState.value.currentDevice?.lock) }
+    val uiDoorState by vm.uiState.collectAsState()
+    var doorState by remember { mutableStateOf<Status?>(null) }
+    var lock by remember { mutableStateOf<Status?>(null) }
 
+    // Update states when uiDoorState.currentDevice becomes available
+    LaunchedEffect(uiDoorState.currentDevice) {
+        uiDoorState.currentDevice?.let { device ->
+            lock = device.lock
+            doorState = device.status
+        }
+    }
 
     Column(
         modifier = Modifier
@@ -77,7 +86,7 @@ fun DoorCard(
                 verticalArrangement = Arrangement.Center,
                 modifier = Modifier.padding(16.dp)
             ) {
-                Text(text = "Door - ${door?.name}", fontSize = 20.sp, color = Color.Black)
+                Text(text = "Door - ${uiDoorState.currentDevice?.name}", fontSize = 20.sp, color = Color.Black)
 
                 Row(
                     modifier = Modifier
@@ -130,7 +139,7 @@ fun DoorCard(
 
                 Button(
                     onClick = {
-                        vm.deleteDevice(door?.id)
+                        vm.deleteDevice(uiDoorState.currentDevice?.id)
                         onBack()
                     },
                     colors = ButtonDefaults.elevatedButtonColors(

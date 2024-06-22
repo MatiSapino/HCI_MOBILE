@@ -8,6 +8,8 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -51,9 +53,22 @@ fun HomeScreen(
     onAddRoutine: () -> Unit,
     onAddDevice: () -> Unit,
 ) {
-    var routines: List<Routine> by remember { mutableStateOf(routinesVM.uiState.value.routines) }
-    var devices: List<Device> by remember { mutableStateOf(devicesVM.uiState.value.devices) }
+    val uiDevicesState by devicesVM.uiState.collectAsState()
+    val uiRoutinesState by routinesVM.uiState.collectAsState()
+
+    var routines: List<Routine> by remember { mutableStateOf(emptyList()) }
+    var devices: List<Device> by remember { mutableStateOf(emptyList()) }
     var selectedDeviceType: DeviceType? = null
+
+
+    // Update states when uiDoorState.currentDevice becomes available
+    LaunchedEffect(uiDevicesState) {
+        devices = uiDevicesState.devices
+    }
+    LaunchedEffect(uiRoutinesState) {
+        routines = uiRoutinesState.routines
+    }
+
 
     fun filterDevices(selectedType: DeviceType?): List<Device>{
         if (selectedType == null) {
@@ -62,9 +77,6 @@ fun HomeScreen(
             return devices.filter { it.type == selectedType }
         }
     }
-
-    devices.forEach({ Log.i("Device","Dispositivo de tipo: " +it.type.toString()+ " y de nombre: " +it.name) })
-
 
     Column(
         modifier = Modifier

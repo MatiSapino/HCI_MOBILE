@@ -29,6 +29,7 @@ import androidx.compose.material3.Switch
 import androidx.compose.material3.SwitchDefaults
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableFloatStateOf
@@ -44,7 +45,6 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import androidx.core.widget.ContentLoadingProgressBar
 import com.example.mobileapp.data.model.Status
 import com.example.mobileapp.ui.view_models.devices.AcViewModel
 import kotlinx.coroutines.delay
@@ -54,12 +54,29 @@ fun ACCard(
     vm: AcViewModel,
     onBack: () -> Unit,
 ) {
-    val uiLampState by vm.uiState.collectAsState()
+    val uiAcState by vm.uiState.collectAsState()
 
     val velocityOptions = listOf("auto", "25", "50", "75", "100")
     val verticalSwingsOptions = listOf("auto", "22", "45", "67", "90")
     val horizontalSwingsOptions = listOf("auto", "-90", "-45", "0", "45", "90")
     val modesAc = listOf("fan", "cool", "heat")
+    
+    var acSpeed by remember { mutableStateOf(0) }
+    var acVertical by remember { mutableStateOf(0) }
+    var acHorizontal by remember { mutableStateOf(0) }
+    var temperature by remember { mutableStateOf(0f) }
+    var acState by remember { mutableStateOf<Status?>(null) }
+
+    // Update states when uiAcState.currentDevice becomes available
+    LaunchedEffect(uiAcState.currentDevice) {
+        uiAcState.currentDevice?.let { device ->
+            acSpeed = velocityOptions.indexOf(device.fanSpeed)
+            acVertical = verticalSwingsOptions.indexOf(device.verticalSwing)
+            acHorizontal = horizontalSwingsOptions.indexOf(device.horizontalSwing)
+            temperature = device.temperature?.toFloat() ?: 0f
+            acState = device.status
+        }
+    }
 
     Column(
         modifier = Modifier
@@ -70,7 +87,7 @@ fun ACCard(
             )
             .padding(10.dp)
     ) {
-        IconButton(onClick = { onBack() }, modifier = Modifier.align(Alignment.Start)) {
+        IconButton(onClick = {onBack()}, modifier = Modifier.align(Alignment.Start)) {
             Icon(imageVector = Icons.AutoMirrored.Filled.ArrowBack, contentDescription = "Back")
         }
 
@@ -91,11 +108,7 @@ fun ACCard(
                 verticalArrangement = Arrangement.Center,
                 modifier = Modifier.padding(16.dp)
             ) {
-                Text(
-                    text = "AC - ${uiLampState.currentDevice?.name ?: "Loading"}",
-                    fontSize = 20.sp,
-                    color = Color.Black
-                )
+                Text(text = "AC - ${uiAcState.currentDevice?.name ?: "Loading"}", fontSize = 20.sp, color = Color.Black)
 
                 Row(
                     modifier = Modifier
@@ -104,9 +117,6 @@ fun ACCard(
                     horizontalArrangement = Arrangement.SpaceBetween,
                     verticalAlignment = Alignment.CenterVertically
                 ) {
-                    var acState by remember {
-                        mutableStateOf(uiLampState.currentDevice?.status)
-                    }
                     Switch(
                         checked = acState == Status.ON,
                         onCheckedChange = { newStatus ->
@@ -129,11 +139,6 @@ fun ACCard(
                     horizontalAlignment = Alignment.CenterHorizontally,
                     modifier = Modifier.padding(vertical = 16.dp)
                 ) {
-                    var temperature by remember {
-                        mutableStateOf(uiLampState.currentDevice?.let {
-                            it.temperature?.toFloat()
-                        } ?: 0.toFloat())
-                    }
                     Text(text = "Temperature: ${temperature.toInt()}°C", color = Color.Black)
                     Slider(
                         value = temperature,
@@ -162,7 +167,7 @@ fun ACCard(
                             .padding(8.dp)
                     ) {
                         Text(
-                            text = "Mode: ${uiLampState.currentDevice?.mode}",
+                            text = "Mode: ${uiAcState.currentDevice?.mode}",
                             modifier = Modifier
                                 .clickable { expanded = true }
                                 .padding(16.dp),
@@ -176,7 +181,7 @@ fun ACCard(
                                 DropdownMenuItem(
                                     text = { Text(text = modeAc, color = Color.Black) },
                                     onClick = {
-                                        uiLampState.currentDevice?.mode = modeAc
+                                        uiAcState.currentDevice?.mode = modeAc
                                         vm.setMode(modeAc)
                                         expanded = false
                                     }
@@ -191,18 +196,13 @@ fun ACCard(
                     horizontalAlignment = Alignment.CenterHorizontally,
                     modifier = Modifier.padding(vertical = 16.dp)
                 ) {
-                    var acSpeed by remember {
-                        mutableStateOf(uiLampState.currentDevice?.let {
-                            velocityOptions.indexOf(it.fanSpeed)
-                        } ?: 0)
-                    }
                     Text(text = "Fan Speed: ${velocityOptions[acSpeed]}", color = Color.Black)
                     Slider(
                         value = acSpeed.toFloat(),
                         onValueChange = {
                             acSpeed = it.toInt()
                             vm.setFanSpeed(velocityOptions[acSpeed])
-                        },
+                                        },
                         valueRange = 0f..4f,
                         steps = 3,
                         colors = SliderDefaults.colors(
@@ -217,22 +217,14 @@ fun ACCard(
                     horizontalAlignment = Alignment.CenterHorizontally,
                     modifier = Modifier.padding(vertical = 16.dp)
                 ) {
-                    var acVertical by remember {
-                        mutableStateOf(uiLampState.currentDevice?.let {
-                            verticalSwingsOptions.indexOf(it.verticalSwing)
-                        } ?: 0)
-                    }
-                    Text(
-                        text = "Vertical Swing: ${verticalSwingsOptions[acVertical]}",
-                        color = Color.Black
-                    )
+                    Text(text = "Vertical Swing: ${verticalSwingsOptions[acVertical]}", color = Color.Black)
                     Slider(
                         value = acVertical.toFloat(),
                         onValueChange = {
                             acVertical = it.toInt()
                             vm.setVerticalSwing(verticalSwingsOptions[acVertical])
 
-                        },
+                                        },
                         valueRange = 0f..4f,
                         steps = 3,
                         colors = SliderDefaults.colors(
@@ -246,21 +238,13 @@ fun ACCard(
                     horizontalAlignment = Alignment.CenterHorizontally,
                     modifier = Modifier.padding(vertical = 16.dp)
                 ) {
-                    var acHorizontal by remember {
-                        mutableStateOf(uiLampState.currentDevice?.let {
-                            horizontalSwingsOptions.indexOf(it.horizontalSwing)
-                        } ?: 0)
-                    }
-                    Text(
-                        text = "Horizontal Swing: ${horizontalSwingsOptions[acHorizontal]}",
-                        color = Color.Black
-                    )
+                    Text(text = "Horizontal Swing: ${horizontalSwingsOptions[acHorizontal]}", color = Color.Black)
                     Slider(
                         value = acHorizontal.toFloat(),
                         onValueChange = {
                             acHorizontal = it.toInt()
                             vm.setHorizontalSwing(horizontalSwingsOptions[acHorizontal])
-                        },
+                                        },
                         valueRange = 0f..5f,
                         steps = 5,
                         colors = SliderDefaults.colors(
@@ -272,9 +256,9 @@ fun ACCard(
 
                 Button(
                     onClick = {
-                        vm.deleteDevice(uiLampState.currentDevice?.id)
+                        vm.deleteDevice(uiAcState.currentDevice?.id)
                         onBack()
-                    },
+                              },
                     colors = ButtonDefaults.elevatedButtonColors(
                         containerColor = Color.Red,
                         contentColor = Color.White
