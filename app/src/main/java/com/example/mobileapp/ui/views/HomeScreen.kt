@@ -1,5 +1,6 @@
 package com.example.mobileapp.ui.views
 
+import android.util.Log
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
@@ -16,6 +17,7 @@ import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
+import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
@@ -61,6 +63,8 @@ fun HomeScreen(
         }
     }
 
+    devices.forEach({ Log.i("Device","Dispositivo de tipo: " +it.type.toString()+ " y de nombre: " +it.name) })
+
 
     Column(
         modifier = Modifier
@@ -93,29 +97,17 @@ fun HomeScreen(
 }
 
 @Composable
-fun MainScreen() {
-    val navController = rememberNavController()
+fun MainScreen(onDeviceSelected: (Device) -> Unit,
+               onAddRoutine: () -> Unit,
+               onAddDevice: () -> Unit,) {
     val devicesVM: DevicesViewModel = viewModel(factory = getViewModelFactory())
     val routinesVM: RoutinesViewModel = viewModel(factory = getViewModelFactory())
-
-    NavHost(navController = navController, startDestination = Screen.HomeScreen.route) {
-        composable(Screen.HomeScreen.route) {
-            HomeScreen(
-                devicesVM = devicesVM,
-                routinesVM = routinesVM,
-                onDeviceSelected = { device ->
-                    when (device.type) {
-                        DeviceType.LAMP -> navController.navigate(Screen.LightCard.route + "/" +device.id)
-                        DeviceType.AC -> navController.navigate(Screen.ACCard.route + "/" +device.id)
-                        DeviceType.VACUUM -> navController.navigate(Screen.VacuumCard.route + "/" +device.id)
-                        DeviceType.TAP -> navController.navigate(Screen.TapCard.route + "/" +device.id)
-                        DeviceType.DOOR -> navController.navigate(Screen.DoorCard.route + "/" +device.id)
-                    }
-                },
-                onAddRoutine = { navController.navigate(Screen.NewRoutineScreen.route) },
-                onAddDevice = { navController.navigate(Screen.NewDeviceScreen.route) },
-            )
-        }
-    }
+    HomeScreen(
+        devicesVM = devicesVM,
+        routinesVM = routinesVM,
+        onDeviceSelected = onDeviceSelected,
+        onAddRoutine = onAddRoutine,
+        onAddDevice = onAddDevice,
+    )
 }
 

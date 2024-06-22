@@ -11,7 +11,11 @@ import androidx.savedstate.SavedStateRegistryOwner
 import com.example.mobileapp.ApiApplication
 import com.example.mobileapp.data.repository.DeviceRepository
 import com.example.mobileapp.data.repository.RoutineRepository
+import com.example.mobileapp.ui.view_models.devices.AcViewModel
+import com.example.mobileapp.ui.view_models.devices.DoorViewModel
 import com.example.mobileapp.ui.view_models.devices.LampViewModel
+import com.example.mobileapp.ui.view_models.devices.TapViewModel
+import com.example.mobileapp.ui.view_models.devices.VacuumViewModel
 
 @Composable
 fun getViewModelFactory(defaultArgs: Bundle? = null): ViewModelFactory {
@@ -47,6 +51,18 @@ class ViewModelFactory (
 
             isAssignableFrom(LampViewModel::class.java) ->
                 LampViewModel(deviceRepository)
+
+            isAssignableFrom(AcViewModel::class.java) ->
+                AcViewModel(deviceRepository)
+
+            isAssignableFrom(TapViewModel::class.java) ->
+                TapViewModel(deviceRepository)
+
+            isAssignableFrom(DoorViewModel::class.java) ->
+                DoorViewModel(deviceRepository)
+
+            isAssignableFrom(VacuumViewModel::class.java) ->
+                VacuumViewModel(deviceRepository)
 
             else ->
                 throw IllegalArgumentException("Unknown ViewModel class: ${modelClass.name}")

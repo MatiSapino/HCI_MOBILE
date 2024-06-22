@@ -10,7 +10,7 @@ class RemoteDeviceType {
     lateinit var name: String
 
     @SerializedName("powerUsage")
-    var powerUsage: Int? = null
+    var powerUsage: Int = 0
 
     companion object {
         const val LAMP_TYPE_ID = "go46xmbqeomjrsjr"

@@ -50,7 +50,6 @@ fun ACCard(
     vm: AcViewModel,
     onBack: () -> Unit,
 ) {
-
     var ac by remember { mutableStateOf(vm.uiState.value.currentDevice) }
     var acState by remember { mutableStateOf(vm.uiState.value.currentDevice?.status) }
     var verticalSwing by remember { mutableStateOf(vm.uiState.value.currentDevice?.verticalSwing) }

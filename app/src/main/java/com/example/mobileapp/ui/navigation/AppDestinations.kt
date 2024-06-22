@@ -10,9 +10,9 @@ import com.example.mobileapp.R
 enum class AppDestinations(@StringRes val title: Int, val icon: ImageVector, val route: String) {
     HOME(R.string.Home, Icons.Filled.Home, "home_screen"),
     CONFIGURATION(R.string.Configuration, Icons.Filled.Settings , "configuration_screen"),
-
     NEW_DEVICE(R.string.NewDevice, Icons.Filled.Settings , "new_device_screen"),
     NEW_ROUTINE(R.string.NewRoutine, Icons.Filled.Settings , "new_routine_screen"),
+
     LIGHT(R.string.Light, Icons.Filled.Settings , "light_card/{deviceId}"),
     TAP(R.string.Tap, Icons.Filled.Settings , "tap_card/{deviceId}"),
     VACUUM(R.string.Vacuum, Icons.Filled.Settings , "vacuum_card/{deviceId}"),
