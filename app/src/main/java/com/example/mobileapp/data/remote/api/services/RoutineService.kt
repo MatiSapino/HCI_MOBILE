@@ -12,13 +12,13 @@ import retrofit2.http.Path
 
 interface RoutineService {
     @GET("routines")
-    suspend fun getRoutines(): Response<RemoteResult<List<RemoteRoutine<*>>>>
+    suspend fun getRoutines(): Response<RemoteResult<List<RemoteRoutine>>>
 
     @POST("routines")
-    suspend fun addRoutine(@Body routine: RemoteRoutine<*>): Response<RemoteResult<RemoteRoutine<*>>>
+    suspend fun addRoutine(@Body routine: RemoteRoutine): Response<RemoteResult<RemoteRoutine>>
 
     @GET("routines/{routineId}")
-    suspend fun getRoutine(@Path("routineId") routineId: String): Response<RemoteResult<RemoteRoutine<*>>>
+    suspend fun getRoutine(@Path("routineId") routineId: String): Response<RemoteResult<RemoteRoutine>>
 
     @PUT("routines/{routineId}/execute")
     suspend fun executeRoutine(

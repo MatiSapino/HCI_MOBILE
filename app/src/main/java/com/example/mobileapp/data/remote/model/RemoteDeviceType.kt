@@ -1,8 +1,9 @@
 package com.example.mobileapp.data.remote.model
 
+import com.example.mobileapp.data.model.ConcreteDeviceType
 import com.google.gson.annotations.SerializedName
 
-class RemoteDeviceType {
+abstract class RemoteDeviceType {
     @SerializedName("id")
     lateinit var id: String
 
@@ -10,7 +11,11 @@ class RemoteDeviceType {
     lateinit var name: String
 
     @SerializedName("powerUsage")
-    var powerUsage: Int = 0
+    var powerUsage: Int? = null
+
+    abstract fun asModel(): ConcreteDeviceType
+
+
 
     companion object {
         const val LAMP_TYPE_ID = "go46xmbqeomjrsjr"

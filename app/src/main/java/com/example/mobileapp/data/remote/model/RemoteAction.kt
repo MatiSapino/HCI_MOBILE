@@ -2,9 +2,9 @@ package com.example.mobileapp.data.remote.model
 
 import com.google.gson.annotations.SerializedName
 
-class RemoteAction<T> where T : Any {
+class RemoteAction {
     @SerializedName("device")
-    lateinit var device: RemoteDevice<*>
+    lateinit var device: RemoteRoutineDevice
 
     @SerializedName("actionName")
     lateinit var name: String

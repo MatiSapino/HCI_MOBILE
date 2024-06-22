@@ -8,5 +8,5 @@ abstract class Routine(
     val actions: List<Action>,
     val meta: Any?
 ) {
-    abstract fun asRemoteModel(): RemoteRoutine<*>
+    abstract fun asRemoteModel(): RemoteRoutine
 }

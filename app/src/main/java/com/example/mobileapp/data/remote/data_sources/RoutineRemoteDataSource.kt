@@ -10,7 +10,7 @@ class RoutineRemoteDataSource(
     private val routineService: RoutineService
 ) : RemoteDataSource() {
 
-    val routines: Flow<List<RemoteRoutine<*>>> = flow {
+    val routines: Flow<List<RemoteRoutine>> = flow {
         while (true) {
             val routines = handleApiResponse {
                 routineService.getRoutines()
@@ -20,13 +20,13 @@ class RoutineRemoteDataSource(
         }
     }
 
-    suspend fun getRoutine(routineId: String): RemoteRoutine<*> {
+    suspend fun getRoutine(routineId: String): RemoteRoutine {
         return handleApiResponse {
             routineService.getRoutine(routineId)
         }
     }
 
-    suspend fun addRoutine(routine: RemoteRoutine<*>): RemoteRoutine<*> {
+    suspend fun addRoutine(routine: RemoteRoutine): RemoteRoutine {
         return handleApiResponse {
             routineService.addRoutine(routine)
         }

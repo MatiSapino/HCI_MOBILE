@@ -5,5 +5,5 @@ enum class DeviceType {
     AC,
     TAP,
     DOOR,
-    VACUUM
+    VACUUM;
 }

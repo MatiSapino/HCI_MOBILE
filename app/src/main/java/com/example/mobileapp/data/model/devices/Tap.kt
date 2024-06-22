@@ -14,7 +14,7 @@ class Tap(
 ) : Device(id, name, DeviceType.TAP, null) {
 
     @JvmName("setStatusInternal")
-    fun setStatus(newStatus: Status) {
+    fun setNewStatus(newStatus: Status) {
         status = newStatus
     }
 

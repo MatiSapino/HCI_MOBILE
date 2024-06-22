@@ -32,7 +32,7 @@ class TapViewModel(
     fun open() = runOnViewModelScope(
         { repository.executeDeviceAction(uiState.value.currentDevice?.id!!, Tap.OPEN) },
         { state, _ ->
-            uiState.value.currentDevice?.setStatus(Status.OPENED)
+            uiState.value.currentDevice?.setNewStatus(Status.OPENED)
             state.copy(currentDevice =  uiState.value.currentDevice)
         }
     )
@@ -40,7 +40,7 @@ class TapViewModel(
     fun close() = runOnViewModelScope(
         { repository.executeDeviceAction(uiState.value.currentDevice?.id!!, Tap.CLOSE) },
         { state, _ ->
-            uiState.value.currentDevice?.setStatus(Status.CLOSED)
+            uiState.value.currentDevice?.setNewStatus(Status.CLOSED)
             state.copy(currentDevice =  uiState.value.currentDevice)
         }
     )

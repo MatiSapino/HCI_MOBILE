@@ -2,9 +2,11 @@ package com.example.mobileapp.data.remote.api
 
 import com.example.mobileapp.data.remote.api.adapters.DateTypeAdapter
 import com.example.mobileapp.data.remote.api.adapters.DeviceTypeAdapter
+import com.example.mobileapp.data.remote.api.adapters.RoutineTypeAdapter
 import com.example.mobileapp.data.remote.api.services.DeviceService
 import com.example.mobileapp.data.remote.api.services.RoutineService
 import com.example.mobileapp.data.remote.model.RemoteDevice
+import com.example.mobileapp.data.remote.model.RemoteRoutine
 import com.google.gson.GsonBuilder
 import okhttp3.OkHttpClient
 import okhttp3.logging.HttpLoggingInterceptor
@@ -24,6 +26,7 @@ private val okHttpClient = OkHttpClient.Builder()
 private val gson = GsonBuilder()
     .registerTypeAdapter(Date::class.java, DateTypeAdapter())
     .registerTypeAdapter(RemoteDevice::class.java, DeviceTypeAdapter())
+    .registerTypeAdapter(RemoteRoutine::class.java, RoutineTypeAdapter())
     .create()
 
 private val retrofit = Retrofit.Builder()

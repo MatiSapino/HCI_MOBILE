@@ -40,7 +40,7 @@ fun DeviceTypeSection(
         R.drawable.ac,
         R.drawable.vacuum,
         R.drawable.tap,
-        R.drawable.tap, // Change to Door icon
+        R.drawable.home, // Change to Door icon
     )
     Text(
         text = "Types of Devices",
@@ -82,7 +82,7 @@ fun DeviceTypeSection(
                         contentDescription = type.toString(),
                         modifier = Modifier.size(24.dp),
                     )
-                    Spacer(modifier = Modifier.height(8.dp))
+//                    Spacer(modifier = Modifier.height(8.dp))
                     Text(
                         text = type.toString(),
                         fontSize = 12.sp,
