@@ -33,6 +33,7 @@ import androidx.compose.material3.Switch
 import androidx.compose.material3.SwitchDefaults
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
@@ -105,10 +106,12 @@ fun LightCard(
     vm: LampViewModel,
     onBack: () -> Unit,
 ) {
-    var light by remember { mutableStateOf(vm.uiState.value.currentDevice) }
-    var lightState by remember { mutableStateOf(vm.uiState.value.currentDevice?.status) }
-    var color by remember { mutableStateOf(vm.uiState.value.currentDevice?.color) }
-    var brightness by remember { mutableIntStateOf(vm.uiState.value.currentDevice?.brightness!!) }
+    val uiLampState by vm.uiState.collectAsState()
+
+    var light by remember { mutableStateOf(uiLampState.currentDevice) }
+    var lightState by remember { mutableStateOf(uiLampState.currentDevice?.status) }
+    var color by remember { mutableStateOf(uiLampState.currentDevice?.color) }
+    var brightness by remember { mutableStateOf(uiLampState.currentDevice?.brightness) }
 
     val showColorPicker = remember { mutableStateOf(false) }
 
@@ -218,10 +221,10 @@ fun LightCard(
                 ) {
                     Text(text = "Brightness: ${brightness}%", color = Color.Black, modifier = Modifier.padding(top = 8.dp))
                     Slider(
-                        value = brightness.toFloat(),
+                        value = brightness?.toFloat()!!,
                         onValueChange = { newBrightness ->
                             brightness = newBrightness.toInt()
-                            vm.setBrightness(brightness)
+                            vm.setBrightness(brightness!!)
                         },
                         valueRange = 0f..100f,
                         colors = SliderDefaults.colors(
@@ -262,20 +265,4 @@ fun LightCard(
             onDismissRequest = { showColorPicker.value = false }
         )
     }
-}
-
-@Preview(showBackground = true, showSystemUi = true)
-@Composable
-fun LightCardPreview() {
-//    LightCard(
-//        device = Device(
-//            id = "1",
-//            name = "Living Room Light",
-//            type = "Light",
-//            state = mutableMapOf("status" to false, "color" to Color.White, "brightness" to 100)
-//        ),
-//        onBack = {},
-//        onDelete = {},
-//        onUpdateDevice = {}
-//    )
 }

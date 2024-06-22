@@ -10,7 +10,7 @@ class RemoteVacuumState {
     lateinit var mode: String
 
     @SerializedName("batteryLevel")
-    var batteryLevel: Int = 0
+    var batteryLevel: Int? = 0
 
     @SerializedName("location")
     var location: Any? = null

@@ -46,11 +46,18 @@ import androidx.lifecycle.viewmodel.compose.viewModel
 import com.example.mobileapp.R
 import com.example.mobileapp.data.model.Device
 import com.example.mobileapp.data.model.DeviceType
+import com.example.mobileapp.data.model.Status
+import com.example.mobileapp.data.model.devices.Ac
+import com.example.mobileapp.data.model.devices.Door
+import com.example.mobileapp.data.model.devices.Lamp
+import com.example.mobileapp.data.model.devices.Tap
+import com.example.mobileapp.data.model.devices.Vacuum
 import com.example.mobileapp.ui.view_models.DevicesViewModel
+import com.example.mobileapp.ui.view_models.getViewModelFactory
 
 @Composable
-fun NewDeviceScreen(onDeviceAdded: (Device) -> Unit, onCancel: () -> Unit) {
-    val deviceViewModel: DevicesViewModel = viewModel()
+fun NewDeviceScreen(onBack: () -> Unit) {
+    val deviceViewModel: DevicesViewModel = viewModel(factory = getViewModelFactory())
     var deviceName by remember { mutableStateOf("") }
     var selectedType by remember { mutableStateOf<DeviceType?>(null) }
     val deviceTypes = DeviceType.entries
@@ -59,6 +66,7 @@ fun NewDeviceScreen(onDeviceAdded: (Device) -> Unit, onCancel: () -> Unit) {
         R.drawable.ac,
         R.drawable.vacuum,
         R.drawable.tap,
+        R.drawable.tap, // Change Icon
     )
 
     Column(
@@ -72,7 +80,7 @@ fun NewDeviceScreen(onDeviceAdded: (Device) -> Unit, onCancel: () -> Unit) {
             .padding(16.dp),
         verticalArrangement = Arrangement.spacedBy(16.dp)
     ) {
-        IconButton(onClick = onCancel, modifier = Modifier.align(Alignment.Start)) {
+        IconButton(onClick = onBack, modifier = Modifier.align(Alignment.Start)) {
             Icon(imageVector = Icons.AutoMirrored.Filled.ArrowBack, contentDescription = "Back")
         }
         TextField(
@@ -141,18 +149,21 @@ fun NewDeviceScreen(onDeviceAdded: (Device) -> Unit, onCancel: () -> Unit) {
         }
         Button(
             onClick = {
-//                if (deviceName.isNotEmpty() && selectedType != null) {
-//                    val newDevice = Device(
-//                        id = '1',
-//                        name = deviceName,
-//                        type = selectedType!!,
-//                        meta = null
-//                    )
-//                    deviceViewModel.addDevice(newDevice)
-//                    deviceName = ""
-//                    selectedType = null
-//                    onDeviceAdded(newDevice)
-//                }
+                if (deviceName.isNotEmpty() && selectedType != null) {
+                    var newDevice: Device? = null
+                    when (selectedType) {
+                        DeviceType.LAMP -> newDevice = Lamp(null,deviceName,null,null,null)
+                        DeviceType.AC -> newDevice = Ac(null, deviceName, null, null, null, null, null, null)
+                        DeviceType.VACUUM -> newDevice = Vacuum(null, deviceName, null, null, null, null)
+                        DeviceType.TAP -> newDevice = Tap(null, deviceName, null)
+                        DeviceType.DOOR -> newDevice = Door(null, deviceName, null, null)
+                        else -> {}
+                    }
+                    deviceViewModel.addDevice(newDevice)
+                    deviceName = ""
+                    selectedType = null
+                    onBack()
+                }
             },
             colors = ButtonDefaults.elevatedButtonColors(
                 containerColor = Color.White,

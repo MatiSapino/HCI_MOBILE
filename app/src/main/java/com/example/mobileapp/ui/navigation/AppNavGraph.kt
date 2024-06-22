@@ -22,13 +22,14 @@ import com.example.mobileapp.ui.view_models.devices.VacuumViewModel
 import com.example.mobileapp.ui.views.MainScreen
 import com.example.mobileapp.ui.view_models.getViewModelFactory
 import com.example.mobileapp.ui.views.ConfigurationScreen
+import com.example.mobileapp.ui.views.NewDeviceScreen
 import com.example.mobileapp.ui.views.Screen
 
 
 @Composable
 fun AppNavGraph(navController: NavHostController) {
 
-    val backFunc = { navController.navigate(AppDestinations.HOME.route)}
+    val onBack = { navController.navigate(AppDestinations.HOME.route)}
     val onDeviceSelected = { device: Device ->
         when (device.type) {
             DeviceType.LAMP -> navController.navigate(Screen.LightCard.route + "/" + device.id)
@@ -49,10 +50,11 @@ fun AppNavGraph(navController: NavHostController) {
             MainScreen(onDeviceSelected, onAddDevice, onAddRoutine)
         }
         composable(AppDestinations.CONFIGURATION.route) {
-            ConfigurationScreen(backFunc, {})
+            ConfigurationScreen(onBack, {})
         }
         composable(AppDestinations.NEW_DEVICE.route) {
-//            NewDeviceScreen()
+            NewDeviceScreen(onBack)
+            MainScreen(onDeviceSelected, onAddDevice, onAddRoutine)
         }
         composable(AppDestinations.NEW_ROUTINE.route) {
 //            NewRoutineScreen()
@@ -63,7 +65,7 @@ fun AppNavGraph(navController: NavHostController) {
             val vm: LampViewModel = viewModel(factory = getViewModelFactory())
             val deviceId = backStackEntry.arguments?.getString("deviceId")
             vm.setCurrentDevice(deviceId!!)
-            LightCard(vm, backFunc)
+            LightCard(vm, onBack)
         }
 
         composable(AppDestinations.TAP.route, arguments = listOf(navArgument("deviceId") {type = NavType.StringType})) {
@@ -71,7 +73,7 @@ fun AppNavGraph(navController: NavHostController) {
             val vm: TapViewModel = viewModel(factory = getViewModelFactory())
             val deviceId = backStackEntry.arguments?.getString("deviceId")
             vm.setCurrentDevice(deviceId!!)
-            TapCard(vm, backFunc)
+            TapCard(vm, onBack)
         }
 
         composable(AppDestinations.VACUUM.route, arguments = listOf(navArgument("deviceId") {type = NavType.StringType})) {
@@ -79,7 +81,7 @@ fun AppNavGraph(navController: NavHostController) {
             val vm: VacuumViewModel = viewModel(factory = getViewModelFactory())
             val deviceId = backStackEntry.arguments?.getString("deviceId")
             vm.setCurrentDevice(deviceId!!)
-            VacuumCard(vm, backFunc)
+            VacuumCard(vm, onBack)
         }
 
         composable(AppDestinations.AC.route, arguments = listOf(navArgument("deviceId") {type = NavType.StringType})) {
@@ -87,7 +89,7 @@ fun AppNavGraph(navController: NavHostController) {
             val vm: AcViewModel = viewModel(factory = getViewModelFactory())
             val deviceId = backStackEntry.arguments?.getString("deviceId")
             vm.setCurrentDevice(deviceId!!)
-            ACCard(vm, backFunc)
+            ACCard(vm, onBack)
         }
 
         composable(AppDestinations.DOOR.route, arguments = listOf(navArgument("deviceId") {type = NavType.StringType})) {
@@ -95,7 +97,7 @@ fun AppNavGraph(navController: NavHostController) {
             val vm: DoorViewModel = viewModel(factory = getViewModelFactory())
             val deviceId = backStackEntry.arguments?.getString("deviceId")
             vm.setCurrentDevice(deviceId!!)
-            DoorCard(vm, backFunc )
+            DoorCard(vm, onBack )
         }
     }
 }

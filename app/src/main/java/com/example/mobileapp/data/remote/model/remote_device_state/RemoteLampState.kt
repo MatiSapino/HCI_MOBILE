@@ -10,5 +10,5 @@ class RemoteLampState {
     lateinit var color: String
 
     @SerializedName("brightness")
-    var brightness: Int = 0
+    var brightness: Int? = 0
 }

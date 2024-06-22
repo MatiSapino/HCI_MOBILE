@@ -10,8 +10,8 @@ import com.example.mobileapp.data.remote.model.remote_devices.RemoteDoor
 class Door(
     id: String?,
     name: String,
-    var status: Status,
-    var lock: Status,
+    var status: Status?,
+    var lock: Status?,
 ) : Device(id, name, DeviceType.DOOR, null) {
 
     @JvmName("setStatusInternal")

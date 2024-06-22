@@ -10,12 +10,12 @@ import com.example.mobileapp.data.remote.model.remote_device_state.RemoteAcState
 class Ac(
     id: String?,
     name: String,
-    var status: Status,
-    var temperature: Int,
-    var mode: String,
-    var verticalSwing: String,
-    var horizontalSwing: String,
-    var fanSpeed: String,
+    var status: Status?,
+    var temperature: Int?,
+    var mode: String?,
+    var verticalSwing: String?,
+    var horizontalSwing: String?,
+    var fanSpeed: String?,
 ) : Device(id, name, DeviceType.AC, null) {
 
     @JvmName("setStatusInternal")
@@ -51,10 +51,10 @@ class Ac(
         val state = RemoteAcState()
         state.status = status.toString()
         state.temperature = temperature
-        state.mode = mode
-        state.verticalSwing = verticalSwing
-        state.horizontalSwing = horizontalSwing
-        state.fanSpeed = fanSpeed
+        state.mode = mode.toString()
+        state.verticalSwing = verticalSwing.toString()
+        state.horizontalSwing = horizontalSwing.toString()
+        state.fanSpeed = fanSpeed.toString()
 
         val model = RemoteAc()
         model.id = id

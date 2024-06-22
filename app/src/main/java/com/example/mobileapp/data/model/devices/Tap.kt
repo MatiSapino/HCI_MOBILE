@@ -10,7 +10,7 @@ import com.example.mobileapp.data.remote.model.remote_devices.RemoteTap
 class Tap(
     id: String?,
     name: String,
-    var status: Status,
+    var status: Status?,
 ) : Device(id, name, DeviceType.TAP, null) {
 
     @JvmName("setStatusInternal")

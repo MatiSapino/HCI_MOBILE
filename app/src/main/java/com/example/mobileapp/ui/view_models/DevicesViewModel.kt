@@ -43,7 +43,8 @@ class DevicesViewModel(
         )
     }
 
-    fun addDevice(device: Device) {
+    fun addDevice(device: Device?) {
+        if(device == null) return
         runOnViewModelScope(
             { repository.addDevice(device) },
             { state, response -> state.copy(currentDevice = null) }
