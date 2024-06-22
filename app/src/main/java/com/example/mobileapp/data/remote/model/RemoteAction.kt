@@ -13,5 +13,5 @@ class RemoteAction<T> where T : Any {
     var meta: Any? = null
 
     @SerializedName("params")
-    var params: List<*>? = null
+    var params: List<Any> = emptyList()
 }

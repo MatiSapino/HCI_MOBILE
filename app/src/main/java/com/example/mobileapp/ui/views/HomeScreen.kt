@@ -58,7 +58,7 @@ fun HomeScreen(
 
     var routines: List<Routine> by remember { mutableStateOf(emptyList()) }
     var devices: List<Device> by remember { mutableStateOf(emptyList()) }
-    var selectedDeviceType: DeviceType? = null
+    var selectedDeviceType: DeviceType? by remember { mutableStateOf(null) }
 
 
     // Update states when uiDoorState.currentDevice becomes available
