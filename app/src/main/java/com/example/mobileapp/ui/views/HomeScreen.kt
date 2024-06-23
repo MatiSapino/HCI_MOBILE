@@ -1,6 +1,6 @@
 package com.example.mobileapp.ui.views
 
-import android.util.Log
+import MyLogo
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
@@ -19,10 +19,6 @@ import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
-import androidx.navigation.NavHostController
-import androidx.navigation.compose.NavHost
-import androidx.navigation.compose.composable
-import androidx.navigation.compose.rememberNavController
 import com.example.mobileapp.data.model.Device
 import com.example.mobileapp.data.model.DeviceType
 import com.example.mobileapp.data.model.Routine
@@ -87,6 +83,7 @@ fun HomeScreen(
             )
             .padding(16.dp)
     ) {
+        MyLogo()
         DeviceTypeSection(
             deviceTypes = DeviceType.entries,
             selectedType = selectedDeviceType,
@@ -96,13 +93,6 @@ fun HomeScreen(
         )
 
         DeviceSection(devices = filterDevices(selectedDeviceType), onDeviceSelected = onDeviceSelected, onAddDevice = onAddDevice)
-
-        RoutineSection(
-            routines = routines,
-            onAddRoutine = onAddRoutine,
-            onDeleteRoutine = {routine -> routinesVM.deleteRoutine(routine.id!!)}
-        )
-
         Spacer(modifier = Modifier.height(16.dp))
     }
 }

@@ -77,9 +77,8 @@ fun NewDeviceScreen(onBack: () -> Unit) {
                     colors = listOf(Color.White, Color(0xFF87CEEB))
                 )
             )
-            .padding(16.dp),
-        verticalArrangement = Arrangement.spacedBy(16.dp)
-    ) {
+            .padding(16.dp)
+    ){
         IconButton(onClick = onBack, modifier = Modifier.align(Alignment.Start)) {
             Icon(imageVector = Icons.AutoMirrored.Filled.ArrowBack, contentDescription = "Back")
         }
