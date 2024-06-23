@@ -74,7 +74,7 @@ fun NewDeviceScreen(onBack: () -> Unit) {
             .fillMaxSize()
             .background(
                 Brush.verticalGradient(
-                    colors = listOf(Color.White, Color(0xFF87CEEB))
+                    colors = listOf( Color(0xFFF0EDCF), Color(0xFF40A2D8))
                 )
             )
             .padding(16.dp),
@@ -133,7 +133,7 @@ fun NewDeviceScreen(onBack: () -> Unit) {
                             onClick = { selectedType = type },
                             colors = RadioButtonDefaults.colors(
                                 unselectedColor = Color.Black,
-                                selectedColor = Color(0xFF87CEEB)
+                                selectedColor = Color(0x0087CEEB)
                             )
                         )
                         Image(

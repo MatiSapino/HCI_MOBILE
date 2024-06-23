@@ -6,11 +6,14 @@
     <string name="favorites">Favorites</string>
     <string name="shopping">Shopping</string>
     <string name="profile">Profile</string>
+    <string name="types">Types of Devices</string>
+    <string name="devices">Devices</string>
+    <string name="language">Select a Language</string>
+    <string name="NewDevice">New Device</string>
+    <string name="NewRoutine">New Routine</string>
 
     <string name="Home">Home</string>
-    <string name="Configuration">Configuration</string>
-    <string name="NewDevice">NewDevice</string>
-    <string name="NewRoutine">NewRoutine</string>
+    <string name="Configuration">Settings</string>
     <string name="Light">Light</string>
     <string name="Tap">Tap</string>
     <string name="Vacuum">Vacuum</string>

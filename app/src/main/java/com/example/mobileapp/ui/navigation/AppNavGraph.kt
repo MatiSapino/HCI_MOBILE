@@ -40,7 +40,7 @@ fun AppNavGraph(navController: NavHostController, onLanguageChange: (String) -> 
         }
     }
     val onAddRoutine = { navController.navigate(Screen.NewRoutineScreen.route)}
-    val onAddDevice = { navController.navigate(Screen.NewDeviceScreen.route)}
+    val onAddDevice = { navController.navigate(AppDestinations.NEW_DEVICE.route)}
 
     NavHost(
         navController = navController,
@@ -54,7 +54,6 @@ fun AppNavGraph(navController: NavHostController, onLanguageChange: (String) -> 
         }
         composable(AppDestinations.NEW_DEVICE.route) {
             NewDeviceScreen(onBack)
-            MainScreen(onDeviceSelected, onAddDevice, onAddRoutine)
         }
         composable(AppDestinations.NEW_ROUTINE.route) {
 //            NewRoutineScreen()

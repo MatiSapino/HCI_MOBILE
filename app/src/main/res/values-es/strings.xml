@@ -1,0 +1,25 @@
+<resources>
+    <string name="app_name">MobileApp</string>
+    <string name="light">Luz</string>
+    <string name="ac">Ac</string>
+    <string name="home">Hogar</string>
+    <string name="favorites">Favoritos</string>
+    <string name="types">Tipos de Dispositivos</string>
+    <string name="devices">Dispositivos</string>
+    <string name="language">Seleccione un lenguaje</string>
+
+    <string name="shopping">Shopping</string>
+    <string name="profile">Profile</string>
+
+    <string name="NewDevice">New Device</string>
+    <string name="NewRoutine">New Routine</string>
+
+    <string name="Home">Hogar</string>
+    <string name="Configuration">Configuracion</string>
+    <string name="Light">Luz</string>
+    <string name="Tap">Grifo</string>
+    <string name="Vacuum">Aspiradora</string>
+    <string name="Ac">Ac</string>
+    <string name="Door">Puerta</string>
+
+</resources>

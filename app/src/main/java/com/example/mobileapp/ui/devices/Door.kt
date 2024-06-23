@@ -60,7 +60,7 @@ fun DoorCard(
         modifier = Modifier
             .background(
                 Brush.verticalGradient(
-                    colors = listOf(Color.White, Color(0xFF87CEEB))
+                    colors = listOf( Color(0xFFF0EDCF), Color(0xFF40A2D8))
                 )
             )
             .padding(10.dp)

@@ -16,6 +16,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.mobileapp.R
@@ -39,7 +40,7 @@ fun DeviceSection(
             Row(
                 verticalAlignment = Alignment.CenterVertically
             ) {
-                Text(text = "Devices", fontSize = 20.sp)
+                Text(text = stringResource(id = R.string.devices), fontSize = 20.sp)
                 Spacer(modifier = Modifier.width(7.dp))
                 IconButton(onClick = onAddDevice) {
                     Icon(imageVector = Icons.Default.Add, contentDescription = "Add Device")

@@ -13,6 +13,7 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
@@ -23,6 +24,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.mobileapp.R
@@ -38,12 +40,13 @@ fun DeviceTypeSection(
     val icons = listOf(
         R.drawable.lightbulb,
         R.drawable.ac,
-        R.drawable.vacuum,
         R.drawable.tap,
-        R.drawable.door, // Change to Door icon
+        R.drawable.door,
+        R.drawable.vacuum,
+
     )
     Text(
-        text = "Types of Devices",
+        text = stringResource(id = R.string.types),
         fontSize = 20.sp,
         color = Color.Black,
         modifier = Modifier.padding(bottom = 2.dp)
@@ -58,7 +61,7 @@ fun DeviceTypeSection(
         deviceTypes.forEachIndexed { index, type ->
             val icon = icons[index]
             Card(
-                shape = RoundedCornerShape(10.dp),
+                shape = RoundedCornerShape(13.dp),
                 colors = CardDefaults.cardColors(
                     containerColor = if (selectedType == type) Color.Gray else Color.White
                 ),
@@ -66,8 +69,8 @@ fun DeviceTypeSection(
                     .weight(1f)
                     .aspectRatio(1f)
                     .padding(8.dp)
-                    .border(1.dp, Color.Black, RoundedCornerShape(8.dp))
-                    .shadow(10.dp, RoundedCornerShape(8.dp))
+                    .border(1.dp, Color.Black, RoundedCornerShape(13.dp))
+                    .shadow(10.dp, RoundedCornerShape(13.dp))
                     .clickable { onDeviceTypeSelected(if (selectedType == type) null else type) }
             ) {
                 Column(
@@ -80,14 +83,13 @@ fun DeviceTypeSection(
                     Image(
                         painter = painterResource(id = icon),
                         contentDescription = type.toString(),
-                        modifier = Modifier.size(24.dp),
+                        modifier = Modifier.size(17.dp),
                     )
-                    Spacer(modifier = Modifier.height(8.dp))
+//                    Spacer(modifier = Modifier.height(8.dp))
                     Text(
-                        text = type.toString(),
-                        fontSize = 12.sp,
+                        text = type.name,
+                        fontSize = 9.sp,
                         color = Color.Black,
-                        modifier = Modifier.padding(top = 4.dp)
                     )
                 }
             }

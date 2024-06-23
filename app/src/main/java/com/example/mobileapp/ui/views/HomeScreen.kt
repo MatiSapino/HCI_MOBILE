@@ -1,5 +1,6 @@
 package com.example.mobileapp.ui.views
 
+import MyLogo
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
@@ -78,11 +79,12 @@ fun HomeScreen(
             .fillMaxSize()
             .background(
                 Brush.verticalGradient(
-                    colors = listOf(Color.White, Color(0xFF87CEEB))
+                    colors = listOf( Color(0xFFF0EDCF), Color(0xFF40A2D8))
                 )
             )
             .padding(16.dp)
     ) {
+        MyLogo()
         DeviceTypeSection(
             deviceTypes = DeviceType.entries,
             selectedType = selectedDeviceType,
@@ -92,12 +94,6 @@ fun HomeScreen(
         )
 
         DeviceSection(devices = filterDevices(selectedDeviceType), onDeviceSelected = onDeviceSelected, onAddDevice = onAddDevice)
-
-        RoutineSection(
-            routines = routines,
-            onAddRoutine = onAddRoutine,
-            onDeleteRoutine = {routine -> routinesVM.deleteRoutine(routine.id!!)}
-        )
 
         Spacer(modifier = Modifier.height(16.dp))
     }

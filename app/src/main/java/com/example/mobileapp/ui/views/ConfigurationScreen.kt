@@ -34,8 +34,10 @@ import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.example.mobileapp.R
 import com.example.mobileapp.ui.components.LanguagePreferences
 
 @Composable
@@ -78,7 +80,7 @@ fun ConfigurationScreen(
                 verticalArrangement = Arrangement.Center,
                 modifier = Modifier.padding(16.dp)
             ) {
-                Text(text = "Settings", fontSize = 20.sp, color = Color.Black)
+                Text(text = stringResource(id = R.string.Configuration), fontSize = 20.sp, color = Color.Black)
 
                 Spacer(modifier = Modifier.height(16.dp))
 
@@ -87,7 +89,7 @@ fun ConfigurationScreen(
                     verticalArrangement = Arrangement.Center,
                     modifier = Modifier.padding(vertical = 16.dp)
                 ) {
-                    Text(text = "Select Language:", fontSize = 16.sp, color = Color.Black)
+                    Text(text = stringResource(id = R.string.language), fontSize = 16.sp, color = Color.Black)
                     Spacer(modifier = Modifier.height(8.dp))
 
                     languages.forEach { language ->
