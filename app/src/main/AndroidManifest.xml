@@ -3,6 +3,8 @@
     xmlns:tools="http://schemas.android.com/tools">
     
     <uses-permission android:name="android.permission.INTERNET" />
+    <uses-permission android:name="android.permission.POST_NOTIFICATIONS" />
+    <uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED" />
 
     <application
         android:allowBackup="true"
@@ -16,6 +18,21 @@
         android:theme="@style/Theme.MobileApp"
         android:name=".ApiApplication"
         tools:targetApi="31">
+        <receiver
+            android:name=".data.receivers.BootCompletedReceiver"
+            android:enabled="true"
+            android:exported="true">
+            <intent-filter>
+                <action android:name="android.intent.action.BOOT_COMPLETED" />
+            </intent-filter>
+        </receiver>
+
+        <receiver
+            android:name=".data.receivers.SkipNotificationReceiver"
+            android:enabled="true"
+            android:exported="false" />
+
+
         <activity
             android:name=".MainActivity"
             android:exported="true"
