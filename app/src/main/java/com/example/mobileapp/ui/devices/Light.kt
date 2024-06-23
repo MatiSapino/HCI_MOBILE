@@ -53,6 +53,7 @@ import androidx.compose.ui.unit.sp
 import androidx.compose.ui.window.Dialog
 import com.example.mobileapp.data.model.Status
 import com.example.mobileapp.ui.view_models.devices.LampViewModel
+import kotlin.math.log
 
 
 @Composable
@@ -88,8 +89,6 @@ fun ColorPickerDialog(
                                 .background(color)
                                 .clickable {
                                     currentSelectedColor = color
-                                    onColorSelected(color)
-                                    onDismissRequest()
                                 }
                                 .border(
                                     width = 2.dp,
@@ -98,10 +97,61 @@ fun ColorPickerDialog(
                         )
                     }
                 }
+                Spacer(modifier = Modifier.padding(16.dp))
+                Button(
+                    onClick = {
+                        onColorSelected(currentSelectedColor)
+                        onDismissRequest()
+                    }
+                ) {
+                    Text("Select")
+                }
             }
         }
     }
 }
+
+
+fun colorToHex(color: Color): String {
+    val argb = color.toArgb()
+    val rgb = argb and 0xFFFFFF // Mask to get only the RGB part
+    return String.format("#%06X", rgb)
+}
+
+
+
+fun hexToColor(hex: String?): Color {
+    if (hex.isNullOrEmpty()) {
+        Log.e("ColorConversion", "Provided hex string is null or empty")
+        return Color(0xFFFFFFFF) // Default to white if empty or null
+    }
+
+    val hexCleaned = if (hex.startsWith("#")) hex.substring(1) else hex
+
+    // Ensure the cleaned hex string has valid length (6 for RGB or 8 for ARGB)
+    if (hexCleaned.length != 6 && hexCleaned.length != 8) {
+        Log.e("ColorConversion", "Invalid hex string length: $hexCleaned")
+        return Color(0xFFFFFFFF) // Default to white for invalid length
+    }
+
+    return try {
+        // If length is 6 (RGB), add full opacity (FF) at the beginning
+        val argbHex = if (hexCleaned.length == 6) "FF$hexCleaned" else hexCleaned
+        val value = argbHex.toULong(16)
+        val alpha = ((value shr 24) and 0xFFu).toInt()
+        val red = ((value shr 16) and 0xFFu).toInt()
+        val green = ((value shr 8) and 0xFFu).toInt()
+        val blue = (value and 0xFFu).toInt()
+        Color(red, green, blue, alpha)
+    } catch (e: NumberFormatException) {
+        Log.e("ColorConversion", "NumberFormatException for hex: $hexCleaned", e)
+        Color(0xFFFFFFFF) // Default to white if conversion fails
+    } catch (e: Exception) {
+        Log.e("ColorConversion", "Exception for hex: $hexCleaned", e)
+        Color(0xFFFFFFFF) // Default to white if conversion fails
+    }
+}
+
 
 @Composable
 fun LightCard(
@@ -124,39 +174,6 @@ fun LightCard(
     }
 
     val showColorPicker = remember { mutableStateOf(false) }
-
-    fun colorToHex(color: Color): String {
-        val argb = color.toArgb()
-        return String.format("#%08X", argb)
-    }
-
-    fun hexToColor(hex: String?): Color {
-        if (hex.isNullOrEmpty()) {
-            Log.e("ColorConversion", "Provided hex string is null or empty")
-            return Color(0xFFFFFFFF) // Default to white if empty or null
-        }
-
-        val hexCleaned = if (hex.startsWith("#")) hex.substring(1) else hex
-
-        // Ensure the cleaned hex string has valid length (6 for RGB or 8 for ARGB)
-        if (hexCleaned.length != 6 && hexCleaned.length != 8) {
-            Log.e("ColorConversion", "Invalid hex string length: $hexCleaned")
-            return Color(0xFFFFFFFF) // Default to white for invalid length
-        }
-
-        return try {
-            // If length is 6 (RGB), add full opacity (FF) at the beginning
-            val argbHex = if (hexCleaned.length == 6) "FF$hexCleaned" else hexCleaned
-            val value = argbHex.toULong(16)
-            Color(value)
-        } catch (e: NumberFormatException) {
-            Log.e("ColorConversion", "NumberFormatException for hex: $hexCleaned", e)
-            Color(0xFFFFFFFF) // Default to white if conversion fails
-        } catch (e: Exception) {
-            Log.e("ColorConversion", "Exception for hex: $hexCleaned", e)
-            Color(0xFFFFFFFF) // Default to white if conversion fails
-        }
-    }
 
 
     Column(
@@ -214,18 +231,15 @@ fun LightCard(
                     )
                     Text(text = lightState.toString(), color = Color.Black, fontSize = 16.sp)
                 }
-                uiLampState.currentDevice?.let {
-                    Box(
-                        modifier = Modifier
-                            .size(100.dp)
-                            .background(hexToColor(it.color))
-                            .border(1.dp, Color.Black)
-                            .clickable {
-                                showColorPicker.value = true
-                            }
-                    )
-                }
-
+                Box(
+                    modifier = Modifier
+                        .size(100.dp)
+                        .background(hexToColor(color))
+                        .border(1.dp, Color.Black)
+                        .clickable {
+                            showColorPicker.value = true
+                        }
+                )
                 Column(
                     horizontalAlignment = Alignment.CenterHorizontally,
                     modifier = Modifier.padding(vertical = 16.dp)

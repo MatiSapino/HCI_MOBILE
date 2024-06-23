@@ -66,7 +66,7 @@ fun NewDeviceScreen(onBack: () -> Unit) {
         R.drawable.ac,
         R.drawable.vacuum,
         R.drawable.tap,
-        R.drawable.tap, // Change Icon
+        R.drawable.door, // Change Icon
     )
 
     Column(
