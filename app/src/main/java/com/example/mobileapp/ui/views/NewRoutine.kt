@@ -410,12 +410,12 @@ fun NewRoutineScreenState(onRoutineSaved: () -> Unit, onCancel: () -> Unit) {
         },
         onAcceptAutomation = {},
         onSaveRoutine = {
-            val newRoutine = Routine(
-                id = null,
-                name = routineName,
-                actions = null,
-                meta = null
-            )
+//            val newRoutine = Routine(
+//                id = null,
+//                name = routineName,
+//                actions = null,
+//                meta = null
+//            )
             routineViewModel.addRoutine(routineId = "a")
         },
         onRoutineSaved = {
