@@ -54,7 +54,6 @@ fun AppNavGraph(navController: NavHostController) {
         }
         composable(AppDestinations.NEW_DEVICE.route) {
             NewDeviceScreen(onBack)
-            MainScreen(onDeviceSelected, onAddDevice, onAddRoutine)
         }
         composable(AppDestinations.NEW_ROUTINE.route) {
 //            NewRoutineScreen()

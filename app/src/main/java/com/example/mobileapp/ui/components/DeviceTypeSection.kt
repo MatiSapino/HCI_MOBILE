@@ -40,7 +40,7 @@ fun DeviceTypeSection(
         R.drawable.ac,
         R.drawable.vacuum,
         R.drawable.tap,
-        R.drawable.tap, // Change to Door icon
+        R.drawable.door
     )
     Text(
         text = "Types of Devices",

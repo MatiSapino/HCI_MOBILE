@@ -61,7 +61,6 @@ fun HomeScreen(
     var selectedDeviceType: DeviceType? by remember { mutableStateOf(null) }
 
 
-    // Update states when uiDoorState.currentDevice becomes available
     LaunchedEffect(uiDevicesState) {
         devices = uiDevicesState.devices
     }

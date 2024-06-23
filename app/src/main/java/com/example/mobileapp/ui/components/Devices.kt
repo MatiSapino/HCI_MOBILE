@@ -65,7 +65,7 @@ fun DeviceCard(device: Device, onClick: () -> Unit) {
         DeviceType.AC to R.drawable.ac,
         DeviceType.VACUUM to R.drawable.vacuum,
         DeviceType.TAP to R.drawable.tap,
-        DeviceType.DOOR to R.drawable.tap, // change to correct icon
+        DeviceType.DOOR to R.drawable.door
     )
 
     Card(
