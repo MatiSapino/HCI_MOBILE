@@ -108,12 +108,12 @@ fun ACCard(
                 verticalArrangement = Arrangement.Center,
                 modifier = Modifier.padding(16.dp)
             ) {
-                Text(text = "AC - ${uiAcState.currentDevice?.name ?: "Loading"}", fontSize = 20.sp, color = Color.Black)
+                Text(text = "AC - ${uiAcState.currentDevice?.name ?: "Loading"}", fontSize = 17.sp, color = Color.Black)
 
                 Row(
                     modifier = Modifier
                         .fillMaxWidth()
-                        .padding(10.dp),
+                        .padding(5.dp),
                     horizontalArrangement = Arrangement.SpaceBetween,
                     verticalAlignment = Alignment.CenterVertically
                 ) {
@@ -137,7 +137,7 @@ fun ACCard(
                 // Temperature Slider
                 Column(
                     horizontalAlignment = Alignment.CenterHorizontally,
-                    modifier = Modifier.padding(vertical = 16.dp)
+                    modifier = Modifier.padding(vertical = 10.dp)
                 ) {
                     Text(text = "Temperature: ${temperature.toInt()}°C", color = Color.Black)
                     Slider(
@@ -158,19 +158,19 @@ fun ACCard(
                 Column(
                     horizontalAlignment = Alignment.CenterHorizontally,
                     verticalArrangement = Arrangement.Center,
-                    modifier = Modifier.padding(vertical = 16.dp)
+                    modifier = Modifier.padding(vertical = 10.dp)
                 ) {
                     var expanded by remember { mutableStateOf(false) }
                     Box(
                         modifier = Modifier
-                            .border(1.dp, Color.Black, RoundedCornerShape(8.dp))
-                            .padding(8.dp)
+                            .border(1.dp, Color.Black, RoundedCornerShape(5.dp))
+                            .padding(5.dp)
                     ) {
                         Text(
                             text = "Mode: ${uiAcState.currentDevice?.mode}",
                             modifier = Modifier
                                 .clickable { expanded = true }
-                                .padding(16.dp),
+                                .padding(10.dp),
                             color = Color.Black
                         )
                         DropdownMenu(
@@ -194,7 +194,7 @@ fun ACCard(
                 // Fan Speed Slider
                 Column(
                     horizontalAlignment = Alignment.CenterHorizontally,
-                    modifier = Modifier.padding(vertical = 16.dp)
+                    modifier = Modifier.padding(vertical = 10.dp)
                 ) {
                     Text(text = "Fan Speed: ${velocityOptions[acSpeed]}", color = Color.Black)
                     Slider(
@@ -215,7 +215,7 @@ fun ACCard(
                 // Vertical Swing Slider
                 Column(
                     horizontalAlignment = Alignment.CenterHorizontally,
-                    modifier = Modifier.padding(vertical = 16.dp)
+                    modifier = Modifier.padding(vertical = 10.dp)
                 ) {
                     Text(text = "Vertical Swing: ${verticalSwingsOptions[acVertical]}", color = Color.Black)
                     Slider(
@@ -236,7 +236,7 @@ fun ACCard(
 
                 Column(
                     horizontalAlignment = Alignment.CenterHorizontally,
-                    modifier = Modifier.padding(vertical = 16.dp)
+                    modifier = Modifier.padding(vertical = 10.dp)
                 ) {
                     Text(text = "Horizontal Swing: ${horizontalSwingsOptions[acHorizontal]}", color = Color.Black)
                     Slider(

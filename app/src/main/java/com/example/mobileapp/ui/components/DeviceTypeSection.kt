@@ -45,6 +45,14 @@ fun DeviceTypeSection(
         R.drawable.vacuum,
 
     )
+    val typeName = listOf(
+        R.string.Light,
+        R.string.Ac,
+        R.string.Tap,
+        R.string.Door,
+        R.string.Vacuum,
+        )
+
     Text(
         text = stringResource(id = R.string.types),
         fontSize = 20.sp,
@@ -87,7 +95,7 @@ fun DeviceTypeSection(
                     )
 //                    Spacer(modifier = Modifier.height(8.dp))
                     Text(
-                        text = type.name,
+                        text = stringResource(id = typeName[index]),
                         fontSize = 9.sp,
                         color = Color.Black,
                     )

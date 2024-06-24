@@ -25,8 +25,6 @@ import java.util.*
 
 @Composable
 fun ConfigurationScreen(
-    onBack: () -> Unit,
-    onLanguageChange: (String) -> Unit
 ) {
     val context = LocalContext.current
     val currentLanguage = context.resources.configuration.locales[0].language
@@ -88,7 +86,6 @@ fun ConfigurationScreen(
                                 .padding(vertical = 8.dp)
                                 .clickable {
                                     selectedLanguage = language
-                                    onLanguageChange(language)
                                     updateLanguage(
                                         context,
                                         if (language == "Español") "es" else "en"
@@ -100,7 +97,6 @@ fun ConfigurationScreen(
                                 selected = selectedLanguage == language,
                                 onClick = {
                                     selectedLanguage = language
-                                    onLanguageChange(language)
                                     updateLanguage(context, if (language == "Español") "es" else "en")
                                 },
                                 colors = RadioButtonDefaults.colors(

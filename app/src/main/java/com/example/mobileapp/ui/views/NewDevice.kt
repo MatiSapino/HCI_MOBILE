@@ -1,5 +1,6 @@
 package com.example.mobileapp.ui.views
 
+import android.util.Log
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
@@ -40,6 +41,7 @@ import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
@@ -64,9 +66,16 @@ fun NewDeviceScreen(onBack: () -> Unit) {
     val icons = listOf(
         R.drawable.lightbulb,
         R.drawable.ac,
-        R.drawable.vacuum,
         R.drawable.tap,
-        R.drawable.door, // Change Icon
+        R.drawable.door,
+        R.drawable.vacuum,
+        )
+    val typeName = listOf(
+        R.string.Light,
+        R.string.Ac,
+        R.string.Tap,
+        R.string.Door,
+        R.string.Vacuum,
     )
 
     Column(
@@ -74,7 +83,7 @@ fun NewDeviceScreen(onBack: () -> Unit) {
             .fillMaxSize()
             .background(
                 Brush.verticalGradient(
-                    colors = listOf( Color(0xFFF0EDCF), Color(0xFF40A2D8))
+                    colors = listOf(Color(0xFFF0EDCF), Color(0xFF40A2D8))
                 )
             )
             .padding(16.dp),
@@ -86,7 +95,7 @@ fun NewDeviceScreen(onBack: () -> Unit) {
         TextField(
             value = deviceName,
             onValueChange = { deviceName = it },
-            label = { Text("Device Name") },
+            label = { Text(stringResource(id = R.string.DeviceName)) },
             colors = TextFieldDefaults.colors(
                 cursorColor = Color.Black,
                 focusedIndicatorColor = Color(0xFF87CEEB),
@@ -95,7 +104,7 @@ fun NewDeviceScreen(onBack: () -> Unit) {
             modifier = Modifier.fillMaxWidth()
         )
         Text(
-            text = "Select Device Type",
+            text = stringResource(id = R.string.SelectDevice),
             fontSize = 20.sp,
             color = Color.Black,
             modifier = Modifier.padding(bottom = 8.dp)
@@ -104,7 +113,7 @@ fun NewDeviceScreen(onBack: () -> Unit) {
             verticalArrangement = Arrangement.spacedBy(16.dp),
             modifier = Modifier
                 .fillMaxWidth()
-                .padding(bottom = 16.dp)
+                .padding(bottom = 8.dp)
         ) {
             items(deviceTypes.size) { index ->
                 val type = deviceTypes[index]
@@ -116,15 +125,14 @@ fun NewDeviceScreen(onBack: () -> Unit) {
                     ),
                     modifier = Modifier
                         .fillMaxWidth()
-                        .padding(horizontal = 8.dp)
-                        .border(1.dp, Color.Black, RoundedCornerShape(8.dp))
+                        .border(1.dp, Color.Black, RoundedCornerShape(3.dp))
                         .shadow(10.dp, RoundedCornerShape(8.dp))
                         .clickable { selectedType = type }
                 ) {
                     Row(
                         modifier = Modifier
                             .fillMaxWidth()
-                            .padding(16.dp)
+                            .padding(10.dp)
                             .clickable { selectedType = type },
                         verticalAlignment = Alignment.CenterVertically
                     ) {
@@ -139,10 +147,10 @@ fun NewDeviceScreen(onBack: () -> Unit) {
                         Image(
                             painter = painterResource(id = icon),
                             contentDescription = type.toString(),
-                            modifier = Modifier.size(24.dp),
+                            modifier = Modifier.size(15.dp),
                         )
-                        Spacer(modifier = Modifier.width(16.dp))
-                        Text(text = type.toString(), modifier = Modifier.padding(start = 8.dp))
+                        Spacer(modifier = Modifier.width(10.dp))
+                        Text(text = stringResource(id =typeName[index]), modifier = Modifier.padding(start = 8.dp))
                     }
                 }
             }
@@ -159,7 +167,8 @@ fun NewDeviceScreen(onBack: () -> Unit) {
                         DeviceType.DOOR -> newDevice = Door(null, deviceName, null, null)
                         else -> {}
                     }
-                    deviceViewModel.addDevice(newDevice)
+                    Log.i("LACONCH", "name: " + newDevice?.name + " ||  type: "+ newDevice?.type)
+                    deviceViewModel.addDevice(newDevice!!)
                     deviceName = ""
                     selectedType = null
                     onBack()
@@ -180,7 +189,7 @@ fun NewDeviceScreen(onBack: () -> Unit) {
                 .shadow(10.dp, RoundedCornerShape(4.dp))
                 .size(width = 200.dp, height = 48.dp)
         ) {
-            Text("Add Device")
+            Text(stringResource(id = R.string.AddDevice))
         }
     }
 }

@@ -39,7 +39,6 @@ fun AppNavGraph(navController: NavHostController) {
             DeviceType.DOOR -> navController.navigate(Screen.DoorCard.route + "/" + device.id)
         }
     }
-    val onAddRoutine = { navController.navigate(Screen.NewRoutineScreen.route)}
     val onAddDevice = { navController.navigate(AppDestinations.NEW_DEVICE.route)}
 
     NavHost(
@@ -47,16 +46,13 @@ fun AppNavGraph(navController: NavHostController) {
         startDestination = AppDestinations.HOME.route
     ) {
         composable(AppDestinations.HOME.route) {
-            MainScreen(onDeviceSelected, onAddDevice, onAddRoutine)
+            MainScreen(onDeviceSelected, onAddDevice)
         }
         composable(AppDestinations.CONFIGURATION.route) {
-            ConfigurationScreen(onBack, onLanguageChange = {})
+            ConfigurationScreen()
         }
         composable(AppDestinations.NEW_DEVICE.route) {
             NewDeviceScreen(onBack)
-        }
-        composable(AppDestinations.NEW_ROUTINE.route) {
-//            NewRoutineScreen()
         }
 
         composable(AppDestinations.LIGHT.route, arguments = listOf(navArgument("deviceId") {type = NavType.StringType})) {

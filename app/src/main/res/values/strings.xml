@@ -10,7 +10,9 @@
     <string name="devices">Devices</string>
     <string name="language">Select a Language</string>
     <string name="NewDevice">New Device</string>
-    <string name="NewRoutine">New Routine</string>
+    <string name="DeviceName">Device Name</string>
+    <string name="SelectDevice">Select Device Type</string>
+    <string name="AddDevice">Add Device</string>
 
     <string name="Home">Home</string>
     <string name="Configuration">Settings</string>

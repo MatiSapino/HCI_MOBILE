@@ -46,7 +46,6 @@ fun HomeScreen(
     devicesVM: DevicesViewModel,
     routinesVM: RoutinesViewModel,
     onDeviceSelected: (Device) -> Unit,
-    onAddRoutine: () -> Unit,
     onAddDevice: () -> Unit,
 ) {
     val uiDevicesState by devicesVM.uiState.collectAsState()
@@ -101,7 +100,6 @@ fun HomeScreen(
 
 @Composable
 fun MainScreen(onDeviceSelected: (Device) -> Unit,
-               onAddRoutine: () -> Unit,
                onAddDevice: () -> Unit,) {
     val devicesVM: DevicesViewModel = viewModel(factory = getViewModelFactory())
     val routinesVM: RoutinesViewModel = viewModel(factory = getViewModelFactory())
@@ -109,7 +107,6 @@ fun MainScreen(onDeviceSelected: (Device) -> Unit,
         devicesVM = devicesVM,
         routinesVM = routinesVM,
         onDeviceSelected = onDeviceSelected,
-        onAddRoutine = onAddRoutine,
         onAddDevice = onAddDevice,
     )
 }

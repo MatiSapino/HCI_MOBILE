@@ -12,7 +12,9 @@
     <string name="profile">Profile</string>
 
     <string name="NewDevice">New Device</string>
-    <string name="NewRoutine">New Routine</string>
+    <string name="DeviceName">Nombre del dispositivo</string>
+    <string name="SelectDevice">Seleccione el tipo de dispositivo</string>
+    <string name="AddDevice">Añadir Dispositivo</string>
 
     <string name="Home">Hogar</string>
     <string name="Configuration">Configuracion</string>
