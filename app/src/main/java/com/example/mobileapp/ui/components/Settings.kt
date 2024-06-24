@@ -1,4 +1,4 @@
-package com.example.mobileapp.ui.views
+package com.example.mobileapp.ui.components
 
 import android.content.Context
 import android.content.res.Configuration
@@ -24,7 +24,7 @@ import com.example.mobileapp.R
 import java.util.*
 
 @Composable
-fun ConfigurationScreen(
+fun SettingsScreen(
     onBack: () -> Unit,
     onLanguageChange: (String) -> Unit
 ) {
@@ -36,11 +36,6 @@ fun ConfigurationScreen(
         horizontalAlignment = Alignment.CenterHorizontally,
         verticalArrangement = Arrangement.Center,
         modifier = Modifier
-            .background(
-                Brush.verticalGradient(
-                    colors = listOf(Color(0xFFF0EDCF), Color(0xFF40A2D8))
-                )
-            )
             .fillMaxSize()
             .padding(16.dp)
     ) {
@@ -48,9 +43,6 @@ fun ConfigurationScreen(
 
         Card(
             shape = RoundedCornerShape(16.dp),
-            colors = CardDefaults.cardColors(
-                containerColor = Color.White
-            ),
             modifier = Modifier
                 .padding(16.dp)
                 .fillMaxWidth()
@@ -74,11 +66,11 @@ fun ConfigurationScreen(
                 ) {
                     Spacer(modifier = Modifier.height(8.dp))
 
-                    Text(text = stringResource(id = R.string.Select), fontSize = 16.sp, color = Color.Black)
+                    Text(text = stringResource(id = R.string.Configuration), fontSize = 16.sp, color = Color.Black)
 
                     val languages = listOf(
-                        "English",
-                        "Español"
+                        stringResource(id = R.string.language),
+                        stringResource(id = R.string.language)
                     )
 
                     languages.forEach { language ->
@@ -104,7 +96,7 @@ fun ConfigurationScreen(
                                     updateLanguage(context, if (language == "Español") "es" else "en")
                                 },
                                 colors = RadioButtonDefaults.colors(
-                                    selectedColor = Color.Black,
+                                    selectedColor = colorResource(id = R.color.black),
                                     unselectedColor = Color.Gray
                                 )
                             )

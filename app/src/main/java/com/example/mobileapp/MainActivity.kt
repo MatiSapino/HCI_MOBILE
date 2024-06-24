@@ -2,7 +2,9 @@ package com.example.mobileapp
 
 import android.Manifest
 import android.annotation.SuppressLint
+import android.content.Context
 import android.content.Intent
+import android.content.res.Configuration
 import android.os.Build
 import android.os.Bundle
 import androidx.activity.ComponentActivity
@@ -17,6 +19,9 @@ import androidx.compose.material3.adaptive.currentWindowAdaptiveInfo
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.navigation.NavGraph.Companion.findStartDestination
@@ -38,7 +43,6 @@ class MainActivity : ComponentActivity() {
     @SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setLanguage(LanguagePreferences.getLanguage(this))
         enableEdgeToEdge()
         setContent {
             MobileAppTheme {
@@ -91,28 +95,11 @@ class MainActivity : ComponentActivity() {
                         }
 
                         Box(modifier = Modifier.weight(1f)) {
-                            AppNavGraph(navController = navController, onLanguageChange = {
-                                setLanguage(it)
-                                restartActivity()
-                            })
+                            AppNavGraph(navController = navController)
                         }
                     }
                 }
             }
         }
-    }
-
-    private fun setLanguage(language: String) {
-        val locale = Locale(language)
-        Locale.setDefault(locale)
-        val config = resources.configuration
-        config.setLocale(locale)
-        resources.updateConfiguration(config, resources.displayMetrics)
-    }
-
-    private fun restartActivity() {
-        val intent = Intent(this, MainActivity::class.java)
-        startActivity(intent)
-        finish()
     }
 }

@@ -7,13 +7,17 @@ object LanguagePreferences {
     private const val PREFS_NAME = "language_prefs"
     private const val KEY_LANGUAGE = "language"
 
+    private fun getPreferences(context: Context): SharedPreferences {
+        return context.getSharedPreferences(PREFS_NAME, Context.MODE_PRIVATE)
+    }
+
     fun setLanguage(context: Context, language: String) {
-        val prefs: SharedPreferences = context.getSharedPreferences(PREFS_NAME, Context.MODE_PRIVATE)
-        prefs.edit().putString(KEY_LANGUAGE, language).apply()
+        val editor = getPreferences(context).edit()
+        editor.putString(KEY_LANGUAGE, language)
+        editor.apply()
     }
 
     fun getLanguage(context: Context): String {
-        val prefs: SharedPreferences = context.getSharedPreferences(PREFS_NAME, Context.MODE_PRIVATE)
-        return prefs.getString(KEY_LANGUAGE, "en") ?: "en"
+        return getPreferences(context).getString(KEY_LANGUAGE, "en") ?: "en"
     }
 }

@@ -19,4 +19,7 @@
     <string name="Vacuum">Vacuum</string>
     <string name="Ac">Ac</string>
     <string name="Door">Door</string>
+
+    <string name="Language">Language</string>
+    <string name="Select">Select</string>
 </resources>

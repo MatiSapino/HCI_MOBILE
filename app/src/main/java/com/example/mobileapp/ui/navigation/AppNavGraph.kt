@@ -27,7 +27,7 @@ import com.example.mobileapp.ui.views.Screen
 
 
 @Composable
-fun AppNavGraph(navController: NavHostController, onLanguageChange: (String) -> Unit) {
+fun AppNavGraph(navController: NavHostController) {
 
     val onBack = { navController.navigate(AppDestinations.HOME.route)}
     val onDeviceSelected = { device: Device ->
@@ -50,7 +50,7 @@ fun AppNavGraph(navController: NavHostController, onLanguageChange: (String) -> 
             MainScreen(onDeviceSelected, onAddDevice, onAddRoutine)
         }
         composable(AppDestinations.CONFIGURATION.route) {
-            ConfigurationScreen(onBack, onLanguageChange)
+            ConfigurationScreen(onBack, onLanguageChange = {})
         }
         composable(AppDestinations.NEW_DEVICE.route) {
             NewDeviceScreen(onBack)

@@ -22,4 +22,6 @@
     <string name="Ac">Ac</string>
     <string name="Door">Puerta</string>
 
+    <string name="Language">Idioma</string>
+    <string name="Select">Seleccionar</string>
 </resources>
