@@ -12,7 +12,9 @@ import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.wrapContentHeight
+import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material3.Button
@@ -54,6 +56,7 @@ fun ACCard(
     vm: AcViewModel,
     onBack: () -> Unit,
 ) {
+    val scrollState = rememberScrollState()
     val uiAcState by vm.uiState.collectAsState()
 
     val velocityOptions = listOf("auto", "25", "50", "75", "100")
@@ -79,13 +82,15 @@ fun ACCard(
     }
 
     Column(
-        modifier = Modifier
+        verticalArrangement = Arrangement.spacedBy(16.dp),
+                modifier = Modifier
             .background(
                 Brush.verticalGradient(
                     colors = listOf( Color(0xFFF0EDCF), Color(0xFF40A2D8))
                 )
             )
             .padding(10.dp)
+            .verticalScroll(scrollState)
     ) {
         IconButton(onClick = {onBack()}, modifier = Modifier.align(Alignment.Start)) {
             Icon(imageVector = Icons.AutoMirrored.Filled.ArrowBack, contentDescription = "Back")

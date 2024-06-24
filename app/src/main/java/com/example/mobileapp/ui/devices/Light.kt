@@ -19,7 +19,9 @@ import androidx.compose.foundation.layout.wrapContentHeight
 import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.foundation.lazy.grid.items
+import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material3.Button
@@ -77,10 +79,10 @@ fun ColorPickerDialog(
                 modifier = Modifier.padding(16.dp)
             ) {
                 Text("Select a color")
-                Spacer(modifier = Modifier.padding(16.dp))
+                Spacer(modifier = Modifier.padding(10.dp))
                 LazyVerticalGrid(
                     columns = GridCells.Fixed(4),
-                    modifier = Modifier.height(200.dp)
+                    modifier = Modifier.height(180.dp)
                 ) {
                     items(colors) { color ->
                         Box(
@@ -97,7 +99,6 @@ fun ColorPickerDialog(
                         )
                     }
                 }
-                Spacer(modifier = Modifier.padding(16.dp))
                 Button(
                     onClick = {
                         onColorSelected(currentSelectedColor)
@@ -158,6 +159,8 @@ fun LightCard(
     vm: LampViewModel,
     onBack: () -> Unit,
 ) {
+    val scrollState = rememberScrollState()
+
     val uiLampState by vm.uiState.collectAsState()
 
     var lightState by remember { mutableStateOf<Status?>(null) }
@@ -177,6 +180,7 @@ fun LightCard(
 
 
     Column(
+        verticalArrangement = Arrangement.spacedBy(16.dp),
         modifier = Modifier
             .background(
                 Brush.verticalGradient(
@@ -184,6 +188,7 @@ fun LightCard(
                 )
             )
             .fillMaxSize()
+            .verticalScroll(scrollState)
     ) {
         IconButton(onClick = { onBack() }, modifier = Modifier.align(Alignment.Start)) {
             Icon(imageVector = Icons.AutoMirrored.Filled.ArrowBack, contentDescription = "Back")

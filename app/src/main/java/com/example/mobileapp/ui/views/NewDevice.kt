@@ -16,7 +16,9 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material3.Button
@@ -59,6 +61,8 @@ import com.example.mobileapp.ui.view_models.getViewModelFactory
 
 @Composable
 fun NewDeviceScreen(onBack: () -> Unit) {
+    val scrollState = rememberScrollState()
+
     val deviceViewModel: DevicesViewModel = viewModel(factory = getViewModelFactory())
     var deviceName by remember { mutableStateOf("") }
     var selectedType by remember { mutableStateOf<DeviceType?>(null) }
@@ -79,6 +83,7 @@ fun NewDeviceScreen(onBack: () -> Unit) {
     )
 
     Column(
+        verticalArrangement = Arrangement.spacedBy(16.dp),
         modifier = Modifier
             .fillMaxSize()
             .background(
@@ -86,8 +91,7 @@ fun NewDeviceScreen(onBack: () -> Unit) {
                     colors = listOf(Color(0xFFF0EDCF), Color(0xFF40A2D8))
                 )
             )
-            .padding(16.dp),
-        verticalArrangement = Arrangement.spacedBy(16.dp)
+            .padding(16.dp)
     ) {
         IconButton(onClick = onBack, modifier = Modifier.align(Alignment.Start)) {
             Icon(imageVector = Icons.AutoMirrored.Filled.ArrowBack, contentDescription = "Back")
@@ -167,7 +171,6 @@ fun NewDeviceScreen(onBack: () -> Unit) {
                         DeviceType.DOOR -> newDevice = Door(null, deviceName, null, null)
                         else -> {}
                     }
-                    Log.i("LACONCH", "name: " + newDevice?.name + " ||  type: "+ newDevice?.type)
                     deviceViewModel.addDevice(newDevice!!)
                     deviceName = ""
                     selectedType = null

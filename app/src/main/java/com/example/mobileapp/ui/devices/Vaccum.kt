@@ -12,7 +12,9 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.wrapContentHeight
+import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material3.Button
@@ -50,6 +52,8 @@ fun VacuumCard(
     vm: VacuumViewModel,
     onBack: () -> Unit
 ) {
+    val scrollState = rememberScrollState()
+
     val uiVacuumState by vm.uiState.collectAsState()
 
     var vacuumState by remember { mutableStateOf<Status?>(null) }
@@ -67,6 +71,8 @@ fun VacuumCard(
     val roomsVacuum = listOf("Living Room", "Kitchen", "Bedroom", "Bathroom", "Garage", "Garden")
 
     Column(
+        verticalArrangement = Arrangement.spacedBy(16.dp),
+
         modifier = Modifier
             .background(
                 Brush.verticalGradient(
@@ -74,6 +80,7 @@ fun VacuumCard(
                 )
             )
             .fillMaxSize()
+            .verticalScroll(scrollState)
     ) {
         IconButton(onClick = onBack, modifier = Modifier.align(Alignment.Start)) {
             Icon(imageVector = Icons.AutoMirrored.Filled.ArrowBack, contentDescription = "Back")

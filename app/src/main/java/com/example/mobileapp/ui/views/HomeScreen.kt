@@ -2,11 +2,14 @@ package com.example.mobileapp.ui.views
 
 import MyLogo
 import androidx.compose.foundation.background
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
@@ -48,6 +51,8 @@ fun HomeScreen(
     onDeviceSelected: (Device) -> Unit,
     onAddDevice: () -> Unit,
 ) {
+    val scrollState = rememberScrollState()
+
     val uiDevicesState by devicesVM.uiState.collectAsState()
     val uiRoutinesState by routinesVM.uiState.collectAsState()
 
@@ -74,6 +79,8 @@ fun HomeScreen(
     }
 
     Column(
+        verticalArrangement = Arrangement.spacedBy(16.dp),
+
         modifier = Modifier
             .fillMaxSize()
             .background(
@@ -82,6 +89,7 @@ fun HomeScreen(
                 )
             )
             .padding(16.dp)
+            .verticalScroll(scrollState)
     ) {
         MyLogo()
         DeviceTypeSection(

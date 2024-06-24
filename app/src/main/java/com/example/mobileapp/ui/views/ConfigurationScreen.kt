@@ -7,7 +7,9 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
@@ -26,6 +28,8 @@ import java.util.*
 @Composable
 fun ConfigurationScreen(
 ) {
+    val scrollState = rememberScrollState()
+
     val context = LocalContext.current
     val currentLanguage = context.resources.configuration.locales[0].language
     var selectedLanguage by remember { mutableStateOf(if (currentLanguage == "es") "Español" else "English") }
@@ -41,6 +45,7 @@ fun ConfigurationScreen(
             )
             .fillMaxSize()
             .padding(16.dp)
+            .verticalScroll(scrollState)
     ) {
 
 
