@@ -7,8 +7,8 @@ enum class Status {
         return when (this) {
             Status.ON -> "on"
             Status.OFF -> "off"
-            Status.OPENED -> "open"
-            Status.CLOSED -> "close"
+            Status.OPENED -> "opened"
+            Status.CLOSED -> "closed"
             Status.ACTIVE -> "active"
             Status.INACTIVE -> "inactive"
             Status.LOCKED -> "locked"
@@ -21,8 +21,8 @@ enum class Status {
             return when (string) {
                 "on" -> Status.ON
                 "off" -> Status.OFF
-                "open" -> Status.OPENED
-                "close" -> Status.CLOSED
+                "opened" -> Status.OPENED
+                "closed" -> Status.CLOSED
                 "active" -> Status.ACTIVE
                 "inactive" -> Status.INACTIVE
                 "locked" -> Status.LOCKED
